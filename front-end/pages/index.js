@@ -5,6 +5,7 @@ import { useRouter } from 'next/dist/client/router';
 
 
 import langTrans from './../components/i18n';
+import Lang from '../components/lang';
 
 
 
@@ -12,39 +13,12 @@ export default function Login(props) {
   const [userName, setName] = useState("");
   const [password, setPassword] = useState("");
   const { locale, locales, defaultLocale, asPath } = useRouter();
-  const { login } = langTrans[locale];
-  
+  const { login, a_forgot_pass, btn_login } = langTrans[locale];
+
   return (
     <div className=" vertical-center">
       <div className="container">
-        <div>
-          <span>Current Language: </span>
-          <span
-            style={{
-              borderRadius: "3px",
-              backgroundColor: "blue",
-              color: "white",
-              padding: "2px",
-            }}
-          >
-            {locale}
-          </span> <br />
-          <Link
-            activeClassName={locale === "fr-FR"}
-            href={asPath}
-            locale="fr-FR"
-          >
-            fr-FR
-          </Link>
-          |
-          <Link
-            activeClassName={locale === "en-US"}
-            href={asPath}
-            locale="en-US"
-          >
-            en-US
-          </Link>
-        </div>
+        <Lang />
         <h1 className="mb-5 text-center">{login.title}</h1>
         <div className="row">
           <div className="col"></div>
@@ -54,13 +28,13 @@ export default function Login(props) {
               <input className="form-control" type="text" id="username" placeholder="User Name" value={userName} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="mb-3">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{login.password}</label>
               <input className="form-control" type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div className="mb-3">
-              <button type="submit" className="btn btn-primary mb-3">Login</button>
+              <button type="submit" className="btn btn-primary mb-3">{btn_login}</button>
             </div>
-            <Link href="/forgot-password"><a>Forgot Password</a></Link>
+            <Link href="/forgot-password"><a>{a_forgot_pass}</a></Link>
           </div>
           <div className="col"></div>
         </div>
