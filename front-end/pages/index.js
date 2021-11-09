@@ -1,7 +1,7 @@
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import Cookies from 'js-cookie'
 
 import langTrans from './../components/i18n';
@@ -21,9 +21,9 @@ export default function Login(props) {
   const [userName, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loginMessage, setloginMessage] = useState("");
-  const { locale, locales, defaultLocale, asPath, router } = useRouter();
+  const { locale, locales, defaultLocale, asPath } = useRouter();
   const { login, a_forgot_pass, btn_login } = langTrans[locale];
-
+  const router = useRouter()
 
 
   const userLogin = async (e) => {
@@ -54,6 +54,7 @@ export default function Login(props) {
     } else if (res2.status_code == 200) {
       setloginMessage("");
       Cookies.set('token', res2?.data?.auth_token)
+      router.push('/credit-reports')
     } else {
       setloginMessage("Ajax fails");
     }

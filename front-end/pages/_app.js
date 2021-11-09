@@ -8,12 +8,12 @@ function MyApp({ Component, pageProps }) {
     import("bootstrap/dist/js/bootstrap");
   }, []);
   return (
-    <>
+    <div className="container">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Component {...pageProps} />
-    </>
+    </div>
   )
 
 
