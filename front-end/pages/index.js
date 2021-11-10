@@ -38,7 +38,6 @@ export default function Login(props) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://localhost:3000"
       },
       body: JSON.stringify({
         "language": locale,
@@ -54,6 +53,7 @@ export default function Login(props) {
     } else if (res2.status_code == 200) {
       setloginMessage("");
       Cookies.set('token', res2?.data?.auth_token)
+      Cookies.set('roe', res2?.data?.user_role)
       router.push('/credit-reports')
     } else {
       setloginMessage("Ajax fails");
