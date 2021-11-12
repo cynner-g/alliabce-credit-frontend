@@ -12,7 +12,7 @@ const Companies = ({ data, page, totalPage }) => {
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
-    console.warn(data.data);
+    console.warn(data);
     return (
         <>
             <Header />
@@ -25,18 +25,24 @@ const Companies = ({ data, page, totalPage }) => {
                         <label htmlFor="companysearch" className="form-label">Search</label>
                     </div>
                     <div className="col">
-                        <Link href="/companies/add-company"><a className="btn btn-primary">Add Company</a></Link>
+                        <select>
+                            <option>Role</option>
+                        </select>
+                        <select>
+                            <option>Company Access</option>
+                        </select>
+                        <Link href="/companies/add-user"><a className="btn btn-primary">Add User</a></Link>
                     </div>
                 </div>
             </div>
             <table id="example" className="table table-striped">
                 <thead>
                     <tr>
-                        <th><div>Ref. Id</div></th>
-                        <th><div>Company Name</div></th>
-                        <th><div>Date added</div></th>
-                        <th><div>Group</div></th>
-                        <th><div>No. of Sub-company</div></th>
+                        <th><div>User Name</div></th>
+                        <th><div>Date Added</div></th>
+                        <th><div>Email</div></th>
+                        <th><div>Role</div></th>
+                        <th><div>Company Access</div></th>
                         <th><div>Actions</div></th>
                     </tr>
                 </thead>
@@ -87,7 +93,7 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
-    const res = await fetch(`${process.env.API_URL}/company/list-companies`, {
+    const res = await fetch(`${process.env.API_URL}/user/list-user`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -98,9 +104,9 @@ export async function getServerSideProps(ctx) {
         })
 
     })
-    const posts = await res.json()
-    console.log(posts)
-    if (!posts) {
+    const users = await res.json()
+    console.log(users)
+    if (!users) {
         return {
             notFound: true,
         }
@@ -110,7 +116,7 @@ export async function getServerSideProps(ctx) {
      */
     return {
         props: {
-            data: posts,
+            data: users,
             page: 1,
             totalPage: 1
         }

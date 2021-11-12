@@ -53,7 +53,7 @@ export default function Login(props) {
     } else if (res2.status_code == 200) {
       setloginMessage("");
       Cookies.set('token', res2?.data?.auth_token)
-      Cookies.set('roe', res2?.data?.user_role)
+      Cookies.set('role', res2?.data?.user_role)
       router.push('/credit-reports')
     } else {
       setloginMessage("Ajax fails");
