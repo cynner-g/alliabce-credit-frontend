@@ -63,7 +63,7 @@ export default function Login(props) {
   return (
     <div className=" vertical-center">
       <div className="container">
-        <Lang />
+        {/* <Lang /> */}
         <h1 className="mb-5 text-center">{login.title}</h1>
         <form onSubmit={(e) => userLogin(e)}>
           <div className="row">

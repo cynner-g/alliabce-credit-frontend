@@ -1,7 +1,7 @@
-import Header from "../../components/header"
+import Header from "../../../components/header"
 import { useRouter } from "next/router"
 import Link from 'next/link'
-import Pagination from "../../components/datatable/pagination"
+import Pagination from "../../../components/datatable/pagination"
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 

@@ -263,7 +263,8 @@ const addCompany = ({ industry, group, pricing }) => {
                     </div>
 
                     <div>
-                        <button type="submit" className="btn btn-primary">Add Company</button>
+                        <button type="submit" className="btn btn-primary">Save</button>
+                        <button type="button" className="btn btn-primary">Remove</button>
                     </div>
                 </form>
             </div>

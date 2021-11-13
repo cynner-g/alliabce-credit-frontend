@@ -44,16 +44,16 @@ const Companies = ({ data, page, totalPage }) => {
                     {data?.data?.map((item) => (
 
 
-                        <tr>
+                        <tr key={item._id}>
                             {/* {post.title} */}
-                            <td>aa</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011/04/25</td>
+                            <td>{item._id}</td>
+                            <td>{item?.company_name}</td>
+                            <td>{item?.date_added}</td>
+                            <td>{item?.sub_companies_count}</td>
+                            <td>{item?.sub_companies_count}</td>
                             <td>
                                 <>
-                                    <button className="btn btn-primary">View More</button> &nbsp;
+                                    <Link href={`/companies/${item._id}`}><a className="btn btn-primary">View More</a></Link> &nbsp;
                                     <button className="btn btn-primary">Transaction Detals</button>
                                 </>
                             </td>
