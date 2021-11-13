@@ -7,6 +7,10 @@
   align-items: center;
 }
 
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 /*Navigation*/
 
 header {
@@ -34,4 +38,16 @@ header {
 
 .user_nav .hello, .user_nav .dropdown {
   display: inline-block;
+}
+
+.company_wrap {
+  background: #FAFAFA;
+  position: relative;
+  padding: 16px;
+}
+
+.edit_company {
+  position: absolute;
+  top: 16px;
+  right: 16px;
 }

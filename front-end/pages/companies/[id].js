@@ -3,8 +3,18 @@ import { parseCookies } from "nookies";
 import Address from "../../components/address";
 import Link from 'next/link'
 import SubCompanies from "../../components/sub-companies";
+import { Modal, Button } from "react-bootstrap";
+import { useState } from "react";
+import Header from "../../components/header";
+import TabButton from "../../components/tabbutton";
+
 
 const CompanyDetails = ({ data }) => {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     console.warn(data);
     const router = useRouter()
     const { id } = router.query
@@ -12,29 +22,46 @@ const CompanyDetails = ({ data }) => {
     return (
 
         <>
+            <Header />
+            <Button variant="primary" onClick={handleShow}>
+                Launch demo modal
+            </Button>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleClose}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             <div>
                 <div>
                     Breadcrumb: <Link href="/companies"><a className="nav-link">Companies</a></Link>  &gt; {data?._id}
                 </div>
 
-                <ul>
-                    <li><Link href="#"><a className="nav-link">General</a></Link></li>
-                    <li><Link href="/companies/users"><a className="nav-link">user</a></Link></li>
-                    <li><Link href="/companies/legal-watchlist"><a className="nav-link">Legal Watchlist</a></Link></li>
-                    <li><Link href="/companies/aging"><a className="nav-link">Aging</a></Link></li>
-                </ul>
-                <Link href="#"><a className="nav-link">Edit Company</a></Link>
-                _id: {data?._id}<br />
-                website: {data?.website}<br />
-                domain: {data?.domain}<br />
-                email_id: {data?.email_id}<br />
-                phone_number: {data?.phone_number?.country_code} - {data?.phone_number?.phone_number}<br />
-                <Address address={data?.address} />
-                is_active: {data?.is_active}<br />
-                
-                
-                <SubCompanies subCompanies={data?.sub_companies} />
-
+                <TabButton />
+                <div className="company_wrap">
+                    <Link href="#"><a className="nav-link edit_company">Edit Company</a></Link>
+                    _id: {data?._id}<br />
+                    website: {data?.website}<br />
+                    {/* domain: {data?.domain}<br /> */}
+                    email_id: {data?.email_id}<br />
+                    phone_number: {data?.phone_number?.country_code} - {data?.phone_number?.phone_number}<br />
+                    <Address address={data?.address} />
+                    is_active: {data?.is_active}<br />
+                </div>
+                <h2>Sub Companies</h2>
+                <div className="subcompany_wrap">
+                    <SubCompanies subCompanies={data?.sub_companies} />
+                </div>
                 configuration<br />
                 id: {data?.configuration?.pricing_chart_id}<br />
                 bank_report_count: {data?.configuration?.bank_report_count}<br />
