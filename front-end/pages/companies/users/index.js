@@ -7,11 +7,12 @@ import { parseCookies } from "nookies"
 
 
 
-const Companies = ({ data, page, totalPage }) => {
+const Companies = ({ data, page, totalPage,query }) => {
 
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
+    console.warn(query);
     console.warn(data);
     return (
         <>
@@ -85,6 +86,8 @@ export async function getServerSideProps(ctx) {
 
     // const { locale, locales, defaultLocale, asPath } = useRouter();
     const { token } = parseCookies(ctx)
+    const query = ctx.query;
+
     if (!token) {
         return {
             redirect: {
@@ -101,11 +104,12 @@ export async function getServerSideProps(ctx) {
         body: JSON.stringify({
             "language": 'en',
             "api_token": token,
+            "company_id": query.id
         })
 
     })
     const users = await res.json()
-    console.log(users)
+    // console.log(users)
     if (!users) {
         return {
             notFound: true,
@@ -118,7 +122,8 @@ export async function getServerSideProps(ctx) {
         props: {
             data: users,
             page: 1,
-            totalPage: 1
+            totalPage: 1,
+            query
         }
     }
 

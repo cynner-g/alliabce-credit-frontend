@@ -151,8 +151,7 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" className="form-control" id="website" placeholder="" value={query.name} onChange={handleChange()} />
                         </div>
                         <div className="col">
-                            <label htmlFor="domain" className="form-label">Company domain name</label>
-                            <input type="text" className="form-control" id="domain" placeholder="" value={query.name} onChange={handleChange()} />
+                            
                         </div>
                     </div>
 
@@ -203,67 +202,12 @@ const addCompany = ({ industry, group, pricing }) => {
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label htmlFor="groups" className="form-label">Add to group</label>
-                        <>
-                            {group?.data.map((item) => (
-                                <div className="form-check">
-                                    <label className="form-check-label" htmlFor={item._id}>{item.name}</label>
-                                    <input className="form-check-input" name="groups" type="checkbox" value="" id={item._id} />
-                                </div>
-                            ))}
+                   
 
 
-                        </>
-                    </div>
-
-
-                    <h3>Configurations</h3>
-                    <div>
-                        <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
-                        <select className="form-select form-select-sm" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Pricing Chart</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                    </div>
-
-                    <div className="row">
-                        <div className="col">
-                            <label htmlFor="bank_report_coun" className="form-label">Maximum Bank Account Report Limit</label>
-                            <input type="text" className="form-control" id="bank_report_coun" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="suppliers_report_count" className="form-label">Maximum Suppliers Report Limit</label>
-                            <input type="text" className="form-control" id="suppliers_report_count" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="col">
-                            <label htmlFor="company_in_watchlist_count" className="form-label">Maximum Companies in Watchlists</label>
-                            <input type="text" className="form-control" id="company_in_watchlist_count" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="watchlist_count" className="form-label">Maximum Number of Watchlist</label>
-                            <input type="text" className="form-control" id="watchlist_count" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="col">
-                            <label htmlFor="quick_report_price" className="form-label">Extra Price For Quick Orders</label>
-                            <input type="text" className="form-control" id="quick_report_price" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="aging_discount" className="form-label">Discount For Aging Uploads</label>
-                            <input type="text" className="form-control" id="aging_discount" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                    </div>
 
                     <div>
-                        <button type="submit" className="btn btn-primary">Add Company</button>
+                        <button type="submit" className="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>

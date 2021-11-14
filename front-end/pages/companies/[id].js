@@ -47,7 +47,7 @@ const CompanyDetails = ({ data }) => {
                     Breadcrumb: <Link href="/companies"><a className="nav-link">Companies</a></Link>  &gt; {data?._id}
                 </div>
 
-                <TabButton />
+                <TabButton id={data?._id} />
                 <div className="company_wrap">
                     <Link href="#"><a className="nav-link edit_company">Edit Company</a></Link>
                     _id: {data?._id}<br />
