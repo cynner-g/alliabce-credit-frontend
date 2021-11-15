@@ -4,16 +4,80 @@ import Link from 'next/link'
 import Pagination from "../../../components/datatable/pagination"
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
+import { useState } from "react"
+import { Modal, Button } from "react-bootstrap";
 
 
-
-const Companies = ({ data, page, totalPage,query }) => {
+const Companies = ({ data, page, totalPage, query, companiesData }) => {
 
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
     console.warn(query);
     console.warn(data);
+    console.warn(companiesData);
+    const [show, setShow] = useState(false);
+    const [hobbies, setHobbies] = useState([]);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+
+
+    const [fullNname, setFullName] = useState("");
+    const [emailID, setEmailID] = useState("");
+    const [country_code, setPassword] = useState("");
+    const [phone_number, setPhone_number] = useState("");
+    const [company_access, setCompany_access] = useState({});
+    const [user_role, setUser_role] = useState("");
+
+
+    const handleSingleCheck = e => {
+        setCompany_access({ ...company_access, [e.target.name]: e.target.checked });
+      };
+
+    const addUser = async (e) => {
+
+        e.preventDefault();
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+        const resUser = await fetch(`http://dev.alliancecredit.ca/user/create-user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "full_name": fullNname,
+                "email_id": emailID,
+                "country_code": "+1",
+                "phone_number": phone_number,
+                "company_access": company_access,
+                "user_role": user_role,
+                "api_token": token
+            })
+
+        })
+        const res2User = await resUser.json();
+        console.log(res2User);
+        if (res2User.status_code == 200) {
+            handleClose();
+            setFullName("");
+            setEmailID("");
+            setPassword("");
+            setPhone_number("");
+            setCompany_access("");
+            setUser_role("");
+        }
+    }
+
+
     return (
         <>
             <Header />
@@ -32,7 +96,8 @@ const Companies = ({ data, page, totalPage,query }) => {
                         <select>
                             <option>Company Access</option>
                         </select>
-                        <Link href="/companies/add-user"><a className="btn btn-primary">Add User</a></Link>
+                        <Link href="#"><a className="btn btn-primary" onClick={handleShow}>Accept User</a></Link> &nbsp;
+
                     </div>
                 </div>
             </div>
@@ -52,16 +117,16 @@ const Companies = ({ data, page, totalPage,query }) => {
 
 
                         <tr>
-                            {/* {post.title} */}
-                            <td>aa</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011/04/25</td>
+                            <td>{item.full_name}</td>
+                            <td>{item.date_added}</td>
+                            <td>{item.email_id}</td>
+                            <td>{item.display_user_role}</td>
+                            <td>{item.full_name}</td>
                             <td>
                                 <>
-                                    <button className="btn btn-primary">View More</button> &nbsp;
-                                    <button className="btn btn-primary">Transaction Detals</button>
+                                    <Link href="/companies/add-user"><a className="btn btn-primary">Accept User</a></Link> &nbsp;
+                                    <Link href="/companies/add-user"><a className="btn btn-primary">Edit User</a></Link> &nbsp;
+                                    <Link href="/companies/add-user"><a className="btn btn-primary">Stimulate User</a></Link> &nbsp;
                                 </>
                             </td>
                         </tr>
@@ -69,6 +134,56 @@ const Companies = ({ data, page, totalPage,query }) => {
                 </tbody>
             </table>
             {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Modal heading</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form method="POST" encType="multipart/form-data" onSubmit={(e) => addUser(e)}>
+
+                        <label htmlFor="company_logo_en" className="form-label">Full Name</label>
+                        <input className="form-control" name="fullname" type="text" id="company_logo_en" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
+
+
+                        <label htmlFor="company_logo_en" className="form-label">Email</label>
+                        <input className="form-control" name="company_logo_en" type="text" id="company_logo_en" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
+
+                        <label htmlFor="company_logo_en" className="form-label">Phone Number</label>
+                        <input className="form-control" name="company_logo_en" type="text" id="company_logo_en" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
+
+                        <label htmlFor="portal_language" className="form-label">Role</label>
+                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
+                            <option selected>Select Role</option>
+                            <option value="user-manager">User Manager</option>
+                        </select>
+
+                        <div>
+                            <label htmlFor="groups" className="form-label">Add to group</label>
+                            <>
+                                {companiesData?.map((item) => (
+                                    <div className="form-check">
+                                        <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
+                                        <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={handleSingleCheck} />
+                                    </div>
+                                ))}
+
+
+                            </>
+                        </div>
+
+                    </form>
+
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={addUser}>
+                        Add User
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
@@ -115,6 +230,18 @@ export async function getServerSideProps(ctx) {
             notFound: true,
         }
     }
+    const resCompanies = await fetch(`${process.env.API_URL}/company/list-companies`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+
+    })
+    const resCompaniesData = await resCompanies.json()
     /** 
      * limit, start, search item
      */
@@ -123,7 +250,8 @@ export async function getServerSideProps(ctx) {
             data: users,
             page: 1,
             totalPage: 1,
-            query
+            query,
+            companiesData: resCompaniesData?.data
         }
     }
 
