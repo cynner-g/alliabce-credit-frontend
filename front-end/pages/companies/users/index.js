@@ -13,28 +13,36 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
-    console.warn(query);
+    // console.warn(query);
     console.warn(data);
-    console.warn(companiesData);
-    const [show, setShow] = useState(false);
-    const [hobbies, setHobbies] = useState([]);
+    // console.warn(companiesData);
 
-    const handleClose = () => setShow(false);
+    const [show, setShow] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+
+    const handleClose = () => {
+        setShow(false)
+        setIsEdit(false);
+        setUserId("")
+        setFullName("");
+        setEmailID("");
+        setCountry_code("");
+        setPhone_number("");
+        setCompany_access("");
+        setUser_role("");
+    };
     const handleShow = () => setShow(true);
 
 
 
     const [fullNname, setFullName] = useState("");
     const [emailID, setEmailID] = useState("");
-    const [country_code, setPassword] = useState("");
+    const [country_code, setCountry_code] = useState("");
     const [phone_number, setPhone_number] = useState("");
-    const [company_access, setCompany_access] = useState({});
+    const [company_access, setCompany_access] = useState("");
     const [user_role, setUser_role] = useState("");
+    const [userID, setUserId] = useState("");
 
-
-    const handleSingleCheck = e => {
-        setCompany_access({ ...company_access, [e.target.name]: e.target.checked });
-      };
 
     const addUser = async (e) => {
 
@@ -58,7 +66,7 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
                 "email_id": emailID,
                 "country_code": "+1",
                 "phone_number": phone_number,
-                "company_access": company_access,
+                "company_access": [company_access],
                 "user_role": user_role,
                 "api_token": token
             })
@@ -70,18 +78,113 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
             handleClose();
             setFullName("");
             setEmailID("");
-            setPassword("");
+            setCountry_code("");
             setPhone_number("");
             setCompany_access("");
             setUser_role("");
         }
     }
 
+    const getUser = async (id) => {
+        // e.preventDefault();
+        setIsEdit(true);
+        setShow(true);
+        setUserId(id)
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+        const userData = await fetch(`http://dev.alliancecredit.ca/user/user-details`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "user_id": id,
+                "language": "en",
+                "api_token": token
+            })
+
+        })
+        const userData2 = await userData.json();
+        console.log(userData2);
+        if (userData2.status_code == 200) {
+            // handleClose();
+            setFullName(userData2?.data?.full_name);
+            setEmailID(userData2?.data?.email_id);
+            setCountry_code(userData2?.data?.phone_number?.country_code);
+            setPhone_number(userData2?.data?.phone_number?.phone_number);
+            setCompany_access(userData2?.data?.full_name);
+            setUser_role(userData2?.data?.display_user_role);
+        }
+    }
+
+    // function getUser(id) {
+    //     setUsers(users.map(x => {
+    //         if (x.id === id) { x.isDeleting = true; }
+    //         return x;
+    //     }));
+    //     userService.delete(id).then(() => {
+    //         setUsers(users => users.filter(x => x.id !== id));
+    //     });
+    // }
+
+    const removeUser = async (id) => {
+
+    }
+    const updateUser = async () => {
+        // e.preventDefault();
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+        const resUser = await fetch(`http://dev.alliancecredit.ca/user/update-user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "user_id": userID,
+                "full_name": fullNname,
+                "email_id": emailID,
+                "country_code": "+1",
+                "phone_number": phone_number,
+                "company_access": [company_access],
+                "user_role": user_role,
+                "api_token": token
+            })
+
+        })
+        const res2User = await resUser.json();
+        console.log(res2User);
+        if (res2User.status_code == 200) {
+
+            setFullName("");
+            setEmailID("");
+            setCountry_code("");
+            setPhone_number("");
+            setCompany_access("");
+            setUser_role("");
+            // handleClose();
+            setIsEdit(false);
+            setShow(false);
+            setUserId("")
+        }
+    }
 
     return (
         <>
             <Header />
-
             <div className="seaarch">
                 <div className="row">
                     <div className="col">
@@ -124,9 +227,15 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
                             <td>{item.full_name}</td>
                             <td>
                                 <>
-                                    <Link href="/companies/add-user"><a className="btn btn-primary">Accept User</a></Link> &nbsp;
-                                    <Link href="/companies/add-user"><a className="btn btn-primary">Edit User</a></Link> &nbsp;
-                                    <Link href="/companies/add-user"><a className="btn btn-primary">Stimulate User</a></Link> &nbsp;
+                                    <a className="btn btn-primary" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
+                                    <button className="btn btn-primary" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
+                                    {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
+                                    {user.isDeleting 
+                                        ? <span className="spinner-border spinner-border-sm"></span>
+                                        : <span>Delete</span>
+                                    }
+                                </button> */}
+                                    <a className="btn btn-primary" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp;
                                 </>
                             </td>
                         </tr>
@@ -137,20 +246,23 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>{isEdit == false
+                        ? "Add User"
+                        : "Edit User"
+                    }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form method="POST" encType="multipart/form-data" onSubmit={(e) => addUser(e)}>
+                    <form method="POST" encType="multipart/form-data">
 
-                        <label htmlFor="company_logo_en" className="form-label">Full Name</label>
-                        <input className="form-control" name="fullname" type="text" id="company_logo_en" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
+                        <label htmlFor="fullname" className="form-label">Full Name</label>
+                        <input className="form-control" name="fullname" type="text" id="fullname" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
 
 
-                        <label htmlFor="company_logo_en" className="form-label">Email</label>
-                        <input className="form-control" name="company_logo_en" type="text" id="company_logo_en" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
+                        <label htmlFor="emailID" className="form-label">Email</label>
+                        <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
 
-                        <label htmlFor="company_logo_en" className="form-label">Phone Number</label>
-                        <input className="form-control" name="company_logo_en" type="text" id="company_logo_en" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
+                        <label htmlFor="phone_number" className="form-label">Phone Number</label>
+                        <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
 
                         <label htmlFor="portal_language" className="form-label">Role</label>
                         <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
@@ -164,24 +276,29 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
                                 {companiesData?.map((item) => (
                                     <div className="form-check">
                                         <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
-                                        <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={handleSingleCheck} />
+                                        <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
                                     </div>
                                 ))}
-
-
                             </>
-                        </div>
 
+                            <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
+
+                        </div>
                     </form>
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="primary" onClick={addUser}>
-                        Add User
-                    </Button>
+                    {isEdit == false
+                        ? <>
+                            <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                            <Button variant="primary" onClick={addUser}>Add User</Button>
+                        </>
+                        :
+                        <>
+                            <Button variant="primary" onClick={removeUser}>Remove User</Button>
+                            <Button variant="primary" onClick={updateUser}>Update User</Button>
+                        </>
+                    }
                 </Modal.Footer>
             </Modal>
         </>
