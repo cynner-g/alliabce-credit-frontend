@@ -11,7 +11,6 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-
 /*Navigation*/
 
 header {
@@ -30,9 +29,6 @@ header {
   list-style: none;
   display: inline-block;
 }
-
-
-
 
 /*User navigation*/
 
@@ -54,4 +50,96 @@ header {
   position: absolute;
   top: 16px;
   right: 16px;
+}
+
+/**Label and forms*/
+
+label {
+  font-size: 14px;
+}
+
+input[type=text] {
+  font-size: 14px;
+  line-height: 27px;
+  background: #ddd;
+}
+
+.seaarch {
+  margin-bottom: 15px;
+}
+
+.seaarch input[type=text] {
+  max-width: 507px;
+}
+
+.seaarch label {
+  display: none;
+}
+
+.viewmore {
+  background: #E6EEFF;
+  font-family: Roboto;
+  font-style: Medium;
+  font-size: 14px;
+  color: #406DCD;
+  padding: 2px 10px;
+}
+
+.accept {
+  background: #F0FFF3;
+  font-family: Roboto;
+  font-style: Medium;
+  font-size: 14px;
+  color: #388F46;
+  padding: 2px 10px;
+}
+
+.addbtn {
+  padding: 8px 20px;
+  background: #406DCD;
+  color: #FFF;
+  font-size: 14px;
+}
+
+/*Grid*/
+
+.listing th {
+  color: #4D4D4D;
+  font-size: 16px;
+  background: #FBFBFB;
+  padding: 17px 10px;
+  border-top: 1px solid #F2F2F2;
+  border-bottom: 1px solid #F2F2F2;
+  font-weight: 500;
+}
+
+.listing td {
+  color: #323232;
+  font-size: 16px;
+  background: #FFF;
+  padding: 16px 10px;
+  border-bottom: 1px solid #F2F2F2;
+}
+
+.listing .table-striped>tbody>tr:nth-of-type(odd) {
+  --bs-table-accent-bg: #FFF;
+  color: #323232;
+  border-top: 0px;
+  ;
+}
+
+.table> :not(:last-child)> :last-child>* {
+  border-bottom-color: #F2F2F2;
+}
+
+.role {
+  display: inline-block;
+  max-width: 160px;
+  margin-right: 20px;
+}
+
+.f1 {
+  display: inline-block;
+  max-width: 200px;
+  margin-right: 20px;
 }

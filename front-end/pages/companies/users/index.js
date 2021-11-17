@@ -8,18 +8,30 @@ import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
 
 
-const Companies = ({ data, page, totalPage, query, companiesData }) => {
+const Users = ({ data, page, totalPage, query, companiesData }) => {
 
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
-    // console.warn(query);
-    console.warn(data);
-    // console.warn(companiesData);
+
+    /**
+     * Manage states
+     */
 
     const [show, setShow] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
 
+    const [fullNname, setFullName] = useState("");
+    const [emailID, setEmailID] = useState("");
+    const [country_code, setCountry_code] = useState("");
+    const [phone_number, setPhone_number] = useState("");
+    const [company_access, setCompany_access] = useState("");
+    const [user_role, setUser_role] = useState("");
+    const [userID, setUserId] = useState("");
+
+    /**
+     * Clear values
+     */
     const handleClose = () => {
         setShow(false)
         setIsEdit(false);
@@ -35,15 +47,13 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
 
 
 
-    const [fullNname, setFullName] = useState("");
-    const [emailID, setEmailID] = useState("");
-    const [country_code, setCountry_code] = useState("");
-    const [phone_number, setPhone_number] = useState("");
-    const [company_access, setCompany_access] = useState("");
-    const [user_role, setUser_role] = useState("");
-    const [userID, setUserId] = useState("");
 
 
+    /**
+     * Add User
+     * @param {*} e 
+     * @returns 
+     */
     const addUser = async (e) => {
 
         e.preventDefault();
@@ -85,6 +95,11 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
         }
     }
 
+    /**
+     * Get user details basis of user id for edit purpose
+     * @param {*} id 
+     * @returns 
+     */
     const getUser = async (id) => {
         // e.preventDefault();
         setIsEdit(true);
@@ -124,19 +139,19 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
         }
     }
 
-    // function getUser(id) {
-    //     setUsers(users.map(x => {
-    //         if (x.id === id) { x.isDeleting = true; }
-    //         return x;
-    //     }));
-    //     userService.delete(id).then(() => {
-    //         setUsers(users => users.filter(x => x.id !== id));
-    //     });
-    // }
-
+    /**
+     * Remove user 
+     * Api is pending
+     * @param {*} id 
+     */
     const removeUser = async (id) => {
 
     }
+    /**
+     *Update User
+     *
+     * @return {*} 
+     */
     const updateUser = async () => {
         // e.preventDefault();
         const token = Cookies.get('token');
@@ -175,7 +190,6 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
             setPhone_number("");
             setCompany_access("");
             setUser_role("");
-            // handleClose();
             setIsEdit(false);
             setShow(false);
             setUserId("")
@@ -185,6 +199,7 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
     return (
         <>
             <Header />
+
             <div className="seaarch">
                 <div className="row">
                     <div className="col">
@@ -192,58 +207,60 @@ const Companies = ({ data, page, totalPage, query, companiesData }) => {
                         <input type="text" className="form-control" id="companysearch" placeholder="Search" />
                         <label htmlFor="companysearch" className="form-label">Search</label>
                     </div>
-                    <div className="col">
-                        <select>
+                    <div className="col  text-end">
+                        <select  className="form-select role">
                             <option>Role</option>
                         </select>
-                        <select>
+                        <select  className="form-select f1">
                             <option>Company Access</option>
                         </select>
-                        <Link href="#"><a className="btn btn-primary" onClick={handleShow}>Accept User</a></Link> &nbsp;
+                        <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
 
                     </div>
                 </div>
             </div>
-            <table id="example" className="table table-striped">
-                <thead>
-                    <tr>
-                        <th><div>User Name</div></th>
-                        <th><div>Date Added</div></th>
-                        <th><div>Email</div></th>
-                        <th><div>Role</div></th>
-                        <th><div>Company Access</div></th>
-                        <th><div>Actions</div></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data?.data?.map((item) => (
 
-
+            <div className="listing">
+                <table id="example" className="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{item.full_name}</td>
-                            <td>{item.date_added}</td>
-                            <td>{item.email_id}</td>
-                            <td>{item.display_user_role}</td>
-                            <td>{item.full_name}</td>
-                            <td>
-                                <>
-                                    <a className="btn btn-primary" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
-                                    <button className="btn btn-primary" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
-                                    {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
+                            <th><div>User Name</div></th>
+                            <th><div>Date Added</div></th>
+                            <th><div>Email</div></th>
+                            <th><div>Role</div></th>
+                            <th><div>Company Access</div></th>
+                            <th><div>Actions</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data?.data?.map((item) => (
+
+
+                            <tr>
+                                <td>{item.full_name}</td>
+                                <td>{item.date_added}</td>
+                                <td>{item.email_id}</td>
+                                <td>{item.display_user_role}</td>
+                                <td>{item.full_name}</td>
+                                <td>
+                                    <>
+                                        <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
+                                        <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
+                                        {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
                                     {user.isDeleting 
                                         ? <span className="spinner-border spinner-border-sm"></span>
                                         : <span>Delete</span>
                                     }
                                 </button> */}
-                                    <a className="btn btn-primary" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp;
-                                </>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
-
+                                        <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp;
+                                    </>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+            </div>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEdit == false
@@ -374,4 +391,4 @@ export async function getServerSideProps(ctx) {
 
 }
 
-export default Companies
+export default Users

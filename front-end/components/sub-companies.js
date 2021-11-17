@@ -1,10 +1,10 @@
 import Address from "./address";
 import Link from 'next/link'
 
-const SubCompanies = function ({ subCompanies }) {
+const SubCompanies = function ({ id,subCompanies }) {
     return (
         <>
-            <Link href="/companies/add-sub-company"><a className="nav-link">Add Sub Company</a></Link>
+            <Link href={`/companies/add-sub-company/?id=${id}`}><a className="nav-link">Add Sub Company</a></Link>
             {subCompanies?.map((item) => (
                 <>
                     <Link href={`/companies/edit-sub-company/${item._id}`}><a className="nav-link">Edit Sub Company</a></Link>

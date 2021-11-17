@@ -7,6 +7,7 @@ import { Modal, Button } from "react-bootstrap";
 import { useState } from "react";
 import Header from "../../components/header";
 import TabButton from "../../components/tabbutton";
+import Cookies from "js-cookie";
 
 
 const CompanyDetails = ({ data }) => {
@@ -18,7 +19,7 @@ const CompanyDetails = ({ data }) => {
     console.warn(data);
     const router = useRouter()
     const { id } = router.query
-
+    Cookies.set('company_id', data?._id)
     return (
 
         <>
@@ -60,7 +61,7 @@ const CompanyDetails = ({ data }) => {
                 </div>
                 <h2>Sub Companies</h2>
                 <div className="subcompany_wrap">
-                    <SubCompanies subCompanies={data?.sub_companies} />
+                    <SubCompanies id={data?._id} subCompanies={data?.sub_companies} />
                 </div>
                 configuration<br />
                 id: {data?.configuration?.pricing_chart_id}<br />
