@@ -1,13 +1,14 @@
-import Header from "../../components/header"
+
 import { useRouter } from "next/router"
-import Pagination from "../../components/datatable/pagination"
+import Pagination from "../../../components/datatable/pagination"
 import { useState } from 'react'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
+import Header from "../../../components/header"
 
-const addCompany = ({ industry, group, pricing }) => {
+const editCompanies = ({ industry, group, pricing, data }) => {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -16,49 +17,45 @@ const addCompany = ({ industry, group, pricing }) => {
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
-
+    console.log(data)
     const [formStatus, setFormStatus] = useState(false);
     const [query, setQuery] = useState({
         // company_logo_en: "",
         // company_logo_fr: "",
-        company_name_en: "",
-        company_name_fr: "",
-        website: "",
-        domain: "",
-        email_id: "",
-        country_code: "",
-        phone_number: "",
-        address_line: "",
-        state: "",
-        city: "",
-        zip_code: "",
-        portal_language: "",
-        industry_id: "",
+        company_name_en: data.company_name,
+        company_name_fr: data.company_name,
+        website: data.website,
+        domain: data.domain,
+        email_id: data.email_id,
+        country_code: data.country_code,
+        phone_number: data.phone_number.phone_number,
+        address_line: data.address.address_line,
+        state: data.address.state_name,
+        city: data.address.city_name,
+        zip_code: data.address.zip_code,
+        portal_language: data.portal_language,
+        industry_id: data.industry_data._id,
         groups: [],
-        pricing_chart_id: "",
-        bank_report_count: "",
-        suppliers_report_count: "",
-        watchlist_count: "",
-        company_in_watchlist_count: "",
-        quick_report_price: "",
-        aging_discount: ""
+        is_active: data.is_active || [],
+        pricing_chart_id: data.configuration.pricing_chart_id,
+        bank_report_count: data.configuration.bank_report_count,
+        suppliers_report_count: data.configuration.suppliers_report_count,
+        company_in_watchlist_count: data.configuration.company_in_watchlist_count,
+        watchlist_count: data.configuration.watchlist_count,
+        company_in_watchlist_count: data.configuration.company_in_watchlist_count,
+        quick_report_price: data.configuration.quick_report_price,
+        aging_discount: data.configuration.aging_discount
     });
 
 
     const handleFileChangeen = () => (e) => {
         console.warn(e.target.files[0])
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_en: e.target.files[0]
-        // }));
+
         setCompany_logo_en(e.target.files[0]);
     };
 
     const handleFileChangefr = () => (e) => {
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_fr: e.target.files[0]
-        // }));
+
         setcompany_logo_fr(e.target.files[0])
     };
 
@@ -87,7 +84,7 @@ const addCompany = ({ industry, group, pricing }) => {
         }
 
 
-        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/add-company`, {
+        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/update-company`, {
             method: "POST",
 
             body: JSON.stringify({
@@ -120,7 +117,7 @@ const addCompany = ({ industry, group, pricing }) => {
         })
 
         const res2 = await addCompanyDB.json();
-        
+
         if (res2.status_code == 403) {
             setShow(false);
             alert("Error ");
@@ -129,7 +126,7 @@ const addCompany = ({ industry, group, pricing }) => {
         } else {
             setShow(false);
         }
-        
+
     }
 
 
@@ -140,7 +137,7 @@ const addCompany = ({ industry, group, pricing }) => {
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
-                    <li>Add Company</li>
+                    <li>Edit Company</li>
                 </ul>
             </div>
             <div className="col-lg-7">
@@ -238,7 +235,14 @@ const addCompany = ({ industry, group, pricing }) => {
 
                         </>
                     </div>
+                    <div>
+                        <label htmlFor="is_active" className="form-label">Active Status</label>
+                        <select className="form-select form-select-sm" name="is_active" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
+                            <option selected>Active</option>
+                            <option value="1">Deactivate</option>
 
+                        </select>
+                    </div>
 
                     <h3>Configurations</h3>
                     <div>
@@ -285,7 +289,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     </div>
 
                     <div>
-                        <button type="button" className="btn btn-primary" onClick={handleShow}>Add Company</button>
+                        <button type="button" className="btn btn-primary" onClick={handleShow}>Update Company</button>
                     </div>
 
                     <Modal show={show} onHide={handleClose}>
@@ -353,6 +357,21 @@ export async function getServerSideProps(ctx) {
     // })
     // const pricing = await resPricing.json()
 
+    const companyID = ctx.query.title
+
+    const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+            "company_id": companyID
+        })
+
+    })
+    const data = await res.json()
 
     /** 
      * limit, start, search item
@@ -361,10 +380,11 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: []
+            pricing: [],
+            data: data?.data || []
         }
     }
 
 }
 
-export default addCompany
+export default editCompanies

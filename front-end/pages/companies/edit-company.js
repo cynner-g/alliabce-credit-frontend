@@ -5,8 +5,14 @@ import { useState } from 'react'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
+import { Modal, Button } from "react-bootstrap";
 
-const addCompany = ({ industry, group, pricing }) => {
+const editCompany = ({ industry, group, pricing, data }) => {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
@@ -28,9 +34,9 @@ const addCompany = ({ industry, group, pricing }) => {
         zip_code: "",
         portal_language: "",
         industry_id: "",
-        // groups: "",
+        groups: [],
         pricing_chart_id: "",
-        bank_report_coun: "",
+        bank_report_count: "",
         suppliers_report_count: "",
         watchlist_count: "",
         company_in_watchlist_count: "",
@@ -41,22 +47,17 @@ const addCompany = ({ industry, group, pricing }) => {
 
     const handleFileChangeen = () => (e) => {
         console.warn(e.target.files[0])
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_en: e.target.files[0]
-        // }));
+
         setCompany_logo_en(e.target.files[0]);
     };
 
     const handleFileChangefr = () => (e) => {
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_fr: e.target.files[0]
-        // }));
+
         setcompany_logo_fr(e.target.files[0])
     };
 
     const handleChange = () => (e) => {
+        // alert(e.target.name);
         const name = e.target.name;
         const value = e.target.value;
         setQuery((prevState) => ({
@@ -67,7 +68,8 @@ const addCompany = ({ industry, group, pricing }) => {
 
     const addNewCompany = async (e) => {
 
-        e.preventDefault();
+        console.log(query);
+        // e.preventDefault();
         const token = Cookies.get('token');
         if (!token) {
             return {
@@ -77,40 +79,54 @@ const addCompany = ({ industry, group, pricing }) => {
                 },
             }
         }
-        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/add-company`, {
+
+
+        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/update-company`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+
             body: JSON.stringify({
                 "language": 'en',
                 "api_token": token,
                 "company_logo_en": company_logo_en,
                 "company_logo_fr": company_logo_fr,
-                "company_name_en": 'bb',
-                "company_name_fr": '11',
-                "website": 'www.google.com',
-                "domain": 'google.com',
-                "email_id": 'support@jklabs.ca',
-                "country_code": '+91',
-                "phone_number": '999999999',
-                "address_line": '77',
-                "state": '88',
-                "city": '99',
-                "zip_code": '10',
-                "portal_language": 'en',
-                "industry_id": '12',
-                "groups": [],
-                "pricing_chart_id": '61837b7d691bb0d09172e6d8',
-                "bank_report_count": '100',
-                "suppliers_report_count": '100',
-                "watchlist_count": '16',
-                "company_in_watchlist_count": '17',
-                "quick_report_price": '18',
-                "aging_discount": '19'
+                "company_name_en": query.company_name_en,
+                "company_name_fr": query.company_name_fr,
+                "website": query.website,
+                "domain": query.domain,
+                "email_id": query.email_id,
+                "country_code": query.country_code,
+                "phone_number": query.phone_number,
+                "address_line": query.address_line,
+                "state": query.state,
+                "city": query.city,
+                "zip_code": query.zip_code,
+                "portal_language": query.portal_language,
+                "industry_id": query.industry_id,
+                "groups": query.groups,
+                "pricing_chart_id": query.pricing_chart_id,
+                "bank_report_count": query.bank_report_count,
+                "suppliers_report_count": query.suppliers_report_count,
+                "watchlist_count": query.watchlist_count,
+                "company_in_watchlist_count": query.company_in_watchlist_count,
+                "quick_report_price": query.quick_report_price,
+                "aging_discount": query.aging_discount,
             })
         })
+
+        const res2 = await addCompanyDB.json();
+
+        if (res2.status_code == 403) {
+            setShow(false);
+            alert("Error ");
+        } else if (res2.status_code == 200) {
+            setShow(false);
+        } else {
+            setShow(false);
+        }
+
     }
+
+
 
     return (
         <>
@@ -126,69 +142,69 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_logo_en" className="form-label">English Logo</label>
-                            <input className="form-control" name="company_logo_en" type="file" id="company_logo_en" value={query.name} onChange={handleFileChangeen()} />
+                            <input className="form-control" name="company_logo_en" type="file" id="company_logo_en" value={query.company_logo_en} onChange={handleFileChangeen()} />
                         </div>
                         <div className="col">
                             <label htmlFor="company_logo_fr" className="form-label">French Logo</label>
-                            <input className="form-control" name="company_logo_fr" type="file" id="company_logo_fr" value={query.name} onChange={handleFileChangefr()} />
+                            <input className="form-control" name="company_logo_fr" type="file" id="company_logo_fr" value={query.company_logo_fr} onChange={handleFileChangefr()} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_name_en" className="form-label">Company Name (English)</label>
-                            <input type="text" className="form-control" id="company_name_en" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="company_name_en" className="form-control" id="company_name_en" placeholder="" value={query.company_name_en} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="company_name_fr" className="form-label">Company Name (English)</label>
-                            <input type="text" className="form-control" id="company_name_fr" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="company_name_fr" className="form-control" id="company_name_fr" placeholder="" value={query.company_name_fr} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="website" className="form-label">Website</label>
-                            <input type="text" className="form-control" id="website" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="website" className="form-control" id="website" placeholder="" value={query.website} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="domain" className="form-label">Company domain name</label>
-                            <input type="text" className="form-control" id="domain" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="domain" className="form-control" id="domain" placeholder="" value={query.domain} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="email_id" className="form-label">Email</label>
-                            <input type="text" className="form-control" id="email_id" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="email_id" className="form-control" id="email_id" placeholder="" value={query.email_id} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="phone_number" className="form-label">Phone NUmber</label>
-                            <input type="text" className="form-control" id="phone_number" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="phone_number" className="form-control" id="phone_number" placeholder="" value={query.phone_number} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div>
                         <label htmlFor="address_line" className="form-label">Address</label>
-                        <input type="text" className="form-control" id="address_line" placeholder="" value={query.name} onChange={handleChange()} />
+                        <input type="text" name="address_line" className="form-control" id="address_line" placeholder="" value={query.address_line} onChange={handleChange()} />
                     </div>
                     <div className="row">
                         <div className="col">
                             <label htmlFor="state" className="form-label">State</label>
-                            <input type="text" className="form-control" id="state" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="state" className="form-control" id="state" placeholder="" value={query.state} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="city" className="form-label">City</label>
-                            <input type="text" className="form-control" id="city" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="city" className="form-control" id="city" placeholder="" value={query.city} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="zip_code" className="form-label">Zip</label>
-                            <input type="text" className="form-control" id="zip_code" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" name="zip_code" className="form-control" id="zip_code" placeholder="" value={query.zip_code} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div>
                         <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
+                        <select className="form-select form-select-sm" name="portal_language" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
                             <option selected>Select Language</option>
                             <option value="en">English</option>
                             <option value="fr">French</option>
@@ -209,7 +225,7 @@ const addCompany = ({ industry, group, pricing }) => {
                             {group?.data.map((item) => (
                                 <div className="form-check">
                                     <label className="form-check-label" htmlFor={item._id}>{item.name}</label>
-                                    <input className="form-check-input" name="groups" type="checkbox" value="" id={item._id} />
+                                    <input className="form-check-input" name="groups" type="checkbox" value={item._id} id={item._id} />
                                 </div>
                             ))}
 
@@ -231,41 +247,51 @@ const addCompany = ({ industry, group, pricing }) => {
 
                     <div className="row">
                         <div className="col">
-                            <label htmlFor="bank_report_coun" className="form-label">Maximum Bank Account Report Limit</label>
-                            <input type="text" className="form-control" id="bank_report_coun" placeholder="" value={query.name} onChange={handleChange()} />
+                            <label htmlFor="bank_report_count" className="form-label">Maximum Bank Account Report Limit</label>
+                            <input type="text" className="form-control" name="bank_report_count" id="bank_report_count" placeholder="" value={query.bank_report_count} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="suppliers_report_count" className="form-label">Maximum Suppliers Report Limit</label>
-                            <input type="text" className="form-control" id="suppliers_report_count" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" name="suppliers_report_count" id="suppliers_report_count" placeholder="" value={query.suppliers_report_count} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_in_watchlist_count" className="form-label">Maximum Companies in Watchlists</label>
-                            <input type="text" className="form-control" id="company_in_watchlist_count" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" name="company_in_watchlist_count" id="company_in_watchlist_count" placeholder="" value={query.company_in_watchlist_count} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="watchlist_count" className="form-label">Maximum Number of Watchlist</label>
-                            <input type="text" className="form-control" id="watchlist_count" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" name="watchlist_count" id="watchlist_count" placeholder="" value={query.watchlist_count} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="quick_report_price" className="form-label">Extra Price For Quick Orders</label>
-                            <input type="text" className="form-control" id="quick_report_price" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" name="quick_report_price" id="quick_report_price" placeholder="" value={query.quick_report_price} onChange={handleChange()} />
                         </div>
                         <div className="col">
                             <label htmlFor="aging_discount" className="form-label">Discount For Aging Uploads</label>
-                            <input type="text" className="form-control" id="aging_discount" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" name="aging_discount" id="aging_discount" placeholder="" value={query.aging_discount} onChange={handleChange()} />
                         </div>
                     </div>
 
                     <div>
-                        <button type="submit" className="btn btn-primary">Save</button>
-                        <button type="button" className="btn btn-primary">Remove</button>
+                        <button type="button" className="btn btn-primary" onClick={handleShow}>Add Company</button>
                     </div>
+
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Add Company</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
+                        <Modal.Footer>
+                            <button type="button" className="btn btn-primary" onClick={handleClose}>Cancel</button>
+                            <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
+                        </Modal.Footer>
+                    </Modal>
                 </form>
             </div>
         </>
@@ -321,6 +347,21 @@ export async function getServerSideProps(ctx) {
     // })
     // const pricing = await resPricing.json()
 
+    const companyID = ctx.params.id
+
+    const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+            "company_id": companyID
+        })
+
+    })
+    const data = await res.json()
 
     /** 
      * limit, start, search item
@@ -329,10 +370,11 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: []
+            pricing: [],
+            data
         }
     }
 
 }
 
-export default addCompany
+export default editCompany

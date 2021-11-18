@@ -353,7 +353,7 @@ export async function getServerSideProps(ctx) {
         body: JSON.stringify({
             "language": 'en',
             "api_token": token,
-            "company_id": query.id
+            "company_id": query.userid
         })
 
     })

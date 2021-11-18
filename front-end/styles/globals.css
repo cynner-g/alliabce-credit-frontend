@@ -11,6 +11,22 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+/*Breadcrumb*/
+
+.breadcrumb {
+  margin-bottom: 16px;
+}
+
+.breadcrumb ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumb ul li {
+  display: inline-block;
+}
+
 /*Navigation*/
 
 header {
@@ -50,6 +66,16 @@ header {
   position: absolute;
   top: 16px;
   right: 16px;
+}
+
+h2 {
+  color: #406DCD;
+  font-size: 26px;
+}
+
+h4 {
+  font-size: 24px;
+  color: #465168;
 }
 
 /**Label and forms*/
@@ -101,6 +127,12 @@ input[type=text] {
   font-size: 14px;
 }
 
+.btnedit {
+  background: #FFF;
+  border: 1px solid #406DCD;
+  color: #406DCD;
+}
+
 /*Grid*/
 
 .listing th {
@@ -142,4 +174,11 @@ input[type=text] {
   display: inline-block;
   max-width: 200px;
   margin-right: 20px;
+}
+
+/**Company tab Nav*/
+
+.company_nav {
+  border-bottom: 1px solid #E6EEFF;
+  margin-bottom: 16px;
 }

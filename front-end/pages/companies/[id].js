@@ -16,7 +16,7 @@ const CompanyDetails = ({ data }) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    console.warn(data);
+    console.log(data);
     const router = useRouter()
     const { id } = router.query
     Cookies.set('company_id', data?._id)
@@ -24,39 +24,36 @@ const CompanyDetails = ({ data }) => {
 
         <>
             <Header />
-            <Button variant="primary" onClick={handleShow}>
-                Launch demo modal
-            </Button>
-
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
             <div>
-                <div>
-                    Breadcrumb: <Link href="/companies"><a className="nav-link">Companies</a></Link>  &gt; {data?._id}
+
+                <div className="breadcrumb">
+                    <ul className=" me-auto mb-2 mb-lg-0">
+                        <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
+                        <li>{data?.company_name}</li>
+                    </ul>
                 </div>
+
 
                 <TabButton id={data?._id} />
                 <div className="company_wrap">
-                    <Link href="#"><a className="nav-link edit_company">Edit Company</a></Link>
-                    _id: {data?._id}<br />
-                    website: {data?.website}<br />
-                    {/* domain: {data?.domain}<br /> */}
-                    email_id: {data?.email_id}<br />
-                    phone_number: {data?.phone_number?.country_code} - {data?.phone_number?.phone_number}<br />
-                    <Address address={data?.address} />
+                    <Link href={{
+                        pathname: `/companies/edit-companies/[title]`,
+                        query: {
+                            title: data?._id, // should be `title` not `id`
+                        },
+                    }}
+                        as={`/companies/edit-companies/${data?._id}`}
+                    ><a className="btn btnedit edit_company">Edit Company</a></Link>
+                    <h4>{data?.company_name}</h4>
+                    <div className="cwebsite data_block"><a href={data?.website} target="_blank">{data?.website}</a></div>
+                    <div className="cemail data_block"><a href={`mailto:${data?.website}`} target="_blank">{data?.website}</a></div>
+                    <div className="cphone data_block">{data?.phone_number?.country_code} - {data?.phone_number?.phone_number}</div>
+                    <div className="caddress data_block">
+                        <Address address={data?.address} />
+                    </div>
+                    <div>
+                    <span>Langauge</span> <strong></strong>
+                    </div>
                     is_active: {data?.is_active}<br />
                 </div>
                 <h2>Sub Companies</h2>
