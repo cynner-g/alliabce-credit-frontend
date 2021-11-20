@@ -37,7 +37,7 @@ const Header = () => {
                 </div>
                 <div className="col">
                     <div className="user_nav pull-right">
-                        <div className="hello pull-right">Hello User full Name</div>
+                        <div className="hello pull-right">Hello {Cookies.get('name')}</div>
                         <div className="dropdown pull-right">
                             <a className="nav-link dropdown-toggle" href="#" id="dropdownMenuButton1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
@@ -48,10 +48,13 @@ const Header = () => {
                                     <>
                                         <li><a className="dropdown-item" onClick={() => {
                                             Cookies.remove('token');
+                                            Cookies.remove('role')
+                                            Cookies.remove('userid')
+                                            Cookies.remove('name')
                                             router.push('/');
                                         }
                                         }>Logout</a></li>
-                                        <li><a className="dropdown-item" href="#">My Account</a></li>
+                                        <li><a className="dropdown-item" href="/account">My Account</a></li>
                                     </>
                                     :
                                     <li><a className="dropdown-item" href="#">Action</a></li>

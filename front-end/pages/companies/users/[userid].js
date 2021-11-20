@@ -209,7 +209,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                     </div>
                     <div className="col  text-end">
                         <select  className="form-select role">
-                            <option>Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                            <option value="user-manager">User Manager</option>
                         </select>
                         <select  className="form-select f1">
                             <option>Company Access</option>
@@ -284,6 +286,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         <label htmlFor="portal_language" className="form-label">Role</label>
                         <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
                             <option selected>Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
                         </select>
 

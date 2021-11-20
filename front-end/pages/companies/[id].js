@@ -37,12 +37,12 @@ const CompanyDetails = ({ data }) => {
                 <TabButton id={data?._id} />
                 <div className="company_wrap">
                     <Link href={{
-                        pathname: `/companies/edit-companies/[title]`,
+                        pathname: `/companies/edit/[title]`,
                         query: {
                             title: data?._id, // should be `title` not `id`
                         },
                     }}
-                        as={`/companies/edit-companies/${data?._id}`}
+                        as={`/companies/edit/${data?._id}`}
                     ><a className="btn btnedit edit_company">Edit Company</a></Link>
                     <h4>{data?.company_name}</h4>
                     <div className="cwebsite data_block"><a href={data?.website} target="_blank">{data?.website}</a></div>
