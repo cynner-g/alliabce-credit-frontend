@@ -6,13 +6,17 @@ import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
+import UserSidebar from "../../../components/user_sidebar"
+import TabButtonUser from "../../../components/tabbuttonuser"
 
 
-const Users = ({ data, page, totalPage, query, companiesData }) => {
+const Users = ({ data, listUsers }) => {
 
     const router = useRouter()
-    const limit = 3
-    const lastPage = Math.ceil(totalPage / limit)
+    // const limit = 3
+    // const lastPage = Math.ceil(totalPage / limit)
+    // console.log(data)
+    // console.log(listUsers)
 
     /**
      * Manage states
@@ -199,70 +203,83 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     return (
         <>
             <Header />
-
-            <div className="seaarch">
+            <div className="container">
                 <div className="row">
+                    <div className="col-3">
+                        <UserSidebar data={data} />
+                    </div>
                     <div className="col">
+                        <TabButtonUser id={data?._id} />
+                        <div className="seaarch">
+                            <div className="row">
+                                <div className="col">
 
-                        <input type="text" className="form-control" id="companysearch" placeholder="Search" />
-                        <label htmlFor="companysearch" className="form-label">Search</label>
-                    </div>
-                    <div className="col  text-end">
-                        <select  className="form-select role">
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            <option value="user-manager">User Manager</option>
-                        </select>
-                        <select  className="form-select f1">
-                            <option>Company Access</option>
-                        </select>
-                        <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
+                                    <input type="text" className="form-control" id="companysearch" placeholder="Search" />
+                                    <label htmlFor="companysearch" className="form-label">Search</label>
+                                </div>
+                                <div className="col  text-end">
+                                    <select className="form-select role">
+                                        <option value="user">User</option>
+                                        <option value="user-manager">User Manager</option>
+                                    </select>
+                                    <select className="form-select f1">
+                                        <option>Company Access</option>
+                                    </select>
+                                    <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
 
-                    </div>
-                </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div className="listing">
-                <table id="example" className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th><div>User Name</div></th>
-                            <th><div>Date Added</div></th>
-                            <th><div>Email</div></th>
-                            <th><div>Role</div></th>
-                            <th><div>Company Access</div></th>
-                            <th><div>Actions</div></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.data?.map((item) => (
+                        <div className="listing">
+                            <table id="example" className="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th><div>User Name1111</div></th>
+                                        <th><div>Date Added</div></th>
+                                        <th><div>Email</div></th>
+                                        <th><div>Role</div></th>
+                                        <th><div>Company Access</div></th>
+                                        <th><div>Actions</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {listUsers?.map((item) => (
 
 
-                            <tr>
-                                <td>{item.full_name}</td>
-                                <td>{item.date_added}</td>
-                                <td>{item.email_id}</td>
-                                <td>{item.display_user_role}</td>
-                                <td>{item.full_name}</td>
-                                <td>
-                                    <>
-                                        <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
-                                        <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
-                                        {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
+                                        <tr>
+                                            <td>{item.full_name}</td>
+                                            <td>{item.date_added}</td>
+                                            <td>{item.email_id}</td>
+                                            <td>{item.display_user_role}</td>
+                                            <td>{item.full_name}</td>
+                                            <td>
+                                                <>
+                                                    {/* <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp; */}
+                                                    <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
+                                                    {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
                                     {user.isDeleting 
                                         ? <span className="spinner-border spinner-border-sm"></span>
                                         : <span>Delete</span>
                                     }
                                 </button> */}
-                                        <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp;
-                                    </>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                                                    {/* <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp; */}
+                                                </>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
+
+
+
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEdit == false
@@ -294,7 +311,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         <div>
                             <label htmlFor="groups" className="form-label">Add to group</label>
                             <>
-                                {companiesData?.map((item) => (
+
+
+                                {data?.child_companies?.map((item) => (
                                     <div className="form-check">
                                         <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
                                         <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
@@ -338,7 +357,7 @@ export async function getServerSideProps(ctx) {
     // const start = +page === 1 ? 0 : (+page + 1)
 
     // const { locale, locales, defaultLocale, asPath } = useRouter();
-    const { token } = parseCookies(ctx)
+    const { token, userid } = parseCookies(ctx)
     const query = ctx.query;
 
     if (!token) {
@@ -349,7 +368,8 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
-    const res = await fetch(`${process.env.API_URL}/user/list-user`, {
+
+    const res = await fetch(`${process.env.API_URL}/user/user-details`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -357,39 +377,44 @@ export async function getServerSideProps(ctx) {
         body: JSON.stringify({
             "language": 'en',
             "api_token": token,
-            "company_id": query.userid
+            "user_id": userid
         })
 
     })
-    const users = await res.json()
-    // console.log(users)
-    if (!users) {
+
+    const data = await res.json()
+
+    const resuser = await fetch(`${process.env.API_URL}/user/list-associate-user`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+
+    })
+    const users1 = await resuser.json()
+
+    if (!users1) {
         return {
             notFound: true,
         }
     }
-    const resCompanies = await fetch(`${process.env.API_URL}/company/list-companies`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-        })
 
-    })
-    const resCompaniesData = await resCompanies.json()
+
+
+
+
+
     /** 
      * limit, start, search item
      */
     return {
         props: {
-            data: users,
-            page: 1,
-            totalPage: 1,
-            query,
-            companiesData: resCompaniesData?.data
+            data: data?.data || [],
+            listUsers: users1?.data,
         }
     }
 

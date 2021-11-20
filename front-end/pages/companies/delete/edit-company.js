@@ -1,6 +1,6 @@
-import Header from "../../components/header"
+import Header from "../../../components/header"
 import { useRouter } from "next/router"
-import Pagination from "../../components/datatable/pagination"
+import Pagination from "../../../components/datatable/pagination"
 import { useState } from 'react'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
@@ -239,9 +239,9 @@ const editCompany = ({ industry, group, pricing, data }) => {
                         <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
                         <select className="form-select form-select-sm" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
                             <option selected>Pricing Chart</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {pricing?.data.map((item) => (
+                                <option value={item._id}>{item.name}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -335,17 +335,17 @@ export async function getServerSideProps(ctx) {
     })
     const group = await resGroup.json()
 
-    // const resPricing = await fetch(`${process.env.API_URL}/group/list`, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //         "language": 'en',
-    //         "api_token": token,
-    //     })
-    // })
-    // const pricing = await resPricing.json()
+    const resPricing = await fetch(`${process.env.API_URL}/pricing/list`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+    })
+    const pricing = await resPricing.json()
 
     const companyID = ctx.params.id
 
@@ -370,7 +370,7 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: [],
+            pricing,
             data
         }
     }

@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 import Header from "../../../components/header"
 
-const editCompanies = ({ industry, group, pricing, data }) => {
+const editCompanies = ({ industry, group, pricing, data, companyID }) => {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -19,15 +19,18 @@ const editCompanies = ({ industry, group, pricing, data }) => {
 
     console.log(data)
     const [formStatus, setFormStatus] = useState(false);
+
+
     const [query, setQuery] = useState({
         // company_logo_en: "",
         // company_logo_fr: "",
+        company_id: companyID,
         company_name_en: data.company_name,
         company_name_fr: data.company_name,
         website: data.website,
         domain: data.domain,
         email_id: data.email_id,
-        country_code: data.country_code,
+        country_code: data.country_code || "",
         phone_number: data.phone_number.phone_number,
         address_line: data.address.address_line,
         state: data.address.state_name,
@@ -49,14 +52,17 @@ const editCompanies = ({ industry, group, pricing, data }) => {
 
 
     const handleFileChangeen = () => (e) => {
-        console.warn(e.target.files[0])
+        console.log(e.target.files[0])
+        if (e.target.files) {
+            setCompany_logo_en(JSON.stringify(e.target.files[0]));
+        }
 
-        setCompany_logo_en(e.target.files[0]);
     };
 
     const handleFileChangefr = () => (e) => {
-
-        setcompany_logo_fr(e.target.files[0])
+        if (e.target.files) {
+            setcompany_logo_fr(JSON.stringify(e.target.files[0]))
+        }
     };
 
     const handleChange = () => (e) => {
@@ -74,7 +80,7 @@ const editCompanies = ({ industry, group, pricing, data }) => {
         console.log(query);
         // e.preventDefault();
         const token = Cookies.get('token');
-        if (!token) {
+        if (!token || (companyID === "")) {
             return {
                 redirect: {
                     destination: '/',
@@ -83,37 +89,40 @@ const editCompanies = ({ industry, group, pricing, data }) => {
             }
         }
 
+        let data1 = new FormData();
+        // data1.append('company_logo_en', company_logo_en);
+        // data1.append('company_logo_fr', company_logo_fr);
+        data1.append('company_name_en', query.company_name_en);
+        data1.append('company_name_fr', query.company_name_fr);
+        data1.append('website', query.website);
+        data1.append('domain', query.domain);
+        data1.append('email_id', query.email_id);
+        data1.append('phone_number', query.phone_number);
+        data1.append('address_line', query.address_line);
+        data1.append('state', query.state);
+        data1.append('city', query.city);
+        data1.append('zip_code', query.zip_code);
+        data1.append('portal_language', query.portal_language);
+        data1.append('industry_id', query.industry_id);
+        data1.append('pricing_chart_id', query.pricing_chart_id);
+        data1.append('bank_report_count', query.bank_report_count);
+        data1.append('suppliers_report_count', query.suppliers_report_count);
+        data1.append('watchlist_count', query.watchlist_count);
+        data1.append('company_in_watchlist_count', query.company_in_watchlist_count);
+        data1.append('quick_report_price', query.quick_report_price);
+        data1.append('aging_discount', query.aging_discount);
+        data1.append('language', 'en');
+        data1.append('api_token', token);
+        data1.append('company_logo_en', company_logo_en);
+        data1.append('company_logo_fr', company_logo_fr);
+        data1.append('country_code', query.country_code);
+        data1.append('groups', query.groups);
+        data1.append('is_active', query.is_active);
+        data1.append('company_id', companyID);
 
-        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/update-company`, {
+        const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/company/update-company`, {
             method: "POST",
-
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "company_logo_en": company_logo_en,
-                "company_logo_fr": company_logo_fr,
-                "company_name_en": query.company_name_en,
-                "company_name_fr": query.company_name_fr,
-                "website": query.website,
-                "domain": query.domain,
-                "email_id": query.email_id,
-                "country_code": query.country_code,
-                "phone_number": query.phone_number,
-                "address_line": query.address_line,
-                "state": query.state,
-                "city": query.city,
-                "zip_code": query.zip_code,
-                "portal_language": query.portal_language,
-                "industry_id": query.industry_id,
-                "groups": query.groups,
-                "pricing_chart_id": query.pricing_chart_id,
-                "bank_report_count": query.bank_report_count,
-                "suppliers_report_count": query.suppliers_report_count,
-                "watchlist_count": query.watchlist_count,
-                "company_in_watchlist_count": query.company_in_watchlist_count,
-                "quick_report_price": query.quick_report_price,
-                "aging_discount": query.aging_discount,
-            })
+            body: data1
         })
 
         const res2 = await addCompanyDB.json();
@@ -249,9 +258,9 @@ const editCompanies = ({ industry, group, pricing, data }) => {
                         <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
                         <select className="form-select form-select-sm" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
                             <option selected>Pricing Chart</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {pricing?.data.map((item) => (
+                                <option value={item._id}>{item.name}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -345,17 +354,17 @@ export async function getServerSideProps(ctx) {
     })
     const group = await resGroup.json()
 
-    // const resPricing = await fetch(`${process.env.API_URL}/group/list`, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //         "language": 'en',
-    //         "api_token": token,
-    //     })
-    // })
-    // const pricing = await resPricing.json()
+    const resPricing = await fetch(`${process.env.API_URL}/pricing/list`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+    })
+    const pricing = await resPricing.json()
 
     const companyID = ctx.query.title
 
@@ -380,8 +389,9 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: [],
-            data: data?.data || []
+            pricing: pricing || {},
+            data: data?.data || [],
+            companyID
         }
     }
 

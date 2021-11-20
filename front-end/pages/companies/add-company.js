@@ -87,40 +87,45 @@ const addCompany = ({ industry, group, pricing }) => {
         }
 
 
-        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/add-company`, {
-            method: "POST",
+        let data = new FormData();
+        data.append('company_logo_en', company_logo_en);
+        data.append('company_logo_fr', query.company_logo_fr);
+        data.append('company_name_en', query.company_name_en);
+        data.append('company_name_fr', query.company_name_fr);
+        data.append('website', query.website);
+        data.append('domain', query.domain);
+        data.append('email_id', query.email_id);
+        data.append('phone_number', query.phone_number);
+        data.append('address_line', query.address_line);
+        data.append('state', query.state);
+        data.append('city', query.city);
+        data.append('zip_code', query.zip_code);
+        data.append('portal_language', query.portal_language);
+        data.append('industry_id', query.industry_id);
+        data.append('pricing_chart_id', query.pricing_chart_id);
+        data.append('bank_report_count', query.bank_report_count);
+        data.append('suppliers_report_count', query.suppliers_report_count);
+        data.append('watchlist_count', query.watchlist_count);
+        data.append('company_in_watchlist_count', query.company_in_watchlist_count);
+        data.append('quick_report_price', query.quick_report_price);
+        data.append('aging_discount', query.aging_discount);
+        data.append('language', 'en');
+        data.append('api_token', token);
+        data.append('company_logo_en', company_logo_en);
+        data.append('company_logo_fr', company_logo_fr);
+        data.append('country_code', query.country_code);
+        data.append('groups', query.groups);
 
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "company_logo_en": company_logo_en,
-                "company_logo_fr": company_logo_fr,
-                "company_name_en": query.company_name_en,
-                "company_name_fr": query.company_name_fr,
-                "website": query.website,
-                "domain": query.domain,
-                "email_id": query.email_id,
-                "country_code": query.country_code,
-                "phone_number": query.phone_number,
-                "address_line": query.address_line,
-                "state": query.state,
-                "city": query.city,
-                "zip_code": query.zip_code,
-                "portal_language": query.portal_language,
-                "industry_id": query.industry_id,
-                "groups": query.groups,
-                "pricing_chart_id": query.pricing_chart_id,
-                "bank_report_count": query.bank_report_count,
-                "suppliers_report_count": query.suppliers_report_count,
-                "watchlist_count": query.watchlist_count,
-                "company_in_watchlist_count": query.company_in_watchlist_count,
-                "quick_report_price": query.quick_report_price,
-                "aging_discount": query.aging_discount,
-            })
+        const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/company/add-company`, {
+            method: "POST",
+            headers: {
+                contentType: false,
+            },
+            body: data,
         })
 
         const res2 = await addCompanyDB.json();
-        
+
         if (res2.status_code == 403) {
             setShow(false);
             alert("Error ");
@@ -129,7 +134,7 @@ const addCompany = ({ industry, group, pricing }) => {
         } else {
             setShow(false);
         }
-        
+
     }
 
 
@@ -210,7 +215,7 @@ const addCompany = ({ industry, group, pricing }) => {
 
                     <div>
                         <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                        <select className="form-select form-select-sm" name="portal_language" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
+                        <select className="form-select" name="portal_language" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
                             <option selected>Select Language</option>
                             <option value="en">English</option>
                             <option value="fr">French</option>
@@ -218,7 +223,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     </div>
                     <div>
                         <label htmlFor="industry_id" className="form-label">Industry</label>
-                        <select className="form-select form-select-sm" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
+                        <select className="form-select" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
                             <option selected>Open this select menu</option>
                             {industry?.data.map((item) => (
                                 <option value={item._id}>{item.name}</option>
@@ -243,11 +248,11 @@ const addCompany = ({ industry, group, pricing }) => {
                     <h3>Configurations</h3>
                     <div>
                         <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
-                        <select className="form-select form-select-sm" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
+                        <select className="form-select" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
                             <option selected>Pricing Chart</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            {pricing?.data.map((item) => (
+                                <option value={item._id}>{item.name}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -341,17 +346,17 @@ export async function getServerSideProps(ctx) {
     })
     const group = await resGroup.json()
 
-    // const resPricing = await fetch(`${process.env.API_URL}/group/list`, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //         "language": 'en',
-    //         "api_token": token,
-    //     })
-    // })
-    // const pricing = await resPricing.json()
+    const resPricing = await fetch(`${process.env.API_URL}/pricing/list`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+    })
+    const pricing = await resPricing.json()
 
 
     /** 
@@ -361,7 +366,7 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: []
+            pricing
         }
     }
 

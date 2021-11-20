@@ -15,6 +15,7 @@ const Header = () => {
     } else {
         user = false
     }
+    const myRole = Cookies.get('role');
     return (
         <header>
             <div className="row">
@@ -24,11 +25,13 @@ const Header = () => {
                         <ul className=" me-auto mb-2 mb-lg-0">
                             {/*  */}
                             <li><Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports"><a className="nav-link">Credit Reports</a></Link></li>
-                            <li><Link activeClassName={router.pathname === "/database-reports"} href="/companies"><a className="nav-link">Companies</a></Link></li>
+                            {myRole == 'admin' ?
+                                <li><Link activeClassName={router.pathname === "/database-reports"} href="/companies"><a className="nav-link">Companies</a></Link></li>
+                                : ''}
                             <li><Link activeClassName={router.pathname === "/database-reports"} href="/groups"><a className="nav-link">Groups</a></Link></li>
                             <li><Link activeClassName={router.pathname === "/database-reports"} href="/legal-uploads"><a className="nav-link">Legal Uploads</a></Link></li>
                             {/* User */}
-                            {/* <li class="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
+                            {/* <li className="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist"><a className="nav-link">Legal Watch list</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/aging"} href="/aging"><a className="nav-link">Aging</a></Link></li> */}
 
@@ -37,7 +40,7 @@ const Header = () => {
                 </div>
                 <div className="col">
                     <div className="user_nav pull-right">
-                        <div className="hello pull-right">Hello User full Name</div>
+                        <div className="hello pull-right">Hello {Cookies.get('name')}</div>
                         <div className="dropdown pull-right">
                             <a className="nav-link dropdown-toggle" href="#" id="dropdownMenuButton1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
@@ -48,10 +51,14 @@ const Header = () => {
                                     <>
                                         <li><a className="dropdown-item" onClick={() => {
                                             Cookies.remove('token');
+                                            Cookies.remove('role')
+                                            Cookies.remove('userid')
+                                            Cookies.remove('name')
+                                            Cookies.remove('company_id')
                                             router.push('/');
                                         }
                                         }>Logout</a></li>
-                                        <li><a className="dropdown-item" href="#">My Account</a></li>
+                                        <li><a className="dropdown-item" href="/account">My Account</a></li>
                                     </>
                                     :
                                     <li><a className="dropdown-item" href="#">Action</a></li>
