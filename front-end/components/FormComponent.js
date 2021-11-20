@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
-import { Control, LocalForm } from 'react-redux-form';
 import { Col, Row, Collapse } from 'react-bootstrap';
-import '../../shared/styles/form.css';
 
 /*
 List of form options.  Pass data in as JSON array in the style:
@@ -29,164 +26,109 @@ Available row controls are:
 'CheckCollapse'
 'NumberRow'
 'SubmitButton'
-'TextArea'
+'TextArea',
+'LinkButton',
+'Header'
 */
 
 
 
 
-class FormComponent extends Component {
+export class FormComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            openState:{}
+            openState: {}
         }
     }
 
-    buildTextRow = (params, index) => {
-        // let requiredText = (params, index) => {return 'A ' + title + ' is required' };
-        // let minText = (params, index) => {return title + ' must be greater than ' + minLength + ' characters' };
-        // let maxText = (params, index) => {return title + ' must be greater than ' + maxLength + ' characters' };
-
-        // let model =data +  '.' + params.model;
-        let model = `${params.model}`
+    buildTextRow = (column, index) => {
+        console.log("Text Col: ", column)
         return (
-            <Row className="form-group" key={index}>
-                <Col className='formCol formLabel' md={{ size: 2, offset: 1 }}>
-                    {params.title}
-                </Col>
-                <Col className='formCol formContent' md={{ size: 5 }}>
-                    <Control.Text className='formText form-control'
-                        model={model}
-                        placeholder={params.title}
-                    />
-                </Col>
-
-                <Col className='formCol' md={{ size: 3 }}>
-                    {/*
-               <Errors
-                    className="text-danger"
-                    model={modelName}
-                    show="touched"
-                    messages={{
-                        required:  requiredText() 
-                        , minLength:  minText() 
-                        , maxLength:  maxText() 
-                    }}
-                /> 
-                 */}
-                </Col>
-
-            </Row>
-        );
+            <Col className='formCol formContent' key={index}>
+                {column.title}
+                <input type='text' className='formText form-control'
+                    model={column.params.model}
+                    placeholder={column.title}
+                />
+            </Col>
+        )
     }
 
-
-
-    buildDateRow = (params, index) => {
-        let model = `${params.model}`;
+    buildDateRow = (col, index) => {
+        let model = `${col.params.model}`;
         return (
-            <Row className="form-group" key={index}>
-                <Col className='formCol' md={{ size: 2, offset: 1 }}>
-                    {params.title}
-                </Col>
-                <Col className='formCol' md={{ size: 5 }}>
-                    <Control type='date' className='formText' model={model} />
-                </Col>
-                <Col className='formCol' md={{ size: 3 }}>
-                    {/* <Errors
-                    className="text-danger"
+            <Col className='formCol' key={index}>
+                {params.title}
+
+                <input type='date' className='formTextDate' model={model} />
+            </Col>
+        )
+    }
+
+    buildNumberRow = (col, index) => {
+        let model = `${col.params.model}`;
+        return (
+            <Col className='formCol' key={index}>
+                {col.title}
+                <input type='number' className='formTextNumber'
                     model={model}
-                    show="touched"
-                    messages={{
-                        required: { required }
+                    min={col.params.minVal}
+                    max={col.params.maxVal}
+                />
+            </Col>
 
-                    }}
-                /> */}
-                </Col>
-            </Row >
         )
     }
 
-    buildNumberRow = (params, index) => {
-        let model = `${params.model}`;
+    buildTextArea = (col, index) => {
+        let model = `${col.params.model}`;
         return (
-            <Row className="form-group" key={index}>
-                <Col className='formCol' md={{ size: 2, offset: 1 }}>
-                    {params.title}
 
-                </Col>
-                <Col className='formCol' md={{ size: 5 }}>
-                    <Control type='number' className='formText'
-                        model={model}
-                        min={params.minVal}
-                        max={params.maxVal}
-                    />
-                </Col>
-                <Col className='formCol' md={{ size: 3 }}></Col>
-            </Row >
+            <Col className='formCol formTextArea' md={{ size: 7 }}>
+                {col.title}
+                <textarea
+                    rows={col.params.rows || 5}
+                    cols={col.params.cols || 50}
+                    model={model}
+                />
+            </Col>
         )
     }
 
-    buildTextArea = (params, index) => {
-        let model = `${params.model}`;
+    buildSubmitButton = (col, index) => {
         return (
-            <Row className="form-group" key={index}>
-                <Col className='formCol' md={{ size: 2, offset: 1 }}>
-                    {params.title}
-
-                </Col>
-                <Col className='formCol' md={{ size: 7 }}>
-                    <Control.Textarea
-                        rows={params.rows || 5}
-                        cols={params.cols || 50}
-                        model={model}
-                    />
-                </Col>
-            </Row >
-        )
-    }
-
-    buildSubmitButton = (params, index) => {
-        return (
-            <Row className="form-group" key={index}>
-                <Col className='formCol' md={{ size: 2, offset: 1 }}>
-                    <button type="submit" className='formSubmit' color={params.color || "primary"}>
-                        {params.text}
-                    </button >
-                </Col>
-            </Row>
+            <Col className='formCol' md={{ size: 2, offset: 1 }} key={index}>
+                <button type="submit" className='formSubmit' color={col.params.color || "primary"} >
+                    {col.params.text}
+                </button >
+            </Col>
         );
     }
 
-    buildDropDown = (params, index) => {
-        let model = `${params.model}`;
-        if(params.placeHolder && params.options[0].value!== params.placeHolder){
-            params.options.unshift({value:params.placeHolder, id:false, disabled:true})
+    buildDropDown = (col, index) => {
+        let model = `${col.params.model}`;
+        if (col.params.placeHolder && col.params.options[0].value !== col.params.placeHolder) {
+            col.params.options.unshift({ value: col.params.placeHolder, id: false, disabled: true })
         }
         return (
-            <Row className="form-group" key={index}>
-                <Col className='formCol' md={{ size: 2, offset: 1 }}>
-                    {params.title}
-                </Col>
-                <Col className='formCol formDropdown' md={{ size: 8 }}>
-                    <Control.Select
-                        model={model}
-                        defaultValue={false}
-                    >
-                        {/* <option disabled>{params.placeHolder}</option> */}
-                        {params.options.map((option, i) => {
-                            return (
-                                <option key={i} value={option.id || option.value || null} disabled='{option.disabled?"true":"false"}'>{option.value}</option>
-                            )
-                        })}
-                    </Control.Select>
-                </Col>
-            </Row >
+            <Col className='formCol formDropdown' >
+                {col.title}
+                <select
+                    model={model}
+                    defaultValue={false}
+                >
+                    {col.params.options.map((option, i) => {
+                        return (
+                            <option key={i} value={option.id || option.value || null} disabled='{option.disabled?"true":"false"}'>{option.value}</option>
+                        )
+                    })}
+                </select>
+            </Col>
         )
     }
 
-    buildCheckBox = (params, index, addRow = true) => {
+    buildCheckBox = (params, index) => {
         let model = params.model ? params.model : "propertyName_" + Math.random();
         model = `${model}`;
         //chenerate a unique id for the label to match the checkbox.  Index doesn't work.
@@ -197,20 +139,11 @@ class FormComponent extends Component {
         let ret = (
             <Col className='formCol formCheckContainer' md={{ offset: 1 }}>
                 <label htmlFor={chkId}>{text}</label>
-                <Control.Checkbox id={chkId} className='formCheckbox'
+                <input type='checkbox' id={chkId} className='formCheckbox'
                     model={model} onClick={(e) => { this.handleCheck(e, params.clickParameters) }} />
             </Col>
         )
-
-        if (addRow)
-            return (
-                <Row className="form-group" key={index}>
-                    {ret}
-                </Row>
-            );
-        else
-            return ret;
-
+        return ret;
     }
 
     buildCheckCollapse = (props, index) => {
@@ -235,7 +168,7 @@ class FormComponent extends Component {
 
 
                 {/* {this.buildCheckBox({ title: params.title, clickParameters: params.id, clickFn: params.toggle, model: params.id }, index, false)} */}
-                <Col className='formCol' md={{ size: 8 }}>
+                <Col className='formCol' >
                     <Collapse in={open[params.id]}>
                         <div className='formCollapse'>
                             {this.buildRows(params.rows)}
@@ -246,44 +179,104 @@ class FormComponent extends Component {
         )
     }
 
-    buildDiv = (params, index) => {
+    buildDiv = (col, index) => {
         return (
-            <div className={params.divclassData}>
-                {this.buildRows(params.divrows)}
+            <div className={col.params.divclassData}>
+                {this.buildRows(col.params.divrows)}
             </div>
         )
     }
 
-    buildRows = (rows) => {
+    buildLinkButton = (col, index) => {
         return (
-            rows.map((formRow, index) => {
-                let func = null;
-                switch (formRow.fName) {
-                    case 'TextRow': func = this.buildTextRow(formRow.params, index); break;
-                    case 'CheckBox': func = this.buildCheckBox(formRow.params, index); break;
-                    case 'DateRow': func = this.buildDateRow(formRow.params, index); break;
-                    case 'Div': func = this.buildDiv(formRow.params, index); break;
-                    case 'CheckCollapse': func = this.buildCheckCollapse(formRow.params, index); break;
-                    case 'NumberRow': func = this.buildNumberRow(formRow.params, index); break;
-                    case 'SubmitButton': func = this.buildSubmitButton(formRow.params, index); break;
-                    case 'TextArea': func = this.buildTextArea(formRow.params, index); break;
-                    case 'DropDown': func = this.buildDropDown(formRow.params, index); break;
-                    default: func = <div key={index}>{formRow.fName}<br />{JSON.stringify(formRow)}</div>
-                }
-                return func;
-            })
+            <Col className='formCol' key={index}>
+                <button className="btn btn-outline-primary formLinkButton" onClick={() => col.params.onClick()} key={index}>
+                    {col.Text}
+                </button>
+            </Col>
         )
     }
+    buildHeader = (col, index) => {
+
+        switch (col.params.size) {
+            case 1:
+                return (<Col className='formCol formHeader' sm={col.length / 12}>
+                    <h1>
+                        {col.title}
+                    </h1>
+                </Col>)
+                break;
+            case 2:
+                return (<Col className='formCol formHeader' sm={col.length / 12}>
+                    <h2>
+                        {col.title}
+                    </h2>
+                </Col>)
+                break;
+            case 3:
+                return (<Col className='formCol formHeader' sm={col.length / 12}>
+                    <h3>
+                        {col.title}
+                    </h3>
+                </Col>)
+                break;
+            case 4:
+                return (<Col className='formCol formHeader' sm={col.length / 12}>
+                    <h4>
+                        {col.title}
+                    </h4>
+                </Col>)
+                break;
+            case 5:
+                return (<Col className='formCol formHeader' sm={col.length / 12}>
+                    <h5>
+                        {col.title}
+                    </h5>
+                </Col>)
+                break;
+        }
+
+
+    }
+
+    buildRows = (rows) => {
+        let Rows = [];
+        // loop through each row
+        rows.forEach((formRow, idx) => {
+            //loop through each column in that row
+            let cols = [];
+            formRow.row.forEach((col, index) => {
+                switch (col.params.fName) {
+                    case 'TextRow': console.log("Text"); cols.push(this.buildTextRow(col, index)); break;
+                    case 'CheckBox': cols.push(this.buildCheckBox(col, index)); break;
+                    case 'DateRow': cols.push(this.buildDateRow(col, index)); break;
+                    case 'Div': cols.push(this.buildDiv(col, index)); break;
+                    case 'CheckCollapse': cols.push(this.buildCheckCollapse(col, index)); break;
+                    case 'NumberRow': cols.push(this.buildNumberRow(col, index)); break;
+                    case 'SubmitButton': cols.push(this.buildSubmitButton(col, index)); break;
+                    case 'TextArea': cols.push(this.buildTextArea(col, index)); break;
+                    case 'DropDown': cols.push(this.buildDropDown(col, index)); break;
+                    case 'LinkButton': cols.push(this.buildLinkButton(col, index)); break;
+                    case 'Header': cols.push(this.buildHeader(col, index)); break;
+                    default: cols.push(<div key={index}>{col.fName}<br />{JSON.stringify(col)}</div>); break;
+                }
+            })
+            Rows.push(<Row className='form-group' key={idx}>{cols}</Row>)
+        })
+        return Rows;
+    }
+
+
 
     handleSubmit(values) {
         let data = values;
         this.props.submit(data);
     }
 
-    handleCheck(e, id){
+    handleCheck(e, id) {
         console.log(id)
         let open=this.state.openState;
-        open[id]=e.target.checked;
+        open[id] = e.target.checked;
         console.log(open);
         this.setState({ openState: open });
     }
@@ -291,16 +284,15 @@ class FormComponent extends Component {
     render() {
         return (
             <div className='formContainer'>
-                <LocalForm
+                <form
                     className='formRoot'
                     model='MetFormData'
                     onSubmit={(values) => this.handleSubmit(values)}
                 >
                     {this.buildRows(this.props.rows)}
-                </LocalForm>
+                </form>
             </div>
         )
     }
 }
 
-export default FormComponent;
