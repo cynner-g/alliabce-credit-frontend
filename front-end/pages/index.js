@@ -54,8 +54,8 @@ export default function Login(props) {
       setloginMessage("");
       Cookies.set('token', res2?.data?.auth_token)
       Cookies.set('role', res2?.data?.user_role)
-      Cookies.set('userid', res2?.data?.user_role)
-      Cookies.set('name', res2?.data?.user_role)
+      Cookies.set('userid', res2?.data?.id)
+      Cookies.set('name', res2?.data?.full_name)
       router.push('/credit-reports')
     } else {
       setloginMessage("Ajax fails");

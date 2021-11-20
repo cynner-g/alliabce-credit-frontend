@@ -15,6 +15,7 @@ const Header = () => {
     } else {
         user = false
     }
+    const myRole = Cookies.get('role');
     return (
         <header>
             <div className="row">
@@ -24,11 +25,13 @@ const Header = () => {
                         <ul className=" me-auto mb-2 mb-lg-0">
                             {/*  */}
                             <li><Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports"><a className="nav-link">Credit Reports</a></Link></li>
-                            <li><Link activeClassName={router.pathname === "/database-reports"} href="/companies"><a className="nav-link">Companies</a></Link></li>
+                            {myRole == 'admin' ?
+                                <li><Link activeClassName={router.pathname === "/database-reports"} href="/companies"><a className="nav-link">Companies</a></Link></li>
+                                : ''}
                             <li><Link activeClassName={router.pathname === "/database-reports"} href="/groups"><a className="nav-link">Groups</a></Link></li>
                             <li><Link activeClassName={router.pathname === "/database-reports"} href="/legal-uploads"><a className="nav-link">Legal Uploads</a></Link></li>
                             {/* User */}
-                            {/* <li class="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
+                            {/* <li className="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist"><a className="nav-link">Legal Watch list</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/aging"} href="/aging"><a className="nav-link">Aging</a></Link></li> */}
 
@@ -51,6 +54,7 @@ const Header = () => {
                                             Cookies.remove('role')
                                             Cookies.remove('userid')
                                             Cookies.remove('name')
+                                            Cookies.remove('company_id')
                                             router.push('/');
                                         }
                                         }>Logout</a></li>
