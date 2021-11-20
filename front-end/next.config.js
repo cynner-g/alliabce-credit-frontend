@@ -11,5 +11,10 @@ module.exports = {
      */
     defaultLocale: "en",
   },
-
+  env: {
+    API_URL: "https://dev.alliancecredit.ca",
+  }
 }
+
+
+
