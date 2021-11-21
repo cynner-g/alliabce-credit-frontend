@@ -13,7 +13,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "Legal Business Name",
                 'params': {
-                    'model': ".LegalBusinessName",
+                    'model': "LegalBusinessName",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -22,7 +22,7 @@ const OrderNewReport = () => {
             {
                 'title': "DBA (Doing Business As) Name",
                 'params': {
-                    'model': ".DBAName",
+                    'model': "DBAName",
                     'required': false,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -33,7 +33,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "Address",
                 'params': {
-                    'model': ".Address",
+                    'model': "Address",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -45,7 +45,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "City",
                 'params': {
-                    'model': ".City",
+                    'model': "City",
                     'required': false,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -54,7 +54,7 @@ const OrderNewReport = () => {
             {
                 'title': "State",
                 'params': {
-                    'model': ".State",
+                    'model': "State",
                     'required': false,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -63,7 +63,7 @@ const OrderNewReport = () => {
             {
                 'title': "Zip",
                 'params': {
-                    'model': ".Zip",
+                    'model': "Zip",
                     'required': false,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -81,7 +81,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "NEW (Number Entreprise Quebec) of the business",
                 'params': {
-                    'model': ".NEQ",
+                    'model': "NEQ",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -90,7 +90,7 @@ const OrderNewReport = () => {
             {
                 'title': "Business Owner name",
                 'params': {
-                    'model': ".Owner",
+                    'model': "Owner",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -101,7 +101,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "TPS de l'entreprise",
                 'params': {
-                    'model': ".TPS",
+                    'model': "TPS",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -110,7 +110,7 @@ const OrderNewReport = () => {
             {
                 'title': "TVQ de l'entreprise",
                 'params': {
-                    'model': ".TVQ",
+                    'model': "TVQ",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -127,7 +127,7 @@ const OrderNewReport = () => {
             'row': [{
                 Text: "Add Bank Account",
                 'params': {
-                    'model': ".add",
+                    'model': "add",
                     onClick: "",
                     'fName': "LinkButton"
                 }
@@ -137,7 +137,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "Bank Name",
                 'params': {
-                    'model': ".Name",
+                    'model': "Name",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -146,7 +146,7 @@ const OrderNewReport = () => {
             {
                 'title': "Bank Number",
                 'params': {
-                    'model': ".number",
+                    'model': "number",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -158,7 +158,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Account Number",
                     'params': {
-                        'model': ".Acct",
+                        'model': "Acct",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -167,7 +167,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Transit Number",
                     'params': {
-                        'model': ".Transit",
+                        'model': "Transit",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -179,7 +179,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Bank Address",
                     'params': {
-                        'model': ".Address",
+                        'model': "Address",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -188,7 +188,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Bank Unique Number",
                     'params': {
-                        'model': ".uniqueNubmer",
+                        'model': "uniqueNubmer",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -200,7 +200,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Name of Bank Manager",
                     'params': {
-                        'model': ".manager",
+                        'model': "manager",
                         'required': false,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -209,7 +209,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Bank Manager Email",
                     'params': {
-                        'model': ".mgr_email",
+                        'model': "mgr_email",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -221,7 +221,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Phone Number of Bank Manager",
                     'params': {
-                        'model': ".mgrNumber",
+                        'model': "mgrNumber",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -240,7 +240,7 @@ const OrderNewReport = () => {
             'row': [{
                 Text: "Add Supplier",
                 'params': {
-                    'model': ".add",
+                    'model': "add",
                     onClick: "",
                     'fName': "LinkButton"
                 }
@@ -250,7 +250,7 @@ const OrderNewReport = () => {
             'row': [{
                 'title': "Supplier Business Name",
                 'params': {
-                    'model': ".Name",
+                    'model': "Name",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -259,7 +259,7 @@ const OrderNewReport = () => {
             {
                 'title': "Complete Supplier Address",
                 'params': {
-                    'model': ".address",
+                    'model': "address",
                     'required': true,
                     'fName': "TextRow",
                     'defaultVal': null
@@ -271,7 +271,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Business Phone Number (supplier)",
                     'params': {
-                        'model': ".bus_number",
+                        'model': "bus_number",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -280,7 +280,7 @@ const OrderNewReport = () => {
                 {
                     'title': "Personal Phone Number (supplier)",
                     'params': {
-                        'model': ".personal_supplier_number",
+                        'model': "personal_supplier_number",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null
@@ -308,7 +308,7 @@ const OrderNewReport = () => {
 }
 
 const submit = (data) => {
-    console.log(data)
+    alert(data)
 }
 
 export default OrderNewReport;

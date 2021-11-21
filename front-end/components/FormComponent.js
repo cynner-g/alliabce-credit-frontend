@@ -38,18 +38,31 @@ export class FormComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            openState: {}
+            openState: {},
+            formData: {}
         }
     }
 
+
+
+    handleChange = (e) => {
+        console.log("Change: ", e.target.name, e.target.value.trim())
+        let data = this.state.formData;
+        data[e.target.name] = e.target.value.trim()
+        // Trimming any whitespace
+        this.setState({ formData: data });
+    };
+
+
     buildTextRow = (column, index) => {
-        console.log("Text Col: ", column)
+
         return (
             <Col className='formCol formContent' key={index}>
                 {column.title}
                 <input type='text' className='formText form-control'
-                    model={column.params.model}
+                    name={column.params.model}
                     placeholder={column.title}
+                    onChange={(e) => this.handleChange(e)}
                 />
             </Col>
         )
@@ -99,7 +112,7 @@ export class FormComponent extends Component {
     buildSubmitButton = (col, index) => {
         return (
             <Col className='formCol' md={{ size: 2, offset: 1 }} key={index}>
-                <button type="submit" className='formSubmit' color={col.params.color || "primary"} >
+                <button type="submit" className='formSubmit' color={col.params.color || "primary"}>
                     {col.params.text}
                 </button >
             </Col>
@@ -147,7 +160,6 @@ export class FormComponent extends Component {
     }
 
     buildCheckCollapse = (props, index) => {
-
 
         let params = props;
         let open = this.state.openState;
@@ -247,7 +259,7 @@ export class FormComponent extends Component {
             let cols = [];
             formRow.row.forEach((col, index) => {
                 switch (col.params.fName) {
-                    case 'TextRow': console.log("Text"); cols.push(this.buildTextRow(col, index)); break;
+                    case 'TextRow': cols.push(this.buildTextRow(col, index)); break;
                     case 'CheckBox': cols.push(this.buildCheckBox(col, index)); break;
                     case 'DateRow': cols.push(this.buildDateRow(col, index)); break;
                     case 'Div': cols.push(this.buildDiv(col, index)); break;
@@ -268,16 +280,15 @@ export class FormComponent extends Component {
 
 
 
-    handleSubmit(values) {
-        let data = values;
+    handleSubmit(e) {
+        e.preventDefault()
+        let data = this.state.formData;
         this.props.submit(data);
     }
 
     handleCheck(e, id) {
-        console.log(id)
         let open=this.state.openState;
         open[id] = e.target.checked;
-        console.log(open);
         this.setState({ openState: open });
     }
 
@@ -287,7 +298,7 @@ export class FormComponent extends Component {
                 <form
                     className='formRoot'
                     model='MetFormData'
-                    onSubmit={(values) => this.handleSubmit(values)}
+                    onSubmit={(e) => this.handleSubmit(e)}
                 >
                     {this.buildRows(this.props.rows)}
                 </form>

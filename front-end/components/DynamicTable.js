@@ -1,10 +1,9 @@
 import React, { Component, createRef } from 'react';
 import ContentEditable from 'react-contenteditable'
-import { Table, Button, Checkbox, Popup } from 'semantic-ui-react'
-import { formatDate } from '../../shared/utilityCode/UtilFunctions';
+import { Table, Button, Checkbox, Popup, Pagination } from 'semantic-ui-react'
+import { formatDate } from '../Utility/UtilFunctions';
 
-import '../../shared/styles/data.css';
-
+import '../styles/DynamicTable.module.css';
 /*
 Usage:
   <DynamicTable
@@ -13,8 +12,11 @@ Usage:
     UpdateFn={function to call for updating on blur}
     columns={Array list of all columns and details - see below}
     border={1} - required border thickness
+    selectableRows - boolean
+    striped - boolean
     title={"Title to display at top of table page"}
     CustomRowButtons={Array of buttons to place.  Contains  { onClick: this.fnName, text: "Button To Call Function text" }}
+    paging=10 - pages every 10 (or whatever #) rows
 />
 
 columns = [ {
@@ -23,7 +25,9 @@ columns = [ {
     editable: false,
     required: false,
     visible: false,
-    type: "id/number/date/increment/money/checkbox",
+    type: "id/number/date/increment/money/checkbox/link/button",
+    onClick: function(event, colName, identifier),
+    linkValue: "",
     addable: false,
     validation: //regex string for validation
     defaultVal: null
@@ -36,7 +40,8 @@ class DynamicTable extends Component {
 
         this.state = {
             sortKey: ''
-            , sortDirection: "ascending"
+            , sortDirection: "ascending",
+            currentRow: 0,
         }
         try {
             this.getRowData = this.getRowData.bind(this);
@@ -72,9 +77,11 @@ class DynamicTable extends Component {
     }
 
     renderAddableFooter = () => {
-        // try {
+        let insertRow = null;
+        let pagingRow = null;
+
         if (this.props.InsertFn) {
-            return (
+            insertTow = (
                 <Table.Row>
                     <Table.HeaderCell
                         style={{ border: this.props.border }}
@@ -178,10 +185,32 @@ class DynamicTable extends Component {
                 </Table.Row>
             )
         }
+        if (this.props.paging) {
+            let numRows = this.props.data.length;
+            let numPages = Math.ceil(numRows / +this.props.paging);
+            pagingRow = (
+                <Table.Row>
+                    <Table.HeaderCell colSpan={this.props.columns.filter(col => col.visible).length}>
+                        <Pagination
+                            boundaryRange={2}
+                            defaultActivePage={1}
+                            siblingRange={3}
+                            totalPages={numPages}
+                            onPageChange={this.changePage}
+                        />
+                    </Table.HeaderCell>
+                </Table.Row>
+            )
+        }
         // }
         // catch(ex) {
         //     console.log(ex);
         // }
+    }
+
+    changePage = (e, { activePage }) => {
+        let currentRow = +this.props.paging * (activePage - 1);
+        this.setState({ currentRow: currentRow })
     }
 
     renderFilterRow = () => {
@@ -254,12 +283,7 @@ class DynamicTable extends Component {
                         style.minWidth = column.width;
                     }
                     if (this.props.border) style.border = this.props.border;
-                    // if (column.overflowLength) {
-                    //     style.textOverflow = 'ellipsis';
-                    //     style.overflow = 'hidden';
-                    //     style.whitespace = 'normal';
 
-                    // }
                     let text = row[column.colName] ? row[column.colName].toString() : "";
                     if (text.trim() === 'null') text = "";
 
@@ -349,6 +373,23 @@ class DynamicTable extends Component {
                                 </Table.Cell>
                             )
                         }
+                        else if (column.type == "link") {
+                            ret = (
+                                <Table.Cell
+                                    key={keyName}
+                                    name={column.colName.replace(' ', '_')}
+                                    style={style}
+                                    selectable
+                                >
+                                    {/* <button type="button" className="btn btn-link" onClick={(e) => column.onClick(e, column.colName, row.id)}>
+                                        {column.linkValue}
+                                    </button> */}
+                                    <a href="#" onClick={(e) => column.onClick(e, column.colName, row.id)}>
+                                        {text}
+                                    </a>
+                                </Table.Cell>
+                            )
+                        }
                         else {
                             ret = (
                                 <Table.Cell
@@ -425,21 +466,20 @@ class DynamicTable extends Component {
 
             } else if (params.data) {
                 console.log("424 - params.data: ", params.data)
-                ret = (params.data.map((row, index) => {
+                ret = [];
+                let start = +this.state.currentRow;
+                let end = start + this.props.paging;
+                if (end >= params.data.length) { end = params.data.length };
+                for (let index = start; index < end; index++) {
+                    let row = params.data[index];
+                //ret= (params.data.map((row, index) => {
                     //make sure that each table as an id column regardless of passed in data.
                     //required for calculations, looking for 'row.id' to process in the getRowData function
                     if (!row['id']) {
                         row['id'] = id++;
                     }
-                    /*
-                    onBlur={(e) => this.getRowData(e, row.id, 'UPDATE')}
-                                                onKeyUp={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        this.getRowData(e, row.id, 'UPDATE');
-                                                    }
-                                                }}
-                    */
-                    return (
+
+                    ret.push(
                         <Table.Row
                             key={index}
                             id={'ROW__' + row.id}
@@ -460,7 +500,7 @@ class DynamicTable extends Component {
                             </Table.Cell>
                         </Table.Row>
                     )
-                }))
+                }
             }
             return ret;
         }
@@ -734,10 +774,15 @@ class DynamicTable extends Component {
             style.display = 'none';
         }
         try {
+            let striped = this.props.striped ? true : false;
+            let selectable = this.props.selectableRows ? true : false;
+            console.log('data: ', this.props.data)
+            console.log('columns: ', this.props.columns)
             return (
                 <div className='DataBox' ref='popupRef'>
                     <div className="dataTable_Title">{this.props.title || ''}</div>
-                    <Table celled striped sortable
+                    <Table celled striped={striped}
+                        selectable={selectable} sortable
                         className="dataTable_Table"
                         style={style}
                     >

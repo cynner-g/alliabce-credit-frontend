@@ -1,19 +1,84 @@
 import Header from "../../components/header"
 import { useRouter } from "next/router"
 import Pagination from "../../components/datatable/pagination"
-
+import DynamicTable from "../../components/DynamicTable"
 
 const CreditReports = ({ page, totalPage }) => {
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
 
+    let data = [{
+        Name: "Tiger Nixon",
+        Position: "System Architect",
+        Office: "Edinburgh",
+        Age: "61",
+        Start_date: "2011/04/25",
+        Salary: "$320,800",
+    }]
+
+    const handleClick = (e, colName, rowId) => {
+        alert(JSON.stringify(data[rowId]));
+
+    }
+
+    let columns = [
+        {
+            colName: "Name",
+            displayName: "Name",
+            type: "link",
+            visible: true,
+            onClick: handleClick,
+        }
+        , {
+            colName: "Position",
+            displayName: "Position",
+            visible: true
+        }
+        , {
+            colName: "Office",
+            displayName: "Office",
+            visible: true
+        }
+        , {
+            colName: "Age",
+            displayName: "Age",
+            type: "link",
+            onClick: handleClick,
+        }
+        , {
+            colName: "Start date",
+            displayName: "Start_date",
+            type: "link",
+            onClick: handleClick,
+        }
+        , {
+            colName: "Salary",
+            displayName: "Salary",
+            type: "link",
+            onClick: handleClick,
+        }
+    ]
+
     return (
         <>
             <Header />
-            Credit Reports
+            <br />
+            <DynamicTable
+                title="Credit Reports"
+                data={data}
+                columns={columns}
+                border={1}
+                selectableRows={true}
+                striped={true}
+                paging={15}
+            />
+        </>
 
-            <table id="example" className="table table-striped">
+
+    )
+
+    /* <table id="example" className="table table-striped">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -36,8 +101,8 @@ const CreditReports = ({ page, totalPage }) => {
                 </tbody>
             </table>
             <Pagination page={page} totalPage={totalPage} lastPage={lastPage} />
-        </>
-    )
+            </>
+            */
 }
 
 /**
