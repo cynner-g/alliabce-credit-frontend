@@ -776,8 +776,8 @@ class DynamicTable extends Component {
         try {
             let striped = this.props.striped ? true : false;
             let selectable = this.props.selectableRows ? true : false;
-            console.log('data: ', this.props.data)
-            console.log('columns: ', this.props.columns)
+            // console.log('data: ', this.props.data)
+            // console.log('columns: ', this.props.columns)
             return (
                 <div className='DataBox' ref='popupRef'>
                     <div className="dataTable_Title">{this.props.title || ''}</div>

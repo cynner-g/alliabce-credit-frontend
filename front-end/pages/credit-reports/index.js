@@ -1,108 +1,292 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretDown, faDownload, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { differenceInDays, formatRelative, subDays, parseISO } from 'date-fns'
+
 import Header from "../../components/header"
 import { useRouter } from "next/router"
-import Pagination from "../../components/datatable/pagination"
-import DynamicTable from "../../components/DynamicTable"
+// import Pagination from "../../components/datatable/pagination"
+// import DynamicTable from "../../components/DynamicTable"
+import { Loading } from "../../components/LoadingComponent"
+import { Table } from 'react-bootstrap';
+import { credit_report_list, cancel_credit_report } from "../../data/reports";
+import React, { Component } from 'react';
+import { tblRow } from './reportRow';
 
-const CreditReports = ({ page, totalPage }) => {
-    const router = useRouter()
-    const limit = 3
-    const lastPage = Math.ceil(totalPage / limit)
+class CreditReports extends Component {
+    constructor(props) {
+        super(props);
 
-    let data = [{
-        Name: "Tiger Nixon",
-        Position: "System Architect",
-        Office: "Edinburgh",
-        Age: "61",
-        Start_date: "2011/04/25",
-        Salary: "$320,800",
-    }]
-
-    const handleClick = (e, colName, rowId) => {
-        alert(JSON.stringify(data[rowId]));
-
+        this.state = {
+            reportList: null,
+            limit: 3,
+            lastPage: 1,
+            router: null,
+            rotation: []
+        };
     }
 
-    let columns = [
-        {
-            colName: "Name",
-            displayName: "Name",
-            type: "link",
-            visible: true,
-            onClick: handleClick,
-        }
-        , {
-            colName: "Position",
-            displayName: "Position",
-            visible: true
-        }
-        , {
-            colName: "Office",
-            displayName: "Office",
-            visible: true
-        }
-        , {
-            colName: "Age",
-            displayName: "Age",
-            type: "link",
-            onClick: handleClick,
-        }
-        , {
-            colName: "Start date",
-            displayName: "Start_date",
-            type: "link",
-            onClick: handleClick,
-        }
-        , {
-            colName: "Salary",
-            displayName: "Salary",
-            type: "link",
-            onClick: handleClick,
-        }
-    ]
-
-    return (
-        <>
-            <Header />
-            <br />
-            <DynamicTable
-                title="Credit Reports"
-                data={data}
-                columns={columns}
-                border={1}
-                selectableRows={true}
-                striped={true}
-                paging={15}
-            />
-        </>
+    componentDidMount() {
+        credit_report_list(null, null).then((data) => {
+            console.log(data)
+            this.setState({ reportList: data })
+        })
+    }
 
 
-    )
+    onClickHandler = (e, item) => {
+        let rotation = [...this.state.rotation];
+        if (rotation[item] == undefined) rotation[item] = 0;
+        rotation[item] = rotation[item] == 0 ? 180 : 0;
+        console.log(rotation);
+        this.setState({ rotation: rotation })
 
-    /* <table id="example" className="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Age</th>
-                        <th>Start date</th>
-                        <th>Salary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011/04/25</td>
-                        <td>$320,800</td>
-                    </tr>
-                </tbody>
-            </table>
-            <Pagination page={page} totalPage={totalPage} lastPage={lastPage} />
-            </>
-            */
+        let target = e.currentTarget.parentNode;
+
+        while (target.nodeName !== "TR") target = target.parentNode;
+        const hiddenElement = target.nextSibling;
+        console.log(hiddenElement)
+        hiddenElement.className.indexOf("collapse show") > -1 ? hiddenElement.classList.remove("show") : hiddenElement.classList.add("show");
+    };
+
+    tblRow = (row, index) => {
+        const getStatusCss = (code) => {
+            code = +code;
+            let css, text = "", icon = "";
+            switch (code) {
+                case -1: text = ""
+                case 1: break;
+                case 2:
+                    css = {
+                        padding: '5px',
+                        backgroundColor: "gold",
+                        alignItems: ' stretch',
+                        width: '81px',
+                        left: '6px',
+                        top: '2px',
+                        fontFamily: 'Roboto',
+                        fontStyle: 'normal',
+                        fontWeight: '500',
+                        fontSize: '14px',
+                        lineHeight: '150%',
+                        /* identical to box height, or 21px */
+                        color: '#FFFFFF'
+                    };
+                    text = "Processing";
+                    icon = "faClock"
+                    break;
+                case 3:
+                    text = "warning?????";
+                    icon = "faExclamationTriangle";
+                    break;
+                case 4: break;
+                case 5:
+                    text = "Completed";
+                    css = {
+                        width: '35px',
+                        height: '21px',
+                        left: '6px',
+                        top: '2px',
+                        fontFamily: 'Roboto',
+                        fontStyle: 'normal',
+                        fontWeight: '500',
+                        fontSize: '14px',
+                        lineHeight: '150%',
+                        color: '#388F46',
+                    }
+                    icon = "faDownload"
+                    break;
+                case 6:
+                    text = "Cancelled";
+                    break;
+                default: break;
+
+            }
+            return { css: css, text: text, icon: icon };
+        }
+
+        const getCodes = (rpts) => {
+            let incorporate = rpts.incorporate;
+            let bank = rpts.bank;
+            let legal = rpts.legal;
+            let suppliers = rpts.suppliers;
+            //not entirely necessary now....
+            let incorporateCSS = getStatusCss(incorporate.status_code);
+            let bankCSS = getStatusCss(bank.status_code);
+            let legalCSS = getStatusCss(legal.status_code);
+            let suppliersCSS = getStatusCss(suppliers.status_code);
+
+            if (incorporate.status_code >= 0) incorporateCSS.text = 'Incorporate';
+            if (bank.status_code >= 0) bankCSS.text = 'Bank';
+            if (legal.status_code >= 0) legalCSS.text = 'Legal';
+            if (suppliers.status_code >= 0) suppliersCSS.text = 'Supplier';
+
+            return {
+                incorporate: incorporateCSS,
+                bank: bankCSS,
+                legal: legalCSS,
+                suppliers: suppliersCSS,
+            }
+        }
+
+        const expand = (item) => {
+            item.icon = item.icon == 'faCaretDown' ? 'faCaretUp' : 'faCaretDown'
+        }
+
+        let refId = row.reference_id;
+        let order_date = row.order_date;
+        let order_time = row.order_time;
+        let subject_name = row.subject_name;
+        let user_name = row.user_name;
+        let company_name = row.company_name;
+        let status = getStatusCss(row.status_code)
+        let reportCodes = getCodes(row.reports);
+        let isDisabled = false
+        for (let report of row.ordered_reports) {
+            if (row.reports[report.toLowerCase()].status_code !== 5) isDisabled = true;
+        }
+
+        return (
+            <>
+                <tr key={index}>
+                    <td>{refId}</td>
+                    <td>{order_date}<br /><span className="small10">{order_time}</span></td>
+                    <td>{subject_name}</td>
+                    <td>{user_name}<br /><span className="small10">{company_name}</span></td>
+
+                    <td><div className={`status status${status.status_code}`}>{status.text}</div></td>
+                    <td><div className={`incorporate status${reportCodes.incorporate.status_code}`}>{reportCodes.incorporate.text}<FontAwesomeIcon icon={reportCodes.incorporate.icon} /></div></td>
+                    <td><div className={`bank status${reportCodes.bank.status_code}`}>{reportCodes.bank.text}<FontAwesomeIcon icon={reportCodes.bank.icon} /></div></td>
+                    <td><div className={`legal status${reportCodes.legal.status_code}`}>{reportCodes.legal.text}<FontAwesomeIcon icon={reportCodes.legal.icon} /></div></td>
+                    <td><div className={`suppliers status${reportCodes.suppliers.status_code}`}>{reportCodes.suppliers.text}<FontAwesomeIcon icon={reportCodes.suppliers.icon} /></div></td>
+                    <td>
+                        <button className="btn btn-outline-primary" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
+                    </td>
+                    <td>
+                        <FontAwesomeIcon icon={faCaretDown} style={{ transform: `rotate(${this.state.rotation[index] || 0}deg)`, height: '15px' }} onClick={(e) => this.onClickHandler(e, index)} />
+                    </td>
+                </tr>
+                <tr className="collapse" key={index + "_2"}>
+
+                    <td colSpan={10} className="comments_indent">
+                        <Table>
+                            <tbody>
+                                <tr>
+                                    <td colSpan={3}>
+                                        <button className="btn btn-outline-danger" onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={1}>
+                                        <h3>System</h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3}>
+                                        {row.comments.system.comment}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={1} className="small10">
+                                        {this.getDate(row.comments.system.create_date)}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={1}>
+                                        <h3>Alliance Credit</h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={3}>
+                                        {row.comments.custom.comment}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={1} className="small10">
+                                        {this.getDate(row.comments.custom.create_date)}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </Table>
+
+                    </td>
+                </tr>
+            </>)
+    }
+
+    getDate = (dt) => {
+        dt = parseISO(dt); //date-fns parse the ISO string to a correct date object
+        let numDays = differenceInDays(new Date(), dt); //get number of days between now and then
+        let txt = formatRelative(subDays(dt, numDays), new Date()) //display in easy to read format
+        return txt;
+    }
+
+    requestCancel = (rptId) => {
+        //send fetch request here for cancellation
+        cancel_credit_report(rptId);
+    }
+
+    expand = (item) => {
+        let rotation = [...this.state.rotation];
+        if (rotation[item] == undefined) rotation[item] = 0;
+        rotation[item] = rotation[item] == 0 ? 180 : 0;
+        this.setState({ rotation: rotation })
+    }
+
+
+    render() {
+        if (this.state.reportList === null) {
+            return (
+                <>
+                    <Header />
+                    <br />
+                    <Loading title="Credit Reports" />
+                </>
+            )
+        }
+        else {
+            return (
+                <>
+                    <Header />
+                    <br />
+                    <Table striped>
+                        <thead>
+                            <tr>
+                                <th>Ref. Id</th>
+                                <th>Order date</th>
+                                <th>Subject Name</th>
+                                <th>User Name</th>
+                                <th>Status</th>
+                                <th colspan={4}>Reports Status</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.reportList.map((row, index) => {
+                                return this.tblRow(row, index);
+                            })}
+
+                        </tbody>
+                    </Table>
+                    {/* <DynamicTable
+                    title="Credit Reports"
+                    data={this.state.reportList}
+                    columns={this.getColumns()}
+                    border={1}
+                    selectableRows={true}
+                    striped={true}
+                    paging={15}
+                /> */}
+
+                    {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+
+                </>
+            )
+        }
+    }
+
+
+
 }
 
 /**
@@ -128,3 +312,278 @@ export async function getServerSideProps({ query: { page = 1, data = null, total
 }
 
 export default CreditReports
+
+
+
+
+    // getColumns = () => {
+    //     {
+    //         "_id": "619a61d19c9e463d02d0058a",
+    //             "reference_id": "1637507537900",
+    //                 "is_quick_report": "false",
+    //                     "credit_application": "credit_application/credit_application_1637507537724.pdf",
+    //                         "ordered_reports": [
+    //                             "Incorporate",
+    //                             "Bank",
+    //                             "Legal",
+    //                             "Suppliers"
+    //                         ],
+    //                             "status_code": 6,
+    //                                 "reports": {
+    //             "incorporate": {
+    //                 "status_code": 5,
+    //                     "status": "Completed"
+    //             },
+    //             "bank": {
+    //                 "status_code": 2,
+    //                     "is_ordered": true,
+    //                         "status": "Processing"
+    //             },
+    //             "legal": {
+    //                 "status_code": 2,
+    //                     "is_ordered": true,
+    //                         "status": "Processing"
+    //             },
+    //             "suppliers": {
+    //                 "status_code": 2,
+    //                     "is_ordered": true,
+    //                         "status": "Processing"
+    //             }
+    //         },
+    //         "order_date": "21/11/2021",
+    //             "order_time": "15:09",
+    //                 "subject_name": "JK Webdesign",
+    //                     "user_name": "Admin",
+    //                         "company_name": "Facebook Inc",
+    //                             "is_new": true,
+    //                                 "status": "Canceled",
+    //                                     "comments": {
+    //             "system": {
+    //                 "comment": "Report under process",
+    //                     "create_date": "2021-11-21T15:09:12.814Z",
+    //                         "status_code": 2,
+    //                             "is_private": false,
+    //                                 "status": "Processing"
+    //             },
+    //             "custom": {
+    //                 "comment": "Report under process",
+    //                     "create_date": "2021-11-21T15:09:12.814Z",
+    //                         "status_code": 2,
+    //                             "is_private": false,
+    //                                 "status": "Processing"
+    //             }
+    //         }
+    //     }
+
+    //     let columns = [
+    //         {
+    //             colName: "Name",
+    //             displayName: "Name",
+    //             type: "link",
+    //             visible: true,
+    //             onClick: this.handleClick,
+    //         }
+    //         , {
+    //             colName: "Position",
+    //             displayName: "Position",
+    //             visible: true
+    //         }
+    //         , {
+    //             colName: "Office",
+    //             displayName: "Office",
+    //             visible: true
+    //         }
+    //         , {
+    //             colName: "Age",
+    //             displayName: "Age",
+    //             type: "link",
+    //             onClick: this.handleClick,
+    //         }
+    //         , {
+    //             colName: "Start date",
+    //             displayName: "Start_date",
+    //             type: "link",
+    //             onClick: this.handleClick,
+    //         }
+    //         , {
+    //             colName: "Salary",
+    //             displayName: "Salary",
+    //             type: "link",
+    //             onClick: this.handleClick,
+    //         }
+    //     ]
+    //     return columns;
+    // }
+
+
+    //     let data = {
+    //         “status_code”: 200,
+    //         “data”: [
+    //     {
+    //                 “_id”: “61953d9b3be1c7cf53d141b5",
+    //                 “reference_id”: “1637170587851",
+    //                 “is_quick_report”: “false”,
+    //                 “credit_application”: “testing”,
+    //                 “ordered_reports”: [
+    //                     “Incorporate”,
+    //                     “Bank”
+    //     ],
+    //                 “status_code”: 2,
+    //                 “reports”: {
+    //                     “incorporate”: {
+    //                         “status_code”: 5,
+    //                         “is_ordered”: true,
+    //                         “status”: “Completed”
+    //     },
+    //                     “bank”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     },
+    //                     “legal”: {
+    //                         “status_code”: - 1,
+    //                         “is_ordered”: false,
+    //                         “status”: “Not Ordered”
+    //                     },
+    //                     “suppliers”: {
+    //                         “status_code”: - 1,
+    //                         “is_ordered”: false,
+    //                         “status”: “Not Ordered”
+    //                     }
+    //                 },
+    //                 “order_date”: “17 / 11 / 2021”,
+    //                 “order_time”: “17: 34”,
+    //                 “subject_name”: “JK Webdesign”,
+    //                 “user_name”: “Admin”,
+    //                 “company_name”: “Facebook Inc”,
+    //                 “is_new”: true,
+    //                 “status”: “Processing”,
+    //                 “comments”: {
+    //                     “system”: {
+    //                         “comment”: “Report under process”,
+    //                         “create_date”: “2021 - 11 - 17T17: 34: 54.210Z”,
+    //                         “status_code”: 2,
+    //                         “is_private”: false,
+    //                         “status”: “Processing”
+    //                     },
+    //                     “custom”: {
+    //                         “comment”: “Report under process”,
+    //                         “create_date”: “2021 - 11 - 17T17: 34: 54.210Z”,
+    //                         “status_code”: 2,
+    //                         “is_private”: false,
+    //                         “status”: “Processing”
+    //                     }
+    //                 }
+    //             },
+    //     {
+    //                 “_id”: “619a61d19c9e463d02d0058a”,
+    //                 “reference_id”: “1637507537900”,
+    //                 “is_quick_report”: “false”,
+    //                 “credit_application”: “credit_application / credit_application_1637507537724.pdf”,
+    //                 “ordered_reports”: [
+    //                     “Incorporate”,
+    //                     “Bank”,
+    //                     “Legal”,
+    //                     “Suppliers”
+    //     ],
+    //                 “status_code”: 6,
+    //                 “reports”: {
+    //                     “incorporate”: {
+    //                         “status_code”: 5,
+    //                         “is_ordered”: true,
+    //                         “status”: “Completed”
+    //     },
+    //                     “bank”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     },
+    //                     “legal”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     },
+    //                     “suppliers”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     }
+    //                 },
+    //                 “order_date”: “21 / 11 / 2021",
+    //                 “order_time”: “15: 09",
+    //                 “subject_name”: “JK Webdesign”,
+    //                 “user_name”: “Admin”,
+    //                 “company_name”: “Facebook Inc”,
+    //                 “is_new”: true,
+    //                 “status”: “Canceled”,
+    //                 “comments”: {
+    //                     “system”: {
+    //                         “comment”: “Report under process”,
+    //                         “create_date”: “2021 - 11 - 21T15: 09: 12.814Z”,
+    //                         “status_code”: 2,
+    //                         “is_private”: false,
+    //                         “status”: “Processing”
+    //                     },
+    //                     “custom”: {
+    //                         “comment”: “Report under process”,
+    //                         “create_date”: “2021 - 11 - 21T15: 09: 12.814Z”,
+    //                         “status_code”: 2,
+    //                         “is_private”: false,
+    //                         “status”: “Processing”
+    //                     }
+    //                 }
+    //             },
+    //     {
+    //                 “_id”: “619aa4db87c0d1f3f8ea329c”,
+    //                 “reference_id”: “1637520931971",
+    //                 “is_quick_report”: “false”,
+    //                 “credit_application”: “credit_application / credit_application_1637520931808.pdf”,
+    //                 “ordered_reports”: [],
+    //                 “status_code”: 2,
+    //                 “reports”: {
+    //                     “incorporate”: {
+    //                         “status_code”: 5,
+    //                         “is_ordered”: true,
+    //                         “status”: “Completed”
+    //     },
+    //                     “bank”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     },
+    //                     “legal”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     },
+    //                     “suppliers”: {
+    //                         “status_code”: 2,
+    //                         “is_ordered”: true,
+    //                         “status”: “Processing”
+    //     }
+    //                 },
+    //                 “order_date”: “21 / 11 / 2021”,
+    //                 “order_time”: “19: 58”,
+    //                 “subject_name”: “JK Webdesign”,
+    //                 “user_name”: “Admin”,
+    //                 “company_name”: “Facebook Inc”,
+    //                 “is_new”: true,
+    //                 “status”: “Processing”,
+    //                 “comments”: {
+    //                     “system”: {
+    //                         “comment”: “Report under process”,
+    //                         “create_date”: “2021 - 11 - 21T19: 58: 16.892Z”,
+    //                         “status_code”: 2,
+    //                         “is_private”: false,
+    //                         “status”: “Processing”
+    //                     },
+    //                     “custom”: {
+    //                         “comment”: “Report under process”,
+    //                         “create_date”: “2021 - 11 - 21T19: 58: 16.892Z”,
+    //                         “status_code”: 2,
+    //                         “is_private”: false,
+    //                         “status”: “Processing”
+    //                     }
+    //                 }
+    //             }
+    // ]    }

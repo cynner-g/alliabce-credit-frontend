@@ -6,6 +6,7 @@ import Head from 'next/head'
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap");
+    import("bootstrap/js/src/collapse.js");
   }, []);
   return (
     <div className="container">
