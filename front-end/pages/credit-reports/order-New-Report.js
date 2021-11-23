@@ -14,7 +14,7 @@ class OrderNewReport extends Component {
         this.state = {
             data: null,
             columns: this.getColumns(),
-            newReport: true,
+            step: 3,
             reports: [false, false, false, false],
             region: "Quebec",
             isModalOpen: false,
@@ -26,7 +26,7 @@ class OrderNewReport extends Component {
 
         if (Router && Router.router && Router.router.query && Router.router.query.rptId && Router.router.query.rptId.length > 0) {
             let rptId = Router.router.query.rptId;
-            this.setState({ newReport: false });
+            this.setState({ step: 2 });
             get_credit_report(rptId).then((data) => {
                 this.setState({ data: data });
             });
@@ -381,6 +381,7 @@ class OrderNewReport extends Component {
 
     submit = (data) => {
         console.log(data)
+
     }
 
     toggleReport = (reportID) => {
@@ -468,13 +469,34 @@ class OrderNewReport extends Component {
         });
 
         //after all is complete update the state, causing a repost with correct data
-        this.setState({ columns: columns, reportList: rpts, newReport: false });
+        this.setState({ columns: columns, reportList: rpts, step: 2 });
+    }
+
+
+    reportsPanel = () => {
+        let URL = "/credit-reports"
+        if (true) {//user is admin
+            Router.push({ pathname: URL });
+        }
+    }
+
+    newReport = () => {
+        //reset the entire state for a new report to be created
+        this.setState({
+            data: null,
+            columns: this.getColumns(),
+            step: 1,
+            reports: [false, false, false, false],
+            region: "Quebec",
+            isModalOpen: false,
+            reportList: null
+        })
     }
 
     render() {
         let cols = this.state.columns;
         console.log("Data=", this.state.data)
-        if (this.state.newReport) {
+        if (this.state.step == 1) {
             return (
                 <>
                     <Modal
@@ -633,7 +655,7 @@ class OrderNewReport extends Component {
                 </>
             )
         }
-        else {
+        else if (this.state.step == 2) {
             return (
                 <>
                     <Header />
@@ -642,8 +664,8 @@ class OrderNewReport extends Component {
                             <Col sm={3}>
                                 <Container>
                                     <Row>
-                                        <Col className={styles.stepUndone}>
-                                            <div className={styles.stepUnselected}>1</div>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>1</div>
                                             Select Reports
                                         </Col>
                                     </Row>
@@ -670,6 +692,72 @@ class OrderNewReport extends Component {
                             </Col>
                             <Col>
                                 <FormComponent rows={[...cols]} data={this.state.data} submit={this.submit} duplicates={['banks', 'suppliers']} />
+                            </Col>
+                        </Row>
+                    </Container>
+                </>
+            )
+        }
+        else if (this.state.step == 3) {
+            return (
+                <>
+                    <Header />
+                    <Container>
+                        <Row>
+                            <Col sm={3}>
+                                <Container>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>1</div>
+                                            Select Reports
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>2</div>
+                                            Fill in Details<br />
+
+                                        </Col>
+                                    </Row>
+
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>3</div>
+                                            Done
+                                        </Col>
+                                    </Row>
+                                </Container>
+
+                            </Col>
+                            <Col>
+                                <Row>
+                                    <Col>
+                                        <div className={styles.doneImage}>
+                                            <Image
+                                                src='/images/notepad.png'
+                                                height={314}
+                                                width={251}
+                                            />
+                                            <div className={styles.doneMessage}>
+                                                You have successfully ordered the report, you can now see this report on your “Credit Reports” Panel.
+                                                <br /><br />
+                                                <Container>
+                                                    <Row >
+                                                        <Col className={styles.doneButtonL}>
+                                                            <button className="btn btn-outline-primary" onClick={this.newReport}>Order New Report</button>
+                                                        </Col>
+                                                        <Col className={styles.doneButtonR}>
+                                                            <button className="btn btn-outline-primary" onClick={this.reportsPanel}>Go to Credit Reports Panel</button>
+                                                        </Col>
+                                                    </Row>
+                                                </Container>
+                                            </div>
+
+
+
+                                        </div>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
                     </Container>
