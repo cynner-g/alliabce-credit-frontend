@@ -426,24 +426,29 @@ class OrderNewReport extends Component {
     }
 
     nextStep = () => {
+        //build list of items for the side of the page under steps
+
         let reports = this.state.reports;
         let rpts = [];
         let rptList = ["Incorporated", "Bank", "Legal", "Suppliers"]
         let columns = this.state.columns;
+        //general is always listed
         rpts.push(<li>General</li>);
         reports.forEach((report, idx) => {
-            if (report) {
+            if (report || idx == 2) {
                 rpts.push(<li>{rptList[idx]}</li>)
             }
             else {
+                //find and remove unused items from the form components
                 let field = ''
+                //get form component abbreviation for class of report
                 switch (idx) {
                     case 0: field = 'incorporate_details'; break;
                     case 1: field = 'banks'; break;
                     case 3: field = 'suppliers'; break;
                     default: field = null;
                 }
-                console.log("Field: ", field)
+
                 if (field && field.length > 0) {
                     let startRow = columns.findIndex(row => {
                         return row.params.model && row.params.model.startsWith(field)
@@ -453,21 +458,19 @@ class OrderNewReport extends Component {
                     })
                     numRows = numRows.length;
 
-                    console.log("Start, num ", startRow, numRows)
+                    //once I have start position and length
+                    //remove items from the columns list
                     if (startRow >= 0) {
                         columns.splice(startRow, numRows);
                     }
                 }
-
             }
-
         });
 
+        //after all is complete update the state, causing a repost with correct data
         this.setState({ columns: columns, reportList: rpts, newReport: false });
-
-
-
     }
+
     render() {
         let cols = this.state.columns;
         console.log("Data=", this.state.data)
