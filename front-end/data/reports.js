@@ -9,10 +9,6 @@ const init = {
 }
 
 export const credit_report_list = (search, filter) => {
-
-    // if (search) body.search = search;
-    // if (filter) body.filter = filter;
-
     init.method = "POST"
     init.body = JSON.stringify(init.body);
 

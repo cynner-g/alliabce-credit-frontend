@@ -29,8 +29,8 @@ class CreditReports extends Component {
     }
 
     componentDidMount() {
-        credit_report_list(null, null).then((data) => {
-            this.setState({ origReportList: data, filteredReportList: data })
+        credit_report_list(null, null).then(async (data) => {
+            await this.setState({ origReportList: data, filteredReportList: data })
         }).then(() => {
             try {
                 this.setVisible();

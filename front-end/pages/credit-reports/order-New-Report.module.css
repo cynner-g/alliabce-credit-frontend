@@ -1,0 +1,64 @@
+.stepContainer {
+    text-align: left;
+    font-weight: 600;
+    color: blue;
+    white-space: nowrap;
+}
+
+.stepBullet {
+    text-align: center;
+    margin: auto;
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+    margin-right: 7px;
+}
+
+.stepUndone {
+    text-align: left;
+    font-weight: 600;
+    color: grey;
+    white-space: nowrap;
+}
+
+.stepUnselected {
+    text-align: center;
+    margin: auto;
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+    border-radius: 5px;
+    margin-right: 7px;
+}
+
+.reportTypeImage {
+    width: 108;
+    height: 108;
+    margin: auto;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.imageCase {
+    background-image: url("/images/rectangle.png");
+    width: 200px;
+    height: 200px;
+    border: solid 2px blue;
+    padding: 40px;
+    text-align: center;
+    margin: auto;
+}
+
+.imageCaseHidden {
+    border: solid 2px transparent;
+    width: 200px;
+    height: 200px;
+    padding: 40px;
+    text-align: center;
+    margin: auto;
+}

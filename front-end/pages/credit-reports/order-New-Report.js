@@ -2,26 +2,30 @@ import { FormComponent } from '../../components/FormComponent';
 import { get_credit_report } from '../../data/reports';
 import Header from "../../components/header"
 import Router from "next/router";
+import Image from 'next/image'
 import { Component } from 'react'
+import { Container, Row, Col } from 'react-bootstrap';
+import styles from "./order-New-Report.module.css";
 
 
 class OrderNewReport extends Component {
     constructor(props) {
         super(props);
-        this.state = { data: null, columns: this.getColumns() }
+        this.state = {
+            data: null,
+            columns: this.getColumns(),
+            newReport: true,
+            reports: [],
+        }
     }
 
     componentDidMount() {
-        console.log('mounted');
-        console.log(Router.router)
-        console.log(Router.router.query);
 
-
-        if (Router && Router.router && Router.router.query && Router.router.query.rptId) {
+        if (Router && Router.router && Router.router.query && Router.router.query.rptId && Router.router.query.rptId.length > 0) {
             let rptId = Router.router.query.rptId;
-            console.log(rptId)
+            this.setState({ newReport: false });
             get_credit_report(rptId).then((data) => {
-
+                this.setState({ data: data });
             });
         }
     }
@@ -370,326 +374,126 @@ class OrderNewReport extends Component {
         console.log(data)
     }
 
+    toggleReport(e, reportID) {
+        let reports = this.state.reports;
+        let enabled = reports[reportID] ? false : true;
+        reports[reportID] = enabled;
+        this.setState({ reports: reports })
+        let div = e.currentTarget;
+        div.classList.remove(styles.imageCaseHidden);
+        div.classList.remove(styles.imageCase);
+        console.log(enabled)
+        if (enabled) {
+            div.classList.add(styles.imageCase);
+        }
+        else {
+            div.classList.add(styles.imageCaseHidden);
+        }
+    }
+
     render() {
         let cols = this.state.columns;
         console.log("Data=", this.state.data)
-        return (
-            <>
-                <Header />
-                <FormComponent rows={[...cols]} data={this.state.data} submit={this.submit} duplicates={['banks', 'suppliers']} />
-            </>
-        )
+        if (this.state.newReport) {
+            return (
+                <>
+                    <Header />
+                    <Container>
+                        <Row>
+                            <Col sm={3} >
+                                <Container>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>1</div>
+                                            Select Reports
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepUndone}>
+                                            <div className={styles.stepUnselected}>2</div>
+                                            Fill in Details
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepUndone}>
+                                            <div className={styles.stepUnselected}>3</div>
+                                            Done
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            </Col>
+                            <Col sm={9}>
+                                <Container>
+                                    <Row>
+                                        <Col sm={3}>
+                                            <div className={styles.imageCaseHidden + " imgParent"}
+                                                onClick={e => this.toggleReport(e, 0)}>
+                                                <Image
+                                                    src='/images/Inc.png'
+                                                    height={108}
+                                                    width={108}
+                                                />
+                                                Incorporate
+                                            </div></Col>
+                                        <Col sm={3}>
+                                            <div className={styles.imageCaseHidden + " imgParent"}
+                                                onClick={e => this.toggleReport(e, 1)}>
+                                                <Image
+                                                    src='/images/Bank.png'
+                                                    height={108}
+                                                    width={108}
+                                                />
+                                                Bank
+                                            </div>
+                                        </Col>
+                                        <Col sm={3}>
+                                            <div className={styles.imageCaseHidden + " imgParent"}
+                                                onClick={e => this.toggleReport(e, 2)}>
+                                                <Image
+                                                    src='/images/Legal.png'
+                                                    height={108}
+                                                    width={108}
+                                                />
+                                                Legal
+                                            </div>
+                                        </Col>
+                                        <Col sm={3}>
+                                            <div className={styles.imageCaseHidden + " imgParent"}
+                                                onClick={e => this.toggleReport(e, 3)}>
+                                                <Image
+                                                    src='/images/suppliers.png'
+                                                    height={108}
+                                                    width={108}
+                                                />
+                                                Suppliers
+                                            </div>
+                                        </Col>
+
+                                    </Row>
+                                </Container>
+                            </Col>
+                        </Row>
+                    </Container>
+                </>
+            )
+        }
+        else {
+            return (
+                <>
+                    <Header />
+                    <Container>
+                        <Row>
+                            <Col sm={3}></Col>
+                            <Col>
+                                <FormComponent rows={[...cols]} data={this.state.data} submit={this.submit} duplicates={['banks', 'suppliers']} />
+                            </Col>
+                        </Row>
+                    </Container>
+                </>
+            )
+        }
     }
 
 
 }
 export default OrderNewReport;
-
-
-/*
-   getColumns = () => {
-        return (
-            [
-                {
-                    'row': [{
-                        'title': "General",
-                        'params': { 'fName': "Header", size: 2 }
-                    }]
-                },
-                {
-                    'row': [{
-                        'title': "Legal Business Name",
-                        'params': {
-                            'model': "general_details.legal_name",
-                            'required': true,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    },
-                        {
-                            'title': "DBA (Doing Business As) Name",
-                            'params': {
-                                'model': "general_details.dba_name",
-                                'required': false,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [{
-                        'title': "Address",
-                        'params': {
-                            'model': "general_details.address.address_line",
-                            'required': true,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    }]
-                },
-
-                {
-                    'row': [{
-                        'title': "City",
-                        'params': {
-                            'model': "general_details.address.city",
-                            'required': false,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    },
-                        {
-                            'title': "State",
-                            'params': {
-                                'model': "general_details.address.state",
-                                'required': false,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-                        {
-                            'title': "Zip",
-                            'params': {
-                                'model': "general_details.address.zip",
-                                'required': false,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-                    ]
-                },
-                {
-                    'row': [{
-                        'title': "Incorporated",
-                        'params': { 'fName': "Header", size: 2 }
-                    }]
-                },
-                {
-                    'row': [{
-                        'title': "NEQ (Number Entreprise Quebec) of the business",
-                        'params': {
-                            'model': "incorporate_details.quebec_enterprise_number",
-                            'required': true,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    },
-                        {
-                            'title': "Business Owner name",
-                            'params': {
-                                'model': "incorporate_details.business_owner_name",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [{
-                        'title': "TPS de l'entreprise",
-                        'params': {
-                            'model': "incorporate_details.enterprise_tps",
-                            'required': true,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    },
-                        {
-                            'title': "TVQ de l'entreprise",
-                            'params': {
-                                'model': "incorporate_details.enterprise_tvq",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [{
-                        'title': "Bank",
-                        'params': { 'fName': "Header", size: 2 }
-                    }]
-                },
-                {
-                    bankID: { model: '_id', visible: false },
-                    'row': [
-
-                        {
-                            Text: "Add Bank Account",
-                            'params': {
-                                'model': "banks.add",
-                                onClick: "",
-                                'fName': "LinkButton"
-                            }
-                        }]
-                },
-                {
-                    'row': [{
-                        'title': "Bank Name",
-                        'params': {
-                            'model': "banks.bank_name",
-                            'required': true,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    },
-                        {
-                            'title': "Bank Number",
-                            'params': {
-                                'model': "banks.bank_phone_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [
-                        {
-                            'title': "Account Number",
-                            'params': {
-                                'model': "banks.account_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-                        {
-                            'title': "Transit Number",
-                            'params': {
-                                'model': "banks.transit_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [
-                        {
-                            'title': "Bank Address",
-                            'params': {
-                                'model': "banks.bank_address",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-                        {
-                            'title': "Bank Unique Number",
-                            'params': {
-                                'model': "banks.bank_unique_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [
-                        {
-                            'title': "Name of Bank Manager",
-                            'params': {
-                                'model': "banks.bank_manager_name",
-                                'required': false,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-                        {
-                            'title': "Bank Manager Email",
-                            'params': {
-                                'model': "banks.bank_manager_email_id",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [
-                        {
-                            'title': "Phone Number of Bank Manager",
-                            'params': {
-                                'model': "banks.bank_manager_phone_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-
-                    ]
-                },
-                {
-                    'row': [{
-                        'title': "Suppliers",
-                        'params': { 'fName': "Header", size: 2 }
-                    }]
-                },
-                {
-                    supplierId: { model: '_id', visible: false },
-                    'row': [{
-                        Text: "Add Supplier",
-                        'params': {
-                            'model': "add",
-                            onClick: "",
-                            'fName': "LinkButton"
-                        }
-                    }]
-                },
-                {
-                    'row': [{
-                        'title': "Supplier Business Name",
-                        'params': {
-                            'model': "suppliers.business_name",
-                            'required': true,
-                            'fName': "TextRow",
-                            'defaultVal': null
-                        }
-                    },
-                        {
-                            'title': "Complete Supplier Address",
-                            'params': {
-                                'model': "suppliers.address",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-                {
-                    'row': [
-                        {
-                            'title': "Business Phone Number (supplier)",
-                            'params': {
-                                'model': "suppliers.business_phone_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        },
-                        {
-                            'title': "Personal Phone Number (supplier)",
-                            'params': {
-                                'model': "suppliers.personal_phone_number",
-                                'required': true,
-                                'fName': "TextRow",
-                                'defaultVal': null
-                            }
-                        }]
-                },
-
-                {
-                    'row': [{
-                        'params': {
-                            'fName': "SubmitButton",
-                            'text': "Submit"
-                        }
-
-                    }]
-                }
-            ]
-        );
-    }
-
-*/
