@@ -14,7 +14,7 @@ class OrderNewReport extends Component {
         this.state = {
             data: null,
             columns: this.getColumns(),
-            step: 3,
+            step: 1,
             reports: [false, false, false, false],
             region: "Quebec",
             isModalOpen: false,
@@ -381,7 +381,8 @@ class OrderNewReport extends Component {
 
     submit = (data) => {
         console.log(data)
-
+        //upload data to server here
+        this.setState({ step: 3 })
     }
 
     toggleReport = (reportID) => {
@@ -419,6 +420,7 @@ class OrderNewReport extends Component {
             this.setState({ isModalOpen: false })
             if (!resp) {
                 //send quick order data to server
+                this.setState({ step: 4 })
             }
             else {
                 this.nextStep();
@@ -755,6 +757,68 @@ class OrderNewReport extends Component {
 
 
 
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Container>
+                </>
+            )
+        }
+        else if (this.state.step == 4) { //Quick Reports
+            return (
+                <>
+                    <Header />
+                    <Container>
+                        <Row>
+                            <Col sm={3}>
+                                <Container>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>1</div>
+                                            Select Reports
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepUndone}>
+                                            <div className={styles.stepUnselected}>2</div>
+                                            Fill in Details<br />
+                                        </Col>
+                                    </Row>
+
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>3</div>
+                                            Done
+                                        </Col>
+                                    </Row>
+                                </Container>
+
+                            </Col>
+                            <Col>
+                                <Row>
+                                    <Col>
+                                        <div className={styles.doneImage}>
+                                            <Image
+                                                src='/images/notepad.png'
+                                                height={314}
+                                                width={251}
+                                            />
+                                            <div className={styles.doneMessage}>
+                                                You have successfully ordered a Quick Report, Report form will be filled soon by us till then it will be in <strong>pending</strong> state, you can now see this report on your “Credit Reports” Panel.
+                                                <br /><br />
+                                                <Container>
+                                                    <Row >
+                                                        <Col className={styles.doneButtonL}>
+                                                            <button className="btn btn-outline-primary" onClick={this.newReport}>Order New Report</button>
+                                                        </Col>
+                                                        <Col className={styles.doneButtonR}>
+                                                            <button className="btn btn-outline-primary" onClick={this.reportsPanel}>Go to Credit Reports Panel</button>
+                                                        </Col>
+                                                    </Row>
+                                                </Container>
+                                            </div>
                                         </div>
                                     </Col>
                                 </Row>
