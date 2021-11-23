@@ -4,7 +4,7 @@ import Header from "../../components/header"
 import Router from "next/router";
 import Image from 'next/image'
 import { Component } from 'react'
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal } from 'react-bootstrap';
 import styles from "./order-New-Report.module.css";
 
 
@@ -15,7 +15,10 @@ class OrderNewReport extends Component {
             data: null,
             columns: this.getColumns(),
             newReport: true,
-            reports: [],
+            reports: [false, false, false, false],
+            region: "Quebec",
+            isModalOpen: false,
+            reportList: null
         }
     }
 
@@ -71,7 +74,10 @@ class OrderNewReport extends Component {
             [
                 {
                     'title': "General",
-                    'params': { 'fName': "Header", size: 2, colNum: 0 }
+                    'params': {
+                        'fName': "Header", size: 2, colNum: 0,
+                        model: 'general_details',
+                    }
                 },
                 {
 
@@ -140,6 +146,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "Incorporated",
                     'params': {
+                        model: 'incorporate_details',
                         'fName': "Header", size: 2,
                         colNum: 0
                     }
@@ -188,6 +195,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "Bank",
                     'params': {
+                        model: 'banks',
                         'fName': "Header", size: 2,
                         colNum: 0
                     }
@@ -195,7 +203,7 @@ class OrderNewReport extends Component {
                 {
                     Text: "Add Bank Account",
                     'params': {
-
+                        model: 'banks',
                         onClick: this.addBank,
                         'fName': "LinkButton",
                         colNum: 0
@@ -304,6 +312,7 @@ class OrderNewReport extends Component {
                     'title': "Suppliers",
                     'params': {
                         'fName': "Header", size: 2,
+                        model: 'suppliers',
                         colNum: 0
                     }
                 },
@@ -311,7 +320,7 @@ class OrderNewReport extends Component {
                     supplierId: { model: '_id', visible: false },
                     Text: "Add Supplier",
                     'params': {
-
+                        model: 'suppliers',
                         onClick: this.addSupplier,
                         'fName': "LinkButton",
                         colNum: 0
@@ -374,29 +383,114 @@ class OrderNewReport extends Component {
         console.log(data)
     }
 
-    toggleReport(e, reportID) {
+    toggleReport = (reportID) => {
         let reports = this.state.reports;
         let enabled = reports[reportID] ? false : true;
         reports[reportID] = enabled;
         this.setState({ reports: reports })
-        let div = e.currentTarget;
-        div.classList.remove(styles.imageCaseHidden);
-        div.classList.remove(styles.imageCase);
-        console.log(enabled)
-        if (enabled) {
-            div.classList.add(styles.imageCase);
+    }
+
+    selectAllReports = () => {
+
+        let reports = this.state.reports;
+        //set all reports to unselected
+        for (let i = 0; i < 4; i++) {
+            reports[i] = true;
         }
+        this.setState({ reports: reports });
+    }
+
+    setRegion = (e) => {
+        let region = e.target.value;
+        this.setState({ region: region })
+    }
+
+    uploadApplication = (e) => {
+        let fileComponent = e.target.previousSibling;
+
+    }
+
+    quickOrder = (resp) => {
+        console.log("Resp: ", resp)
+        if (resp == undefined)
+            this.setState({ isModalOpen: true })
         else {
-            div.classList.add(styles.imageCaseHidden);
+            this.setState({ isModalOpen: false })
+            if (!resp) {
+                //send quick order data to server
+            }
+            else {
+                this.nextStep();
+            }
         }
     }
 
+    nextStep = () => {
+        let reports = this.state.reports;
+        let rpts = [];
+        let rptList = ["Incorporated", "Bank", "Legal", "Suppliers"]
+        let columns = this.state.columns;
+        rpts.push(<li>General</li>);
+        reports.forEach((report, idx) => {
+            if (report) {
+                rpts.push(<li>{rptList[idx]}</li>)
+            }
+            else {
+                let field = ''
+                switch (idx) {
+                    case 0: field = 'incorporate_details'; break;
+                    case 1: field = 'banks'; break;
+                    case 3: field = 'suppliers'; break;
+                    default: field = null;
+                }
+                console.log("Field: ", field)
+                if (field && field.length > 0) {
+                    let startRow = columns.findIndex(row => {
+                        return row.params.model && row.params.model.startsWith(field)
+                    });
+                    let numRows = columns.filter(row => {
+                        return row.params.model && row.params.model.startsWith(field)
+                    })
+                    numRows = numRows.length;
+
+                    console.log("Start, num ", startRow, numRows)
+                    if (startRow >= 0) {
+                        columns.splice(startRow, numRows);
+                    }
+                }
+
+            }
+
+        });
+
+        this.setState({ columns: columns, reportList: rpts, newReport: false });
+
+
+
+    }
     render() {
         let cols = this.state.columns;
         console.log("Data=", this.state.data)
         if (this.state.newReport) {
             return (
                 <>
+                    <Modal
+                        show={this.state.isModalOpen}
+                        onHide={() => this.quickOrder(false)}
+                        backdrop="static">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Quick Order</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Please confirm if you wnat to quick order this report?</Modal.Body>
+                        <Modal.Footer>
+                            <button className="btn btn-outline-primary" onClick={() => this.quickOrder(false)}>
+                                Cancel
+                            </button>
+                            <button className="btn btn-primary" onClick={() => this.quickOrder(true)}>
+                                Confirm
+                            </button>
+                        </Modal.Footer>
+                    </Modal>
                     <Header />
                     <Container>
                         <Row>
@@ -425,9 +519,46 @@ class OrderNewReport extends Component {
                             <Col sm={9}>
                                 <Container>
                                     <Row>
+                                        <div className={styles.stepContainer} onChange={(e) => this.setRegion(e)}>
+                                            Select Region<br />
+                                            <div className={styles.rdoSpan}>
+                                                <input type='checkbox' name='region' value="Quebec"
+                                                    checked={this.state.region == "Quebec"}
+                                                    className={styles.rdoCheck}
+                                                    id='rdoQuebec' />
+                                                <label for='rdoQuebec'>Quebec</label>
+                                            </div>
+                                            <div className={styles.rdoSpan}>
+                                                <input type='checkbox' name='region' value="Canada"
+                                                    checked={this.state.region == "Canada"}
+                                                    className={styles.rdoCheck}
+                                                    id='rdoCanada' />
+                                                <label for='rdoCanada'>Canada</label>
+                                            </div>
+                                            <div className={styles.rdoSpan}>
+                                                <input type='checkbox' name='region' value="USA"
+                                                    checked={this.state.region == "USA"}
+                                                    className={styles.rdoCheck}
+                                                    id='rdoUSA' />
+                                                <label for='rdoUSA'>USA</label>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <div className={styles.stepContainer}>
+                                                Select the reports you want to order, or you can click on "Select All" to select all at once<br />
+                                                <button className="btn btn-outline-primary" onClick={this.selectAllReports}>Select All</button>
+                                            </div>
+                                        </Col>
+
+                                    </Row>
+                                    <Row>
                                         <Col sm={3}>
-                                            <div className={styles.imageCaseHidden + " imgParent"}
-                                                onClick={e => this.toggleReport(e, 0)}>
+
+                                            <div className={this.state.reports[0] ? styles.imageCase : styles.imageCaseHidden}
+                                                onClick={e => this.toggleReport(0)}>
                                                 <Image
                                                     src='/images/Inc.png'
                                                     height={108}
@@ -436,8 +567,8 @@ class OrderNewReport extends Component {
                                                 Incorporate
                                             </div></Col>
                                         <Col sm={3}>
-                                            <div className={styles.imageCaseHidden + " imgParent"}
-                                                onClick={e => this.toggleReport(e, 1)}>
+                                            <div className={this.state.reports[1] ? styles.imageCase : styles.imageCaseHidden}
+                                                onClick={e => this.toggleReport(1)}>
                                                 <Image
                                                     src='/images/Bank.png'
                                                     height={108}
@@ -447,8 +578,8 @@ class OrderNewReport extends Component {
                                             </div>
                                         </Col>
                                         <Col sm={3}>
-                                            <div className={styles.imageCaseHidden + " imgParent"}
-                                                onClick={e => this.toggleReport(e, 2)}>
+                                            <div className={this.state.reports[2] ? styles.imageCase : styles.imageCaseHidden}
+                                                onClick={e => this.toggleReport(2)}>
                                                 <Image
                                                     src='/images/Legal.png'
                                                     height={108}
@@ -458,8 +589,8 @@ class OrderNewReport extends Component {
                                             </div>
                                         </Col>
                                         <Col sm={3}>
-                                            <div className={styles.imageCaseHidden + " imgParent"}
-                                                onClick={e => this.toggleReport(e, 3)}>
+                                            <div className={this.state.reports[3] ? styles.imageCase : styles.imageCaseHidden}
+                                                onClick={e => this.toggleReport(3)}>
                                                 <Image
                                                     src='/images/suppliers.png'
                                                     height={108}
@@ -467,6 +598,28 @@ class OrderNewReport extends Component {
                                                 />
                                                 Suppliers
                                             </div>
+                                        </Col>
+
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <div className={styles.stepContainer}>
+
+                                                <label class="form-label" for="customFile">Upload credit application</label>
+                                                <input type="file" className="form-control" id="customFile" />
+                                                <button onClick={e => this.uploadApplication(e)}>Upload</button>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col sm={10}>
+                                            <div className={styles.stepContainer}>
+
+                                                <button className="btn btn-outline-primary" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
+                                            </div>
+                                        </Col>
+                                        <Col>
+                                            <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
                                         </Col>
 
                                     </Row>
@@ -483,7 +636,35 @@ class OrderNewReport extends Component {
                     <Header />
                     <Container>
                         <Row>
-                            <Col sm={3}></Col>
+                            <Col sm={3}>
+                                <Container>
+                                    <Row>
+                                        <Col className={styles.stepUndone}>
+                                            <div className={styles.stepUnselected}>1</div>
+                                            Select Reports
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>2</div>
+                                            Fill in Details<br />
+
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <ul> {this.state.reportList} </ul>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepUndone}>
+                                            <div className={styles.stepUnselected}>3</div>
+                                            Done
+                                        </Col>
+                                    </Row>
+                                </Container>
+
+                            </Col>
                             <Col>
                                 <FormComponent rows={[...cols]} data={this.state.data} submit={this.submit} duplicates={['banks', 'suppliers']} />
                             </Col>
