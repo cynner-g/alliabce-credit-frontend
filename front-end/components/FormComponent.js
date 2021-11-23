@@ -61,8 +61,8 @@ export class FormComponent extends Component {
                 {column.title}
                 <input type='text' className='formText form-control'
                     name={column.params.model}
-                    placeholder={column.title}
                     onChange={(e) => this.handleChange(e)}
+                    value={column.value || undefined}
                 />
             </Col>
         )
@@ -251,30 +251,110 @@ export class FormComponent extends Component {
 
     }
 
-    buildRows = (rows) => {
-        let Rows = [];
-        // loop through each row
-        rows.forEach((formRow, idx) => {
+    buildRows = (rows, data, duplicates) => {
+        // console.log(data);
+        // console.log(this.props.data)
+        if (data) {
+            duplicates.forEach(item => {
+                let numDupes = data[item].length;
+                for (let i = 0; i < numDupes; i++) {
+                    let obj = data[item][i];
+                    for (const [key, value] of Object.entries(obj)) {
+                        //rename the object key
+                        obj[key + "_" + (i + 1)] = obj[key]
+                        delete obj[key];
+                    }
+                }
+
+                let firstRow = rows.findIndex(row => {
+                    if (!(row.params && row.params.model)) return false;
+                    return row.params.model.toLowerCase().split('.')[0] == item.toLowerCase();
+                })
+                let replArr = rows.filter(row => {
+                    if (!(row.params && row.params.model)) return false;
+                    return row.params.model.toLowerCase().split('.')[0] == item.toLowerCase();
+                })
+                let len = replArr.length;
+
+                for (let i = 1; i <= numDupes; i++) {
+                    replArr.forEach(row => {
+                        row.dupNum = i;
+                        row.params.model += "_" + i
+                    })
+                }
+
+                let startArray = [...rows.slice(0, firstRow)];
+                let endArray = [...rows.splice(firstRow + len)]
+
+                // let replArray = [...rows.slice(firstRow), ...replArr, ...rows.splice(firstRow + len)]
+                rows = startArray.concat(replArr, endArray);
+            })
+
+            // //delete original columns
+            // duplicates.forEach(item => {
+            //     rows = rows.filter(row => {
+            //         if (!(row.params && row.params.model)) return false;
+            //         return row.params.model.toLowerCase().split('.')[0] != item.toLowerCase();
+            //     })
+            // });
+
+
+            //loop through all data and attach value to correct row/column
+            if (data != null) {
+                rows.forEach((row) => {
+                    if (row.params.model) {
+                        let mdl = row.params.model;
+
+                        let layers = mdl.split('.');
+                        let d = data;
+
+                        //THIS IS FAILING HERE - BANK AND SUPPLIER DATA ARE MISSING
+
+                        if (Array.isArray(d)) {
+                            for (let i = 0; i < d.length; i++) {
+                                layers.forEach(layer => {
+                                    d[i] = d[i][layer]
+                                })
+                                row.value = d[i];
+                            }
+
+                            //EVERYTHING ELSE WORKS                            
+
+                        } else {
+                            layers.forEach(layer => {
+                                d = d[layer]
+                            })
+                            row.value = d;
+                        }
+                    }
+                })
+            }
+        }
             //loop through each column in that row
-            let cols = [];
-            formRow.row.forEach((col, index) => {
+        let Rows = [], Cols = [];
+        rows.forEach((col, index) => {
+            //if col.params.colNum==0 start a new row...
+            if (Cols.length > 0 && col.params.colNum === 0) {
+                Rows.push(<Row className='form-group' key={col.params.model}>{Cols}</Row>)
+                Cols = [];
+            }
                 switch (col.params.fName) {
-                    case 'TextRow': cols.push(this.buildTextRow(col, index)); break;
-                    case 'CheckBox': cols.push(this.buildCheckBox(col, index)); break;
-                    case 'DateRow': cols.push(this.buildDateRow(col, index)); break;
-                    case 'Div': cols.push(this.buildDiv(col, index)); break;
-                    case 'CheckCollapse': cols.push(this.buildCheckCollapse(col, index)); break;
-                    case 'NumberRow': cols.push(this.buildNumberRow(col, index)); break;
-                    case 'SubmitButton': cols.push(this.buildSubmitButton(col, index)); break;
-                    case 'TextArea': cols.push(this.buildTextArea(col, index)); break;
-                    case 'DropDown': cols.push(this.buildDropDown(col, index)); break;
-                    case 'LinkButton': cols.push(this.buildLinkButton(col, index)); break;
-                    case 'Header': cols.push(this.buildHeader(col, index)); break;
-                    default: cols.push(<div key={index}>{col.fName}<br />{JSON.stringify(col)}</div>); break;
+                    case 'TextRow': Cols.push(this.buildTextRow(col, index)); break;
+                    case 'CheckBox': Cols.push(this.buildCheckBox(col, index)); break;
+                    case 'DateRow': Cols.push(this.buildDateRow(col, index)); break;
+                    case 'Div': Cols.push(this.buildDiv(col, index)); break;
+                    case 'CheckCollapse': Cols.push(this.buildCheckCollapse(col, index)); break;
+                    case 'NumberRow': Cols.push(this.buildNumberRow(col, index)); break;
+                    case 'SubmitButton': Cols.push(this.buildSubmitButton(col, index)); break;
+                    case 'TextArea': Cols.push(this.buildTextArea(col, index)); break;
+                    case 'DropDown': Cols.push(this.buildDropDown(col, index)); break;
+                    case 'LinkButton': Cols.push(this.buildLinkButton(col, index)); break;
+                    case 'Header': Cols.push(this.buildHeader(col, index)); break;
+                    default: Cols.push(<div key={index}>{col.fName}<br />{JSON.stringify(col)}</div>); break;
                 }
             })
-            Rows.push(<Row className='form-group' key={idx}>{cols}</Row>)
-        })
+        Rows.push(<Row className='form-group' key={'lastRow'}>{Cols}</Row>) //last row
+
         return Rows;
     }
 
@@ -300,7 +380,7 @@ export class FormComponent extends Component {
                     model='MetFormData'
                     onSubmit={(e) => this.handleSubmit(e)}
                 >
-                    {this.buildRows(this.props.rows)}
+                    {this.buildRows(this.props.rows, this.props.data, this.props.duplicates)}
                 </form>
             </div>
         )

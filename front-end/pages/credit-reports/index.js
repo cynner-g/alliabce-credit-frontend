@@ -1,37 +1,53 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faDownload, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { differenceInDays, formatRelative, subDays, parseISO } from 'date-fns'
-
+import DatePicker from 'react-datepicker'
 import Header from "../../components/header"
-import { useRouter } from "next/router"
+import Router, { withRouter } from "next/router"
 // import Pagination from "../../components/datatable/pagination"
 // import DynamicTable from "../../components/DynamicTable"
 import { Loading } from "../../components/LoadingComponent"
-import { Table } from 'react-bootstrap';
+import { Table, Container, Row, Col } from 'react-bootstrap';
 import { credit_report_list, cancel_credit_report } from "../../data/reports";
 import React, { Component } from 'react';
-import { tblRow } from './reportRow';
+import Select from 'react-select';
+import "react-datepicker/dist/react-datepicker.css";
 
 class CreditReports extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            reportList: null,
-            limit: 3,
-            lastPage: 1,
-            router: null,
-            rotation: []
+            origReportList: null,
+            filteredReportList: null,
+            rotation: [],
+            visibleReportList: null,
+            pageSize: 10,
+            startFilter: null,
+            endFilter: null
         };
     }
 
     componentDidMount() {
         credit_report_list(null, null).then((data) => {
-            console.log(data)
-            this.setState({ reportList: data })
+            this.setState({ origReportList: data, filteredReportList: data })
+        }).then(() => {
+            try {
+                this.setVisible();
+            }
+            catch (ex) { console.log(ex.message) }
         })
     }
 
+    setVisible = (page = 0) => {
+        let start = this.state.pageSize * page
+        let end = page + this.state.pageSize;
+        if (start < 0) start = 0;
+        let fList = this.state.filteredReportList;
+        if (!fList) fList = this.state.origReportList;
+        let visible = fList.slice(start, end);
+        this.setState({ visibleReportList: visible })
+    }
 
     onClickHandler = (e, item) => {
         let rotation = [...this.state.rotation];
@@ -47,6 +63,60 @@ class CreditReports extends Component {
         console.log(hiddenElement)
         hiddenElement.className.indexOf("collapse show") > -1 ? hiddenElement.classList.remove("show") : hiddenElement.classList.add("show");
     };
+
+    filterDates = async (update) => {
+        this.setState({ startFilter: update[0], endFilter: update[1] });
+        let newData = this.state.origReportList;
+        if (this.state.startFilter != null) {
+            newData = await newData.filter(row => {
+                console.log("Create: ", row.create_date)
+                console.log("Filter: ", this.state.filterStart)
+                return differenceInDays(parseISO(row.create_date), parseISO(this.state.startFilter)) >= 0;
+            })
+
+            newData = await newData.filter(row => {
+                console.log("Create: ", row.create_date)
+                console.log("Filter: ", this.state.filterStart)
+                return differenceInDays(parseISO(row.create_date), parseISO(this.state.startFilter)) < 0;
+            })
+
+            await this.setState({ filteredReportList: newData })
+            this.setVisible(0) //get active page.  State?
+        }
+    }
+
+    filterText = async (e) => {
+        e.preventDefault();
+        let text = e.target.value
+        console.log(text)
+        let data = this.state.reportList;
+        let newData = await data.filter(row => {
+            //search these 4 columns
+            return (
+                row.subject_name.indexOf(text) >= 0 ||
+                row.company_name.indexOf(text) >= 0 ||
+                row.user_name.indexOf(text) >= 0 ||
+                row.reference_id.indexOf(text) >= 0)
+        })
+        await this.setState({ filteredReportList: newData })
+        this.setVisible(0) //get active page.  State?
+    }
+
+    filterStatus = async (e) => {
+        let text = e.target.value;
+        let newData = this.state.reportList;
+        if (text == "*") {
+
+        }
+        else {
+            newData = await newData.filter(row => {
+                return +row.status_code == +text
+            });
+        }
+        await this.setState({ filteredReportList: newData })
+        this.setVisible(0) //get active page.  State?
+
+    }
 
     tblRow = (row, index) => {
         const getStatusCss = (code) => {
@@ -154,10 +224,10 @@ class CreditReports extends Component {
                     <td>{user_name}<br /><span className="small10">{company_name}</span></td>
 
                     <td><div className={`status status${status.status_code}`}>{status.text}</div></td>
-                    <td><div className={`incorporate status${reportCodes.incorporate.status_code}`}>{reportCodes.incorporate.text}<FontAwesomeIcon icon={reportCodes.incorporate.icon} /></div></td>
-                    <td><div className={`bank status${reportCodes.bank.status_code}`}>{reportCodes.bank.text}<FontAwesomeIcon icon={reportCodes.bank.icon} /></div></td>
-                    <td><div className={`legal status${reportCodes.legal.status_code}`}>{reportCodes.legal.text}<FontAwesomeIcon icon={reportCodes.legal.icon} /></div></td>
-                    <td><div className={`suppliers status${reportCodes.suppliers.status_code}`}>{reportCodes.suppliers.text}<FontAwesomeIcon icon={reportCodes.suppliers.icon} /></div></td>
+                    <td><div className={`incorporate status${reportCodes.incorporate.status_code}`}>{reportCodes.incorporate.text}</div></td>
+                    <td><div className={`bank status${reportCodes.bank.status_code}`}>{reportCodes.bank.text}</div></td>
+                    <td><div className={`legal status${reportCodes.legal.status_code}`}>{reportCodes.legal.text}</div></td>
+                    <td><div className={`suppliers status${reportCodes.suppliers.status_code}`}>{reportCodes.suppliers.text}</div></td>
                     <td>
                         <button className="btn btn-outline-primary" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
                     </td>
@@ -166,13 +236,22 @@ class CreditReports extends Component {
                     </td>
                 </tr>
                 <tr className="collapse" key={index + "_2"}>
-
                     <td colSpan={10} className="comments_indent">
-                        <Table>
+                        <Table style={{ width: '100%' }} >
                             <tbody>
                                 <tr>
-                                    <td colSpan={3}>
-                                        <button className="btn btn-outline-danger" onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
+                                    <td colSpan={1}>
+                                        <button className="btn btn-outline-danger"
+                                            onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
+                                    </td>
+                                    <td colSpan={1}>
+
+                                    </td>
+                                    <td colSpan={1}>
+                                        <button className="btn btn-outline-primary"
+                                            onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
+                                        <button className="btn btn-outline-primary"
+                                            onClick={() => this.orderReport(row._id)}>View Report Form</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -232,9 +311,16 @@ class CreditReports extends Component {
         this.setState({ rotation: rotation })
     }
 
+    orderReport = (rptId) => {
+        // const router = withRouter()
+        let URL = "/credit-reports/order-New-Report"
+        if (true) {//user is admin
+            Router.push({ pathname: URL, query: { rptId: rptId || null } })
+        }
+    }
 
     render() {
-        if (this.state.reportList === null) {
+        if (this.state.reportList === null || this.state.visibleReportList === null) {
             return (
                 <>
                     <Header />
@@ -244,39 +330,68 @@ class CreditReports extends Component {
             )
         }
         else {
+            let options = [
+                { value: "*", label: "All" },
+                { value: "6", label: "Cancelled" },
+                { value: "5", label: "Completed" },
+                { value: "2", label: "Processing" },
+            ]
             return (
                 <>
                     <Header />
                     <br />
-                    <Table striped>
-                        <thead>
-                            <tr>
-                                <th>Ref. Id</th>
-                                <th>Order date</th>
-                                <th>Subject Name</th>
-                                <th>User Name</th>
-                                <th>Status</th>
-                                <th colspan={4}>Reports Status</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.reportList.map((row, index) => {
-                                return this.tblRow(row, index);
-                            })}
+                    <Container>
+                        <Row >
+                            <Col className='filterCol'> Search:&nbsp;<input type='text' onChange={(e) => this.filterText(e)}></input></Col>
+                            <Col className='filterCol'>Status:&nbsp;
+                                <Select onChange={(e) => this.filterStatus(e)}
+                                    value="*"
+                                    options={options}
+                                    isMulti={true}
+                                    className="multiSelect"
+                                /></Col>
+                            <Col className='filterCol'>Filter By Date:&nbsp;
+                                <DatePicker
+                                    selectsRange={true}
+                                    startDate={this.state.startFilter}
+                                    endDate={this.state.endFilter}
+                                    onChange={(update) => {
+                                        this.filterDates(update);
+                                    }}
 
-                        </tbody>
-                    </Table>
-                    {/* <DynamicTable
-                    title="Credit Reports"
-                    data={this.state.reportList}
-                    columns={this.getColumns()}
-                    border={1}
-                    selectableRows={true}
-                    striped={true}
-                    paging={15}
-                /> */}
+                                />
+
+
+                            </Col>
+                            <Col className="ms-auto filterCol">
+                                <button className="btn btn-primary" onClick={this.orderReport}>Order New Report</button>
+                            </Col>
+                        </Row>
+
+
+                        <Row><Col>
+                            <Table striped>
+                                <thead>
+                                    <tr>
+                                        <th>Ref. Id</th>
+                                        <th>Order date</th>
+                                        <th>Subject Name</th>
+                                        <th>User Name</th>
+                                        <th>Status</th>
+                                        <th colSpan={4}>Reports Status</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.visibleReportList.map((row, index) => {
+                                        return this.tblRow(row, index);
+                                    })}
+
+                                </tbody>
+                            </Table>
+                        </Col></Row>
+                    </Container>
 
                     {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
 
