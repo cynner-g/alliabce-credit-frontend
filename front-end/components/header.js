@@ -9,6 +9,7 @@ import { Nav, Button } from 'react-bootstrap';
 const Header = () => {
     const router = useRouter();
     const { token } = parseCookies();
+    const role=Cookies.get('role');
     let user = false
     if (token) {
         user = true
@@ -58,7 +59,12 @@ const Header = () => {
                                             router.push('/');
                                         }
                                         }>Logout</a></li>
-                                        <li><a className="dropdown-item" href="/account">My Account</a></li>
+                                        {role=='admin'?(
+                                            <li><a className="dropdown-item" href="/account/admin">My Account</a></li>
+                                        ):(
+                                            <li><a className="dropdown-item" href="/account">My Account</a></li>
+                                        )}
+                                        
                                     </>
                                     :
                                     <li><a className="dropdown-item" href="#">Action</a></li>
