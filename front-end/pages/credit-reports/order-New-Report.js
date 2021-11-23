@@ -8,21 +8,58 @@ import { Component } from 'react'
 class OrderNewReport extends Component {
     constructor(props) {
         super(props);
-        this.state = { data: null }
+        this.state = { data: null, columns: this.getColumns() }
     }
 
     componentDidMount() {
         console.log('mounted');
         console.log(Router.router)
         console.log(Router.router.query);
+
+
         if (Router && Router.router && Router.router.query && Router.router.query.rptId) {
             let rptId = Router.router.query.rptId;
             console.log(rptId)
             get_credit_report(rptId).then((data) => {
-                console.log(data);
-                this.setState({ data: data });
+
             });
         }
+    }
+
+    addBank = () => {
+        let columns = this.state.columns;
+        let banks = columns.filter(col => col.params.model && col.params.model.startsWith("banks"))
+        let numBanks = banks.length;
+
+        let lastBank = columns.findIndex(col => col.params.model && col.params.model.startsWith("banks")) + numBanks;
+
+        let newDupNum = banks[banks.length - 1].dupNum;
+        banks = banks.filter(bank => bank.dupNum == newDupNum);
+        let newBanks = JSON.parse(JSON.stringify(banks)); //ensure new variable not reference
+        newBanks.forEach(newBank => newBank.dupNum = newDupNum + 1)
+        let startArray = [...columns.slice(0, lastBank)];
+        let endArray = [...columns.splice(lastBank)];
+        //concatenate all temp arrays, then concatenate those with rest of display data
+        columns = startArray.concat(banks, endArray);
+        this.setState({ columns: columns });
+    }
+
+    addSupplier = () => {
+        let columns = this.state.columns;
+        let suppliers = columns.filter(col => col.params.model.startsWith("suppliers"));
+        let numsuppliers = suppliers.length;
+
+        let lastSupplier = columns.findIndex(col => col.params.model.startsWith("suppliers")) + numsuppliers;
+
+        newDupNum = suppliers[suppliers.length - 1].dupNum;
+        suppliers = suppliers.filter(supplier => supplier.dupNum == newDupNum);
+        newSuppliers = JSON.parse(JSON.stringify(suppliers)); //ensure new variable not reference
+        newSuppliers.forEach(newBank => newSuppliers.dupNum = newDupNum + 1)
+        let startArray = [...columns.slice(0, lastSupplier)];
+        let endArray = [...columns.splice(lastSupplier)];
+        //concatenate all temp arrays, then concatenate those with rest of display data
+        columns = startArray.concat(suppliers, endArray);
+        this.setState({ columns: columns });
     }
 
     getColumns = () => {
@@ -154,14 +191,15 @@ class OrderNewReport extends Component {
                 {
                     Text: "Add Bank Account",
                     'params': {
-                        'model': "banks.add",
-                        onClick: "",
+
+                        onClick: this.addBank,
                         'fName': "LinkButton",
                         colNum: 0
                     }
                 },
                 {
                     'title': "Bank Name",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_name",
                         'required': true,
@@ -172,6 +210,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Bank Number",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_phone_number",
                         'required': true,
@@ -182,6 +221,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Account Number",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.account_number",
                         'required': true,
@@ -192,6 +232,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Transit Number",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.transit_number",
                         'required': true,
@@ -202,6 +243,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Bank Address",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_address",
                         'required': true,
@@ -212,6 +254,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Bank Unique Number",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_unique_number",
                         'required': true,
@@ -222,6 +265,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Name of Bank Manager",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_manager_name",
                         'required': false,
@@ -232,6 +276,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Bank Manager Email",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_manager_email_id",
                         'required': true,
@@ -242,6 +287,7 @@ class OrderNewReport extends Component {
                 },
                 {
                     'title': "Phone Number of Bank Manager",
+                    'dupNum': 0,
                     'params': {
                         'model': "banks.bank_manager_phone_number",
                         'required': true,
@@ -261,8 +307,8 @@ class OrderNewReport extends Component {
                     supplierId: { model: '_id', visible: false },
                     Text: "Add Supplier",
                     'params': {
-                        'model': "add",
-                        onClick: "",
+
+                        onClick: this.addSupplier,
                         'fName': "LinkButton",
                         colNum: 0
                     }
@@ -321,11 +367,11 @@ class OrderNewReport extends Component {
     }
 
     submit = (data) => {
-        alert(data)
+        console.log(data)
     }
 
     render() {
-        let cols = this.getColumns();
+        let cols = this.state.columns;
         console.log("Data=", this.state.data)
         return (
             <>
