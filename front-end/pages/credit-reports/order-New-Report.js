@@ -347,7 +347,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "Personal Phone Number (supplier)",
                     'params': {
-                        'model': "suppliers.personal_phone_number",
+                        'model': "8",
                         'required': true,
                         'fName': "TextRow",
                         'defaultVal': null,

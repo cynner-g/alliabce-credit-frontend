@@ -89,7 +89,7 @@ class CreditReports extends Component {
         e.preventDefault();
         let text = e.target.value
         console.log(text)
-        let data = this.state.reportList;
+        let data = this.state.origReportList;
         let newData = await data.filter(row => {
             //search these 4 columns
             return (
@@ -103,19 +103,20 @@ class CreditReports extends Component {
     }
 
     filterStatus = async (e) => {
-        let text = e.target.value;
-        let newData = this.state.reportList;
-        if (text == "*") {
+        console.log(e)
+        let text = e;
+        let newData = this.state.origReportList;
 
-        }
-        else {
             newData = await newData.filter(row => {
-                return +row.status_code == +text
+                let ret = false;
+                text.forEach(t => {
+                    if (+row.status_code == +t.value) ret = true;
+                })
+                return ret;
             });
-        }
+
         await this.setState({ filteredReportList: newData })
         this.setVisible(0) //get active page.  State?
-
     }
 
     tblRow = (row, index) => {
@@ -331,7 +332,6 @@ class CreditReports extends Component {
         }
         else {
             let options = [
-                { value: "*", label: "All" },
                 { value: "6", label: "Cancelled" },
                 { value: "5", label: "Completed" },
                 { value: "2", label: "Processing" },
@@ -345,9 +345,8 @@ class CreditReports extends Component {
                             <Col className='filterCol'> Search:&nbsp;<input type='text' onChange={(e) => this.filterText(e)}></input></Col>
                             <Col className='filterCol'>Status:&nbsp;
                                 <Select onChange={(e) => this.filterStatus(e)}
-                                    value="*"
                                     options={options}
-                                    isMulti={true}
+                                    isMulti
                                     className="multiSelect"
                                 /></Col>
                             <Col className='filterCol'>Filter By Date:&nbsp;
