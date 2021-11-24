@@ -1,5 +1,5 @@
 import { FormComponent } from '../../components/FormComponent';
-import { get_credit_report } from '../../data/reports';
+import { get_credit_report } from '../../data/credit_reports';
 import Header from "../../components/header"
 import Router from "next/router";
 import Image from 'next/image'
