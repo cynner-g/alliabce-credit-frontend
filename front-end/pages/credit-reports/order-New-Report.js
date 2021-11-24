@@ -1,5 +1,5 @@
 import { FormComponent } from '../../components/FormComponent';
-import { get_credit_report } from '../../data/credit_reports';
+import { order_details } from '../api/credit_reports';
 import Header from "../../components/header"
 import Router from "next/router";
 import Image from 'next/image'
@@ -29,7 +29,7 @@ class OrderNewReport extends Component {
         this.setState({ columns: this.getColumns() });
         if (Router && Router.router && Router.router.query && Router.router.query.rptId && Router.router.query.rptId.length > 0) {
             let rptId = Router.router.query.rptId;
-            get_credit_report(rptId).then(async (data) => {
+            order_details(rptId).then(async (data) => {
 
                 let columns = this.state.columns;
                 let banks = {}

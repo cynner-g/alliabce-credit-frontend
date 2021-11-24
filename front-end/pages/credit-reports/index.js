@@ -8,7 +8,7 @@ import Router, { withRouter } from "next/router"
 // import DynamicTable from "../../components/DynamicTable"
 import { Loading } from "../../components/LoadingComponent"
 import { Table, Container, Row, Col } from 'react-bootstrap';
-import { credit_report_list, cancel_credit_report } from "../../data/reports";
+import { order_list, cancel_order } from "../api/credit_reports";
 import React, { Component } from 'react';
 import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
@@ -29,7 +29,7 @@ class CreditReports extends Component {
     }
 
     componentDidMount() {
-        credit_report_list(null, null).then(async (data) => {
+        order_list(null, null).then(async (data) => {
             await this.setState({ origReportList: data, filteredReportList: data })
         }).then(() => {
             try {
@@ -302,7 +302,7 @@ class CreditReports extends Component {
 
     requestCancel = (rptId) => {
         //send fetch request here for cancellation
-        cancel_credit_report(rptId);
+        cancel_order(rptId);
     }
 
     expand = (item) => {
