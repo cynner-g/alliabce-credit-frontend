@@ -39,14 +39,16 @@ export class FormComponent extends Component {
         super(props);
         this.state = {
             openState: {},
-            formData: {}
+            formData: {},
+            rows: this.props.rows,
+            data: this.props.data,
+            duplicates: this.props.duplicates
         }
     }
 
 
 
     handleChange = (e) => {
-        console.log("Change: ", e.target.name, e.target.value.trim())
         let data = this.state.formData;
         data[e.target.name] = e.target.value.trim()
         // Trimming any whitespace
@@ -111,12 +113,27 @@ export class FormComponent extends Component {
 
     buildSubmitButton = (col, index) => {
         return (
-            <Col className='formCol' md={{ size: 2, offset: 1 }} key={index}>
+            <Col className='formCol' md={{ size: 1, offset: 1 }} key={index}>
+                <br />
                 <button type="submit" className='formSubmit' color={col.params.color || "primary"}>
                     {col.params.text}
                 </button >
+                <br /><br />
             </Col>
         );
+    }
+
+    buildCancelButton = (col, index) => {
+        if (this.props.cancel) {
+            return (
+                <Col className='formCol' md={{ size: 1, offset: 1 }} key={index}>
+                    <br />
+                    <button className='formSubmit' onClick={() => this.props.cancel()} color={col.params.color || "primary"}>
+                        {col.params.text}
+                    </button >
+                </Col>
+            );
+        }
     }
 
     buildDropDown = (col, index) => {
@@ -252,132 +269,51 @@ export class FormComponent extends Component {
     }
 
     buildRows = (displayRows, data, duplicates) => {
+        try {
 
-        if (data) {
-            //loop through list of fields with duplicates - might be able to 
-            //parse this in code
-            duplicates.forEach(item => {
-                let numDupes = data[item].length;
-                //loop through each item in each duplicate segment and rename
-                //the data key so everything has unique keys
-                for (let i = 0; i < numDupes; i++) {
-                    let obj = data[item][i];
-                    for (const [key, value] of Object.entries(obj)) {
-                        //rename the object key
-                        obj[key + "_" + i] = obj[key]
-                        delete obj[key];
-                    }
+            //loop through each column in that row
+            let Rows = [], Cols = [];
+            displayRows.forEach((displayCol, index) => {
+                //if col.params.colNum==0 start a new row...
+                if (Cols.length > 0 && displayCol.params.colNum === 0) {
+                    Rows.push(<Row className='form-group' key={displayCol.params.model}>{Cols}</Row>)
+                    Cols = [];
                 }
-
-                //get the first row of the layout JSON which corresponds to the duplicate
-                let firstRow = displayRows.findIndex(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == item.toLowerCase();
-                })
-
-                let replArr = displayRows.filter(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == item.toLowerCase();
-                })
-                let len = replArr.length;
-                let tmps = [];
-                //rename each item in display data to mesh with input data
-                for (let i = 0; i < numDupes; i++) {
-                    //return all display data relating to that duplicate
-                    let tmpArray = JSON.parse(JSON.stringify(replArr))//full clone
-                    tmpArray.forEach(row => {
-                        row.dupNum = i;
-                        row.params.model += "_" + i
-                    })
-                    tmps.push(tmpArray)
+                switch (displayCol.params.fName) {
+                    case 'TextRow': Cols.push(this.buildTextRow(displayCol, index)); break;
+                    case 'CheckBox': Cols.push(this.buildCheckBox(displayCol, index)); break;
+                    case 'DateRow': Cols.push(this.buildDateRow(displayCol, index)); break;
+                    case 'Div': Cols.push(this.buildDiv(displayCol, index)); break;
+                    case 'CheckCollapse': Cols.push(this.buildCheckCollapse(displayCol, index)); break;
+                    case 'NumberRow': Cols.push(this.buildNumberRow(displayCol, index)); break;
+                    case 'SubmitButton': Cols.push(this.buildSubmitButton(displayCol, index)); break;
+                    case 'CancelButton': Cols.push(this.buildCancelButton(displayCol, index)); break;
+                    case 'TextArea': Cols.push(this.buildTextArea(displayCol, index)); break;
+                    case 'DropDown': Cols.push(this.buildDropDown(displayCol, index)); break;
+                    case 'LinkButton': Cols.push(this.buildLinkButton(displayCol, index)); break;
+                    case 'Header': Cols.push(this.buildHeader(displayCol, index)); break;
+                    default: Cols.push(<div key={index}>{displayCol.fName}<br />{JSON.stringify(col)}</div>); break;
                 }
-
-                let startArray = [...displayRows.slice(0, firstRow)];
-                let endArray = [...displayRows.splice(firstRow + len)]
-                //concatenate all temp arrays, then concatenate those with rest of display data
-                displayRows = startArray.concat(...tmps, endArray);
-                console.log(displayRows)
             })
+            Rows.push(<Row className='form-group' key={'lastRow'}>{Cols}</Row>) //last row
 
-
-            //loop through all data and attach value to correct row/column
-            if (data != null) {
-                displayRows.forEach((displayRow) => {
-                    if (displayRow.params.model) {
-                        let model = displayRow.params.model;
-                        let layers = model.split('.');
-
-                        let d = data;
-
-                        //THIS IS FAILING HERE - BANK AND SUPPLIER DATA ARE MISSING
-
-
-                        if (duplicates.includes(layers[0])) {
-                            //if this is an array then each model will end with _1 or another number
-                            //the data is in an array, while the display is not
-                            let lastNum = model.split('_').pop();
-                            lastNum = +lastNum; //make sure it's a number then make it 0 based
-                            console.log("Lastnum: ", layers, lastNum)
-
-                            d = d[layers[0]]; //move data to point at only this category and array index
-                            d = d[lastNum];
-                            console.log("D:", d)
-                            layers.shift(); //remove layers[0]
-                            console.log("Layers: ", layers)
-
-                            layers.forEach(layer => {
-                                console.log(layer)
-                                if (d[layer + "_" + lastNum]) {
-                                    d = d[layer + "_" + lastNum]
-                                }
-                                else {
-                                    d = d[layer]
-                                }
-                            })
-                            displayRow.value = d;
-                            // }
-
-                            //EVERYTHING ELSE WORKS                            
-
-                        } else {
-                            layers.forEach(layer => {
-                                d = d[layer]
-                            })
-                            displayRow.value = d;
-                        }
-                    }
-                })
-            }
+            return Rows;
         }
-        //loop through each column in that row
-        let Rows = [], Cols = [];
-        displayRows.forEach((displayCol, index) => {
-            //if col.params.colNum==0 start a new row...
-            if (Cols.length > 0 && displayCol.params.colNum === 0) {
-                Rows.push(<Row className='form-group' key={displayCol.params.model}>{Cols}</Row>)
-                Cols = [];
-            }
-            switch (displayCol.params.fName) {
-                case 'TextRow': Cols.push(this.buildTextRow(displayCol, index)); break;
-                case 'CheckBox': Cols.push(this.buildCheckBox(displayCol, index)); break;
-                case 'DateRow': Cols.push(this.buildDateRow(displayCol, index)); break;
-                case 'Div': Cols.push(this.buildDiv(displayCol, index)); break;
-                case 'CheckCollapse': Cols.push(this.buildCheckCollapse(displayCol, index)); break;
-                case 'NumberRow': Cols.push(this.buildNumberRow(displayCol, index)); break;
-                case 'SubmitButton': Cols.push(this.buildSubmitButton(displayCol, index)); break;
-                case 'TextArea': Cols.push(this.buildTextArea(displayCol, index)); break;
-                case 'DropDown': Cols.push(this.buildDropDown(displayCol, index)); break;
-                case 'LinkButton': Cols.push(this.buildLinkButton(displayCol, index)); break;
-                case 'Header': Cols.push(this.buildHeader(displayCol, index)); break;
-                default: Cols.push(<div key={index}>{displayCol.fName}<br />{JSON.stringify(col)}</div>); break;
-            }
-        })
-        Rows.push(<Row className='form-group' key={'lastRow'}>{Cols}</Row>) //last row
-
-        return Rows;
+        catch (ex) {
+            return (<br />)
+        }
     }
 
-
+    componentDidUpdate(prevProps, prevState) {
+        Object.entries(this.props).forEach(([key, val]) =>
+            prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+        );
+        if (this.state) {
+            Object.entries(this.state).forEach(([key, val]) =>
+                prevState[key] !== val && console.log(`State '${key}' changed`)
+            );
+        }
+    }
 
     handleSubmit(e) {
         e.preventDefault()
@@ -392,6 +328,7 @@ export class FormComponent extends Component {
     }
 
     render() {
+        let rows = this.buildRows(this.props.rows, this.props.data, this.props.duplicates);
         return (
             <div className='formContainer'>
                 <form
@@ -399,7 +336,7 @@ export class FormComponent extends Component {
                     model='MetFormData'
                     onSubmit={(e) => this.handleSubmit(e)}
                 >
-                    {this.buildRows(this.props.rows, this.props.data, this.props.duplicates)}
+                    {rows}
                 </form>
             </div>
         )

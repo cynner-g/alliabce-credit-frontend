@@ -29,103 +29,8 @@ class OrderNewReport extends Component {
         this.setState({ columns: this.getColumns() });
         if (Router && Router.router && Router.router.query && Router.router.query.rptId && Router.router.query.rptId.length > 0) {
             let rptId = Router.router.query.rptId;
-            get_credit_report(rptId).then(async (data) => {
-
-                let columns = this.state.columns;
-                let banks = {}
-                let numBanks = data.banks.length
-
-                //flatten the array of banks into single JSON object
-                data.banks.forEach((bank, index) => {
-                    for (const key in bank) {
-                        if (bank.hasOwnProperty(key)) {
-                            banks[`${key}_${index}`] = bank[key];
-                        }
-                    }
-                })
-                data.banks = banks;
-
-                //get array position of each item
-                let firstRow = columns.findIndex(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'banks'
-                })
-
-                let bankCols = columns.filter(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'banks'
-                })
-
-                let newBankCols = [];
-                for (let index = 0; index < numBanks; index++) {
-                    bankCols.forEach(bank => {
-                        if (bank.params && bank.params.model.split('.').length > 1) {
-                            let model = bank.params.model;
-                            model = `${model}_${index}`;
-                            bank.params.model = model;
-                        }
-                        newBankCols.push(bank)
-                    })
-                }
-
-                let startCols = columns.slice(0, firstRow);
-                let endCols = columns.splice(firstRow + bankCols.length)
-                columns = startCols.concat([...newBankCols], endCols)
-
-                // columns.splice(firstRow, bankCols.length, [...newBankCols]);
-
-                //complete
-                let suppliers = {}
-                let numSuppliers = data.suppliers.length;
-                data.suppliers.forEach((supplier, index) => {
-                    for (const key in supplier) {
-                        if (supplier.hasOwnProperty(key)) {
-                            suppliers[`${key}_${index}`] = supplier[key];
-                        }
-                    }
-                })
-                data.suppliers = suppliers;
-
-                firstRow = columns.findIndex(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'suppliers'
-                })
-
-                let supplierCols = columns.filter(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'suppliers'
-                })
-                let newSupplierCols = [];
-                for (let index = 0; index < numSuppliers; index++) {
-                    supplierCols.forEach(supplier => {
-                        if (supplier.params && supplier.params.model.split('.').length > 1) {
-                            let model = supplier.params.model;
-                            model = `${model}_${index}`;
-                            supplier.params.model = model;
-                        }
-                        newSupplierCols.push(supplier)
-                    })
-                }
-                startCols = columns.slice(0, firstRow);
-                endCols = columns.splice(firstRow + supplierCols.length)
-                columns = startCols.concat([...newSupplierCols], endCols)
-
-                //add Data to columns here
-                columns.forEach((column) => {
-                    if (column.params.model && column.params.fName == "TextRow") {
-                        let model = column.params.model;
-                        let layers = model.split('.');
-                        let d = JSON.parse(JSON.stringify(data));
-                        layers.forEach(layer => {
-                            d = d[layer]
-                        })
-                        if (column.params.fName == "TextRow")
-                            column.value = d;
-                    }
-                })
-
-                // columns.splice(firstRow, supplierCols.length, [...newSupplierCols]);
-                await this.setState({ data: data, origData: data, isEdit: true, step: 2, columns: columns });
+            get_credit_report(rptId).then((data) => {
+                this.setState({ data: data, origData: data, isEdit: true, step: 2 });
             });
         }
     }
@@ -292,7 +197,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "Bank",
                     'params': {
-                        model: 'banksTitle',
+                        model: 'banks',
                         'fName': "Header", size: 2,
                         colNum: 0
                     }
@@ -300,7 +205,7 @@ class OrderNewReport extends Component {
                 {
                     Text: "Add Bank Account",
                     'params': {
-                        model: 'banksAdd',
+                        model: 'banks',
                         onClick: this.addBank,
                         'fName': "LinkButton",
                         colNum: 0
@@ -409,7 +314,7 @@ class OrderNewReport extends Component {
                     'title': "Suppliers",
                     'params': {
                         'fName': "Header", size: 2,
-                        model: 'suppliersTitle',
+                        model: 'suppliers',
                         colNum: 0
                     }, 'dupNum': 0,
                 },
@@ -417,7 +322,7 @@ class OrderNewReport extends Component {
                     supplierId: { model: '_id', visible: false },
                     Text: "Add Supplier",
                     'params': {
-                        model: 'suppliersAdd',
+                        model: 'suppliers',
                         onClick: this.addSupplier,
                         'fName': "LinkButton",
                         colNum: 0
@@ -471,15 +376,13 @@ class OrderNewReport extends Component {
                         'text': "Submit",
                         colNum: 0
                     }
-                },
-                {
-                    'params': {
-                        'fName': "CancelButton",
-                        'text': "Cancel",
-                        colNum: 1
-                    }
                 }
             ]
+
+        if (this.state.isEdit) {
+            let rowNum = ret.findIndex(row => row.params && row.params.fName && row.params.fName === "SubmitButton")
+            ret.splice(rowNum, 1, { 'params': { 'fName': "CancelButton", 'text': "Submit", colNum: 1 } });
+        }
         return ret;
     }
 
@@ -487,7 +390,7 @@ class OrderNewReport extends Component {
         if (this.state.isEdit) {
             this.setState({ storedEdit: data, showEditSubmit: true });
         }
-
+        console.log(data)
         //upload data to server here
         this.setState({ step: 3 })
     }
@@ -606,8 +509,7 @@ class OrderNewReport extends Component {
             reports: [false, false, false, false],
             region: "Quebec",
             isModalOpen: false,
-            reportList: null,
-            isEdit: false
+            reportList: null
         })
     }
 
@@ -771,9 +673,6 @@ class OrderNewReport extends Component {
             )
         }
         else if (this.state.step == 2 && !this.state.isEdit) {
-            let rows = this.state.columns
-            console.log(rows);
-            // this.state.columns
             return (
                 <>
                     <Header />
@@ -809,20 +708,17 @@ class OrderNewReport extends Component {
 
                             </Col>
                             <Col>
-                                <FormComponent rows={rows}
+                                <FormComponent rows={[...this.state.columns]}
+                                    data={{ ...this.state.data }}
                                     submit={this.submit}
-                                />
+                                    duplicates={['banks', 'suppliers']} />
                             </Col>
                         </Row>
                     </Container>
                 </>
             )
-            //data={{ ...this.state.data }}
-            // duplicates={['banks', 'suppliers']}
         }
         else if (this.state.step == 2 && this.state.isEdit) {
-            let rows = this.state.columns
-            console.log(rows);
             return (
                 <>
                     <Modal
@@ -875,17 +771,16 @@ class OrderNewReport extends Component {
 
                             </Col>
                             <Col>
-                                <FormComponent rows={rows}
+                                <FormComponent rows={[...this.state.columns]}
+                                    data={{ ...this.state.data }}
                                     submit={this.submit}
-                                    cancel={() => this.setState({ data: this.state.origData })}
-                                />
+                                    cancel={this.setState({ data: this.state.origData })}
+                                    duplicates={['banks', 'suppliers']} />
                             </Col>
                         </Row>
                     </Container>
                 </>
             )
-            //data={{ ...this.state.data }}
-            // duplicates={['banks', 'suppliers']}
         }
         else if (this.state.step == 3) {
             return (

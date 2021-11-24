@@ -82,7 +82,7 @@ export const cancel_credit_report = (rptId) => {
 }
 
 export const get_credit_report = (rptId) => {
-    console.log(rptId)
+
     if (!rptId) return;
     let body;
     try {
@@ -99,7 +99,6 @@ export const get_credit_report = (rptId) => {
     var myReq = new Request(`${process.env.API_URL}/report/order-details`, init);
     let ret = fetch(myReq)
         .then((response) => {
-            console.log("Response: ", response)
             if (response.ok) {
                 return response;
             }
