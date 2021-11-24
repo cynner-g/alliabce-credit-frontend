@@ -119,17 +119,17 @@ class DynamicTable extends Component {
                                     break;
                                 case 'checkbox':
                                     if (column.addable) {
-                                    if (!ret) ret = (
-                                        <Table.HeaderCell
-                                            style={{ border: this.props.border }}
-                                            key={keyName}
-                                            name={keyName}
-                                            tabstop='false'
-                                            className={classType}
-                                        >
-                                            <Checkbox defaultChecked={false} />
-                                        </Table.HeaderCell>
-                                    )
+                                        if (!ret) ret = (
+                                            <Table.HeaderCell
+                                                style={{ border: this.props.border }}
+                                                key={keyName}
+                                                name={keyName}
+                                                tabstop='false'
+                                                className={classType}
+                                            >
+                                                <Checkbox defaultChecked={false} />
+                                            </Table.HeaderCell>
+                                        )
                                     }
                                     else {
                                         <Table.HeaderCell></Table.HeaderCell>
@@ -267,8 +267,8 @@ class DynamicTable extends Component {
                     //print out column
 
                     let changeContent = (e) => { //handles checkbox changes
-                        let ret = { id: row.id };
-                        // let value = e.target.checked;
+                        let ret = { id: rowId };
+                        // Which column gets which value
                         ret[column.colName] = e.target.checked ? 1 : 0;
                         // this.getRowData(e, 'UPDATE')
                         this.props.UpdateFn(ret)
@@ -284,8 +284,12 @@ class DynamicTable extends Component {
                     }
                     if (this.props.border) style.border = this.props.border;
 
+
                     let text = row[column.colName] ? row[column.colName].toString() : "";
                     if (text.trim() === 'null') text = "";
+
+                    let subText = row[column.subText] ? row[column.subText].toString() : "";
+                    if (subText.trim() === 'null') subText = "";
 
                     let keyName = 'row_' + rowId + '_col_' + column.colName.replace(' ', '_')
                     let classType = `dataTable_cell ${keyName}`;
@@ -314,7 +318,7 @@ class DynamicTable extends Component {
                                         defaultChecked={checked}
                                         className={`checkbox  ${classType}`}
                                         disabled={!column.editable}
-                                        onChange={(e) => changeContent(e)}
+                                        onChange={(e) => changeContent(e, column, rowId)}
                                     />
                                 </Table.Cell>
                             )
@@ -404,6 +408,7 @@ class DynamicTable extends Component {
                                         disabled={!column.editable}
                                         onBlur={(e) => this.getRowData(e, row.id, 'UPDATE', column)}
                                     />
+                                    <div style={{ fontSize: '9px', marginTop: '-5px' }}>{subText}</div>
                                 </Table.Cell>
                             )
                         }
@@ -465,18 +470,27 @@ class DynamicTable extends Component {
                 )
 
             } else if (params.data) {
-                console.log("424 - params.data: ", params.data)
                 ret = [];
+
                 let start = +this.state.currentRow;
-                let end = start + this.props.paging;
+                let end = this.props.paging ? start + this.props.paging : params.data.length;
+
                 if (end >= params.data.length) { end = params.data.length };
                 for (let index = start; index < end; index++) {
                     let row = params.data[index];
-                //ret= (params.data.map((row, index) => {
+                    //ret= (params.data.map((row, index) => {
                     //make sure that each table as an id column regardless of passed in data.
                     //required for calculations, looking for 'row.id' to process in the getRowData function
                     if (!row['id']) {
-                        row['id'] = id++;
+                        //check columns for an ID column
+                        let idCol, idCols = params.columns.filter(col => col.type == "id");
+                        if (idCols.length > 0) idCol = idCols[0];
+                        if (idCol) {
+                            row['id'] = row[idCol.colName]
+                        }
+                        else {
+                            row['id'] = id++;
+                        }
                     }
 
                     ret.push(
@@ -663,20 +677,8 @@ class DynamicTable extends Component {
 
         if (submitFn === undefined) return;
         if (submitFn === null) return;
-        // try {
-        //     //get the containing table row
-        //     while (target.tagName !== "TR") {
-        //         target = target.parentElement;
-        //     }
-        // }
-        // catch (ex) {
-        //     console.log(ex.message);
-        // }
 
         //set update flag
-        // let target = document.getElementById(itemId;
-        // if(!target) return;
-        // let target=e.target.parentElement;
         let update = true;
         let targetCell;
         // this.props.columns.map((column) => {
@@ -710,7 +712,7 @@ class DynamicTable extends Component {
                 //reference each cell by the column title and add to return json
                 targetCell = document.getElementById(itemId);
                 let validation = document.getElementById(valCol);
-            // let targetCell = target.cells[cellName];
+                // let targetCell = target.cells[cellName];
 
                 if (targetCell) {
 
@@ -862,44 +864,123 @@ class DateCol extends Component {
         }
     }
 
+    renderDate = () => {
+        let dt = this.formatDate(this.props.text);
+        if (this.props.column.format && Date.parse(dt)) {
+            dt = this.formatDate(dt, this.props.column.format)
+        }
+
+
+        return (
+            <>
+                <ContentEditable
+                    className={this.props.className}
+                    html={dt}
+                    disabled={!this.props.column.editable}
+                    onFocus={(e) => this.handleColFocus(e)}
+                    ref={this.dateRef}
+                />
+                <input
+                    type="date"
+                    id="DATE_CALENDAR"
+                    className="dataTable_DateInput"
+                    style={{
+                        display: 'none', position: 'relative', top: '-20px', height: '50px'
+                    }}
+                    onFocus={(e) => e.stopPropagation()}
+                    ref={this.popupRef}
+                    onKeyPress={(e) => { if (e.keyCode === 13) e.target.parentElement.focus(); }}
+                    tabIndex={this.props.tabIndex}
+                />
+            </>
+        )
+    }
+
     render() {
-        // console.log("Props: ", this.props)
-        try {
-            let dt = this.props.text;
-            if (this.props.column.format && Date.parse(dt)) {
-                dt = formatDate(dt, this.props.column.format)
+        let dt = this.props.text;
+        let timeString = "";
+        if (this.props.column.timeSize || this.props.column.timeLocation) {
+
+            let time = new Date(Date.parse(dt));
+
+
+            timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+
+            let timeLocation = this.props.column.timeLocation || "right";
+
+            // console.log("Props: ", this.props)
+            try {
+
+                if (this.props.column.format && Date.parse(dt)) {
+                    dt = formatDate(dt, this.props.column.format)
+                }
+
+
+                switch (timeLocation) {
+                    case 'above':
+                        return (
+                            <Table.Cell
+                                name={this.props.column.colName.replace(' ', '_')}
+                                style={{ ...this.props.style, whiteSpace: 'nowrap' }}
+                                tabstop='false'
+                            >   {this.renderDate()}<br />
+                                <span style={{ fontSize: this.props.column.timeSize + "px" }}>{timeString}</span>
+                            </Table.Cell>
+                        );
+                        break;
+                    case 'below':
+                        return (
+                            <Table.Cell
+                                name={this.props.column.colName.replace(' ', '_')}
+                                style={{ ...this.props.style, whiteSpace: 'nowrap' }}
+                                tabstop='false'
+                            >
+                                {this.renderDate()}
+                                <div style={{ fontSize: this.props.column.timeSize + "px", marginTop: '-5px' }}>{timeString}</div>
+                            </Table.Cell>
+                        );
+                        break;
+                    case 'left':
+                        <Table.Cell
+                            name={this.props.column.colName.replace(' ', '_')}
+                            style={{ ...this.props.style, whiteSpace: 'nowrap' }}
+                            tabstop='false'
+                        >   <span style={{ fontSize: this.props.column.timeSize + "px" }}>{timeString}</span>
+                            {this.renderDate()}
+
+                        </Table.Cell>
+                        break;
+                    default: <Table.Cell
+                        name={this.props.column.colName.replace(' ', '_')}
+                        style={{ ...this.props.style, whiteSpace: 'nowrap' }}
+                        tabstop='false'
+                    >
+                        {this.renderDate()}<span style={{ fontSize: this.props.column.timeSize + "px" }}>{timeString}</span>
+                    </Table.Cell>
+                        break;
+                }
             }
+            catch (ex) {
+                console.log(ex.message);
+                return (<Table.Cell></Table.Cell>)
+            }
+
+
+        }
+        else {
+
             return (
                 <Table.Cell
                     name={this.props.column.colName.replace(' ', '_')}
-                    style={this.props.style}
+                    style={{ ...this.props.style, whiteSpace: 'nowrap' }}
                     tabstop='false'
                 >
-                    <ContentEditable
-                        className={this.props.className}
-                        html={dt}
-                        disabled={!this.props.column.editable}
-                        onFocus={(e) => this.handleColFocus(e)}
-                        ref={this.dateRef}
-                    />
-                    <input
-                        type="date"
-                        id="DATE_CALENDAR"
-                        className="dataTable_DateInput"
-                        style={{
-                            display: 'none', position: 'relative', top: '-20px', height: '50px'
-                        }}
-                        onFocus={(e) => e.stopPropagation()}
-                        ref={this.popupRef}
-                        onKeyPress={(e) => { if (e.keyCode === 13) e.target.parentElement.focus(); }}
-                        tabIndex={this.props.tabIndex}
-                    />
+                    {this.renderDate()}
                 </Table.Cell>
-            );
+            )
         }
-        catch (ex) {
-            console.log(ex.message);
-        }
+
     }
 }
 

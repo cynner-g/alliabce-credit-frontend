@@ -123,11 +123,67 @@ export const order_details = (rptId) => {
 }
 
 export const resubmit_report = (rptData => {
+    init.method = "POST"
+    init.body = { ...init.body, ...rptData }
+    init.body = JSON.stringify(init.body);
 
+    var myReq = new Request(`${process.env.API_URL}/report/`, init); //order-report
+    console.log('fetching');
+    let ret = fetch(myReq)
+        .then((response) => {
+            console.log("Response: ", response)
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error("Error " + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, (error) => {
+            var err = new Error(error.message);
+            throw err;
+        })
+        .then((response) => { return response.json() })
+        .then((data) => {
+            return data.data
+        })
+        .catch((err) => {
+
+        })
+    return ret;
 })
 
-export const quick_order_report = (rptData => {
+export const order_report = (rptData => {
+    init.method = "POST"
+    init.body = { ...init.body, ...rptData }
+    init.body = JSON.stringify(init.body);
 
+    var myReq = new Request(`${process.env.API_URL}/report/order-report`, init);
+    console.log('fetching');
+    let ret = fetch(myReq)
+        .then((response) => {
+            console.log("Response: ", response)
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error("Error " + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, (error) => {
+            var err = new Error(error.message);
+            throw err;
+        })
+        .then((response) => { return response.json() })
+        .then((data) => {
+            return data.data
+        })
+        .catch((err) => {
+
+        })
+    return ret;
 })
 
 export const create_link_token = (rptData => {

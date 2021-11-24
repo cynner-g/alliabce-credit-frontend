@@ -10,7 +10,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from "./index.module.css";
 
-const DatabaseReports = function () {
+const SearchNewDatabaseReport = function () {
     const [data, setData] = useState({
         original: null,
         filtered: null
@@ -21,6 +21,8 @@ const DatabaseReports = function () {
         EndDate: '',
         Type: ""
     })
+
+    const [selected, updatePurchase] = useState({});
 
     const filterDates = (update) => {
         setFilters(filters => ({
@@ -107,16 +109,29 @@ const DatabaseReports = function () {
         }))
     }
 
-    const downloadReport = (e, colName, id) => {
-        console.log(`downloading report ${id}`);
-    }
+    const updateSelected = (row => {
+        let newSelected = selected;
+        newSelected[row.id] = row.toPurchase;
+        updatePurchase(newSelected);
+    })
 
-    const searchNewReport = () => {
+    const buyNewReports = () => {
         // const router = withRouter()
-        let URL = "/database-reports/search-new-report"
-        if (true) {//user is admin
-            Router.push({ pathname: URL })
+        console.log(selected);
+        let sel = [];
+        for (const key in selected) {
+            if (selected.hasOwnProperty(key)) {
+                if (selected[key] == 1) {//if it has been selected
+                    sel.push(key)
+                }
+            }
         }
+        console.log(sel)
+
+        // let URL = "/credit-reports/order-New-Report"
+        // if (true) {//user is admin
+        //     Router.push({ pathname: URL, query: { rptId: rptId || null } })
+        // }
     }
 
     const colData = [
@@ -124,6 +139,13 @@ const DatabaseReports = function () {
             colName: "_id",
             visible: false,
             type: "id"
+        },
+        {
+            colName: "toPurchase",
+            visible: true,
+            type: 'checkbox',
+            displayName: 'Select',
+            editable: true
         },
         {
             colName: 'reference_id',
@@ -162,15 +184,7 @@ const DatabaseReports = function () {
             editable: false,
             visible: true,
             subText: false
-        },
-        {
-            colName: 'actions',
-            displayName: "Actons",
-            onClick: downloadReport,
-            editable: false,
-            visible: true,
-            type: "link"
-        },
+        }
     ]
 
     const reportTypes = [
@@ -210,9 +224,7 @@ const DatabaseReports = function () {
 
     const getReportData = () => {
         let rpt = rptData;
-        rpt.forEach(row => {
-            row.actions = 'Download'
-        })
+
         setData({
             original: rpt,
             filtered: rpt
@@ -252,16 +264,18 @@ const DatabaseReports = function () {
 
                     </Col>
                     <Col className={styles.filterCol + ' ' + styles.textRight}>
-                        <button className="btn btn-primary" onClick={searchNewReport}>Search New Report</button>
+                        <button className="btn btn-primary" onClick={buyNewReports}>Buy Selected Reports</button>
                     </Col>
                 </Row >
                 <Row>
                     <Col>
-                        <DynamicTable data={data.filtered} columns={[...colData]} />
+                        <DynamicTable data={data.filtered}
+                            columns={[...colData]}
+                            UpdateFn={updateSelected} />
                     </Col>
                 </Row>
             </Container >
         </>
     )
 }
-export default DatabaseReports
+export default SearchNewDatabaseReport

@@ -1,11 +1,17 @@
 import { FormComponent } from '../../components/FormComponent';
-import { order_details } from '../api/credit_reports';
 import Header from "../../components/header"
 import Router from "next/router";
 import Image from 'next/image'
 import { Component } from 'react'
 import { Container, Row, Col, Modal } from 'react-bootstrap';
+import {
+    order_details,
+    order_report,
+    resubmit_report
+} from '../api/credit_reports';
+
 import styles from "./order-New-Report.module.css";
+import Cookies from 'js-cookie'
 
 
 class OrderNewReport extends Component {
@@ -21,7 +27,8 @@ class OrderNewReport extends Component {
             isModalOpen: false,
             reportList: null,
             columns: null,
-            showEditSubmit: false
+            showEditSubmit: false,
+            warning: null
         }
     }
 
@@ -130,6 +137,8 @@ class OrderNewReport extends Component {
         }
     }
 
+
+    //Display JSON fucntions
     addBank = () => {
         let columns = this.state.columns;
         let banks = columns.filter(col => col.params.model && col.params.model.startsWith("banks"))
@@ -177,7 +186,6 @@ class OrderNewReport extends Component {
                     }
                 },
                 {
-
                     'title': "Legal Business Name",
                     'params': {
                         'model': "general_details.legal_name",
@@ -483,20 +491,27 @@ class OrderNewReport extends Component {
         return ret;
     }
 
-    submit = (data) => {
-        if (this.state.isEdit) {
+    //Button Functions
+    submit = (data) => { //submit from the form component
+        if (this.state.isEdit) { //if we are editing page
             this.setState({ storedEdit: data, showEditSubmit: true });
         }
 
-        //upload data to server here
+        //upload data to server here - Resubmit_report(data)
+        order_report(data).then((data) => {
+            console.log(data)
+        });
         this.setState({ step: 3 })
     }
 
     resubmit = (val) => {
+
         let data = this.state.storedEdit;
         //upload data to server
+        resubmit_report(data)
     }
 
+    //Step 1 functions
     toggleReport = (reportID) => {
         let reports = this.state.reports;
         let enabled = reports[reportID] ? false : true;
@@ -519,41 +534,74 @@ class OrderNewReport extends Component {
         this.setState({ region: region })
     }
 
+    //server call functions
     uploadApplication = (e) => {
-        let fileComponent = e.target.previousSibling;
-
+        this.setState({ requestFile: e.target.files[0] })
     }
 
+
     quickOrder = (resp) => {
+        if (this.state.requestFile == null) {
+            this.setState({ warning: "A credit application file is required before proceeding" })
+            return;
+        }
+
         console.log("Resp: ", resp)
+        //if the Quick Order button has been selected pre-popup
         if (resp == undefined)
             this.setState({ isModalOpen: true })
         else {
+            //button from modal popup - closes modal
             this.setState({ isModalOpen: false })
-            if (!resp) {
-                //send quick order data to server
+            if (resp) { //if confirm is clicked
+
+                let reports = this.state.reports
+                let ordered_report = [];
+                let rptList = ["Incorporate", "Bank", "Legal", "Suppliers"]
+                for (i = 0; i < 4; i++) {
+                    if (reports[i]) ordered_report.push(rptList[i])
+                }
+
+                data.append('credit_application', this.state.requestFile);
+                data.append('company_id', Cookies.get("company_id"));
+                data.append('region', this.state.region);
+                data.append('is_quick_report', true);
+                data.append('ordered_report', ordered_report);
+
+                order_report(data).then(data => {
+                    //show "order successful" status message - timed out
+                });
+
                 this.setState({ step: 4 })
             }
-            else {
+            else { //move to next step
                 this.nextStep();
             }
         }
     }
 
+    //step functions
     nextStep = () => {
-        //build list of items for the side of the page under steps
 
+        //check to see if credit application file selected
+        if (this.state.requestFile == null) {
+            this.setState({ warning: "A credit application file is required before proceeding" })
+            return;
+        }
+
+        //build list of items for the side of the page under steps
         let reports = this.state.reports;
         let rpts = [];
-        let rptList = ["Incorporated", "Bank", "Legal", "Suppliers"]
+        let rptList = ["Incorporate", "Bank", "Legal", "Suppliers"]
         let columns = this.state.columns;
         //general is always listed
         rpts.push(<li>General</li>);
         reports.forEach((report, idx) => {
+            //for each report if it is selected to be requested
             if (report || idx == 2) {
                 rpts.push(<li>{rptList[idx]}</li>)
             }
-            else {
+            else { //if this report data is not in the selected list
                 //find and remove unused items from the form components
                 let field = ''
                 //get form component abbreviation for class of report
@@ -565,20 +613,20 @@ class OrderNewReport extends Component {
                 }
                 try {
                     if (field && field.length > 0) {
-                    let startRow = columns.findIndex(row => {
-                        return row.params.model && row.params.model.startsWith(field)
-                    });
-                    let numRows = columns.filter(row => {
-                        return row.params.model && row.params.model.startsWith(field)
-                    })
-                    numRows = numRows.length;
+                        let startRow = columns.findIndex(row => {
+                            return row.params.model && row.params.model.startsWith(field)
+                        });
+                        let numRows = columns.filter(row => {
+                            return row.params.model && row.params.model.startsWith(field)
+                        })
+                        numRows = numRows.length;
 
-                    //once I have start position and length
-                    //remove items from the columns list
-                    if (startRow >= 0) {
-                        columns.splice(startRow, numRows);
+                        //once I have start position and length
+                        //remove items from the columns list
+                        if (startRow >= 0) {
+                            columns.splice(startRow, numRows);
+                        }
                     }
-                }
                 }
                 catch (ex) { }
 
@@ -588,7 +636,6 @@ class OrderNewReport extends Component {
         //after all is complete update the state, causing a repost with correct data
         this.setState({ columns: columns, reportList: rpts, step: 2 });
     }
-
 
     reportsPanel = () => {
         let URL = "/credit-reports"
@@ -615,6 +662,20 @@ class OrderNewReport extends Component {
         if (this.state.step == 1) {
             return (
                 <>
+                    <Modal
+                        show={this.state.warning !== null}
+                        onHide={() => this.quickOrder(false)}
+                        backdrop="static">
+                        <Modal.Header closeButton>
+                            <Modal.Title>Information Needed</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>{this.state.warning}</Modal.Body>
+                        <Modal.Footer>
+                            <button className="btn btn-primary" onClick={() => this.setState({ warning: null })}>;
+                                Continue
+                            </button>
+                        </Modal.Footer>
+                    </Modal>
                     <Modal
                         show={this.state.isModalOpen}
                         onHide={() => this.quickOrder(false)}
@@ -747,10 +808,10 @@ class OrderNewReport extends Component {
                                             <div className={styles.stepContainer}>
 
                                                 <label className="form-label" htmlFor="customFile">Upload credit application</label>
-                                                <input type="file" className="form-control" id="customFile" />
-                                                <button onClick={e => this.uploadApplication(e)}>Upload</button>
+                                                <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
                                             </div>
                                         </Col>
+
                                     </Row>
                                     <Row>
                                         <Col sm={10}>
@@ -826,8 +887,8 @@ class OrderNewReport extends Component {
             return (
                 <>
                     <Modal
-                        show={this.state.isModalOpen}
-                        onHide={() => this.quickOrder(false)}
+                        show={this.state.showEditSubmit}
+                        onHide={() => this.setState({ showEditSubmit: false })}
                         backdrop="static">
                         <Modal.Header closeButton>
                             <Modal.Title>Resubmit Form</Modal.Title>
