@@ -46,10 +46,10 @@ const Companies = ({ data, page, totalPage }) => {
 
                             <tr key={item._id}>
                                 {/* {post.title} */}
-                                <td>{item._id}</td>
+                                <td>{item?._id}</td>
                                 <td>{item?.company_name}</td>
                                 <td>{item?.date_added}</td>
-                                <td>{item?.sub_companies_count}</td>
+                                <td>{item?.group_data.join(", ")}</td>
                                 <td>{item?.sub_companies_count}</td>
                                 <td>
                                     <>

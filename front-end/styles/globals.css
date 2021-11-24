@@ -68,6 +68,45 @@ header {
   right: 16px;
 }
 
+h1 {
+  font-size: 56px;
+  color: #517BCC;
+  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
+}
+
+.welcome, .subheading {
+  font-size: 36px;
+  color: #747474;
+}
+
+.gmsg {
+  font-size: 18px;
+  color: #747474;
+  margin-bottom: 25px;
+}
+
+.form_wrap label {
+  display: none;
+}
+
+.form_wrap button {
+  width: 100%;
+  margin-top: 25px;
+}
+.center_nav{
+  text-align: center;
+}
+.logowrap {
+  margin-bottom: 25px;
+}
+.msgwrap {
+  background: #E6EEFF;
+  color: #517BCC;
+  font-size: 18px;
+  padding: 10px 15px;
+  margin-bottom: 30px;
+}
 h2 {
   color: #406DCD;
   font-size: 26px;
@@ -131,6 +170,19 @@ input[type=text] {
   background: #FFF;
   border: 1px solid #406DCD;
   color: #406DCD;
+}
+
+.inactivebtn {
+  background: #CF5A5A;
+  font-family: Roboto;
+  /* font-style: Medium; */
+  font-size: 14px;
+  color: #FFF;
+  padding: 1px 6px;
+}
+
+.active {
+  border-bottom: 3px solid #517BCC;
 }
 
 /*Grid*/
