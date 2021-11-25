@@ -238,7 +238,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     </div>
 
                     <div className="row">
-                        <div className="col">
+                        <div className="col-5">
                             <label htmlFor="portal_language" className="form-label">Portal Language</label>
                             <select className="form-select" name="portal_language" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
                                 <option selected>Select Language</option>
@@ -248,7 +248,7 @@ const addCompany = ({ industry, group, pricing }) => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col">
+                        <div className="col-5">
                             <label htmlFor="industry_id" className="form-label">Industry</label>
                             <select className="form-select" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
                                 <option selected>Open this select menu</option>
@@ -259,7 +259,7 @@ const addCompany = ({ industry, group, pricing }) => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col">
+                        <div className="col-5">
                             <label htmlFor="groups" className="form-label">Add to group</label>
                             <div className="chkox">
                                 {group?.data.map((item) => (
@@ -275,7 +275,7 @@ const addCompany = ({ industry, group, pricing }) => {
 
                     <h3 className="subtitle">Configurations</h3>
                     <div className="row">
-                        <div className="col">
+                        <div className="col-5">
                             <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
                             <select className="form-select" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
                                 <option selected>Pricing Chart</option>
@@ -340,7 +340,7 @@ const addCompany = ({ industry, group, pricing }) => {
                         </Modal.Header>
                         <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
                         <Modal.Footer>
-                            <button type="button" className="btn btn-primary" onClick={handleClose}>Cancel</button>
+                            <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
                             <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
                         </Modal.Footer>
                     </Modal>

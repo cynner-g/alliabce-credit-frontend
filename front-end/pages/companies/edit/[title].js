@@ -10,6 +10,7 @@ import Header from "../../../components/header"
 
 const editCompanies = ({ industry, group, pricing, data, companyID }) => {
     const [show, setShow] = useState(false);
+    const [ischecked, setIsChecked] = useState([]);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -116,7 +117,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
         data1.append('company_logo_en', company_logo_en);
         data1.append('company_logo_fr', company_logo_fr);
         data1.append('country_code', query.country_code);
-        data1.append('groups', query.groups);
+        data1.append('groups', ischecked);
         data1.append('is_active', query.is_active);
         data1.append('company_id', companyID);
 
@@ -139,17 +140,36 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
     }
 
 
+    const handleOnChange = (e) => {
+        var isChecked1 = e.target.checked;
+        var item = e.target.value;
+
+        // console.log(item)
+
+        if (isChecked1) {
+            // setIsChecked([...ischecked, item]);
+            setIsChecked(oldArray => [...oldArray, item]);
+            // alert(1)
+        } else {
+            // alert(2)
+            let arr = ischecked.filter(val => val !== item);
+            setIsChecked(arr);
+        }
+        // console.log(ischecked)
+    };
 
     return (
         <>
             <Header />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
+                    <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
+                    <li><Link href="/companies"><a className="nav-link">{query.company_name_en}</a></Link></li>
                     <li>Edit Company</li>
                 </ul>
             </div>
-            <div className="col-lg-7">
+            <div className="col-lg-7 companyform">
                 <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewCompany(e)}>
                     <div className="row">
                         <div className="col">
@@ -195,9 +215,11 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="address_line" className="form-label">Address</label>
-                        <input type="text" name="address_line" className="form-control" id="address_line" placeholder="" value={query.address_line} onChange={handleChange()} />
+                    <div className="row">
+                        <div className="col">
+                            <label htmlFor="address_line" className="form-label">Address</label>
+                            <input type="text" name="address_line" className="form-control" id="address_line" placeholder="" value={query.address_line} onChange={handleChange()} />
+                        </div>
                     </div>
                     <div className="row">
                         <div className="col">
@@ -214,54 +236,64 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                        <select className="form-select form-select-sm" name="portal_language" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Select Language</option>
-                            <option value="en">English</option>
-                            <option value="fr">French</option>
-                        </select>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="portal_language" className="form-label">Portal Language</label>
+                            <select className="form-select "  value={query.portal_language} name="portal_language" id="portal_language" aria-label="" onChange={handleChange()}>
+                                <option selected>Select Language</option>
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="industry_id" className="form-label">Industry</label>
-                        <select className="form-select form-select-sm" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Open this select menu</option>
-                            {industry?.data.map((item) => (
-                                <option value={item._id}>{item.name}</option>
-                            ))}
-                        </select>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="industry_id" className="form-label">Industry</label>
+                            <select className="form-select" value={query.industry_id} name="industry_id" id="industry_id" aria-label="" onChange={handleChange()}>
+                                <option selected>Open this select menu</option>
+                                {industry?.data.map((item) => (
+                                    <option value={item._id}>{item.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="groups" className="form-label">Add to group</label>
-                        <>
-                            {group?.data.map((item) => (
-                                <div className="form-check">
-                                    <label className="form-check-label" htmlFor={item._id}>{item.name}</label>
-                                    <input className="form-check-input" name="groups" type="checkbox" value={item._id} id={item._id} />
-                                </div>
-                            ))}
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="groups" className="form-label">Add to group</label>
+                            <div className="chkox">
+                                {group?.data.map((item) => (
+                                    <div className="form-check">
+                                        <label className="form-check-label" htmlFor={item._id}>{item.name}</label>
+                                        <input className="form-check-input" name="groups" type="checkbox" value={item._id} id={item._id}  onChange={(e) => handleOnChange(e)} />
+                                    </div>
+                                ))}
 
 
-                        </>
-                    </div>
-                    <div>
-                        <label htmlFor="is_active" className="form-label">Active Status</label>
-                        <select className="form-select form-select-sm" name="is_active" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Active</option>
-                            <option value="1">Deactivate</option>
 
-                        </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="is_active" className="form-label">Active Status</label>
+                            <select className="form-select" value={query.is_active == true ? 0 : 1} name="is_active" id="pricing_chart_id" aria-label="" onChange={handleChange()}>
+                                <option value="0">Active</option>
+                                <option value="1">Deactivate</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <h3>Configurations</h3>
-                    <div>
-                        <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
-                        <select className="form-select form-select-sm" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Pricing Chart</option>
-                            {pricing?.data.map((item) => (
-                                <option value={item._id}>{item.name}</option>
-                            ))}
-                        </select>
+                    <h3 className="subtitle">Configurations</h3>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
+                            <select className="form-select" value={query.pricing_chart_id} name="pricing_chart_id" id="pricing_chart_id" aria-label="" onChange={handleChange()}>
+                                <option selected>Pricing Chart</option>
+                                {pricing?.data.map((item) => (
+                                    <option value={item._id}>{item.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <div className="row">
@@ -297,17 +329,24 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <button type="button" className="btn btn-primary" onClick={handleShow}>Update Company</button>
+                    <div className="row">
+                        <div className="col">
+                            <p>&nbsp;</p>
+                            <button type="button" className="btn btn-primary" onClick={handleShow}>Update Company</button>
+                        </div>
                     </div>
-
+                    <div className="row">
+                        <div className="col">
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
                     <Modal show={show} onHide={handleClose}>
                         <Modal.Header closeButton>
                             <Modal.Title>Add Company</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
                         <Modal.Footer>
-                            <button type="button" className="btn btn-primary" onClick={handleClose}>Cancel</button>
+                            <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
                             <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
                         </Modal.Footer>
                     </Modal>
