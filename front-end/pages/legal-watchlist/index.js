@@ -203,8 +203,10 @@ class LegalWatchlist extends Component {
         company.watchList = this.state.currentWatchlist;
         let data = this.state.data;
         let provinces = [];
+
         for (let province in company.provinces) {
-            if (company.provinces.hasOwnProperty(province)) {
+            if (company.provinces.ALL) { provinces = ["ALL"] }
+            else if (company.provinces.hasOwnProperty(province)) {
                 if (company.provinces[province] == true) {
                     provinces.push(province)
                 }
@@ -518,6 +520,7 @@ class LegalWatchlist extends Component {
 
     getProvinces = () => {
         let prov = [
+            { name: "All", abbr: "ALL" },
             { name: "Ontario", abbr: "ON" },
             { name: "Quebec", abbr: "QC" },
             { name: "Nova Scotia", abbr: "NS" },
@@ -528,9 +531,6 @@ class LegalWatchlist extends Component {
             { name: "Saskatchewan", abbr: "SK" },
             { name: "Alberta", abbr: "AB" },
             { name: "Newfoundland and Labrador", abbr: "NL" },
-            { name: "Northwest Territories", abbr: "NT" },
-            { name: "Yukon", abbr: "YT" },
-            { name: "Nunavut", abbr: "NU" },
         ]
         return prov;
     }
