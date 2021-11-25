@@ -17,6 +17,7 @@ class LegalWatchlist extends Component {
             watchedCompanies: [],
             watchLists: [],
             tmpWatched: [],
+            emails: [],
             currentPage: COMPANIES,
             currentWatchlist: null,
             showCreate: false,
@@ -210,7 +211,7 @@ class LegalWatchlist extends Component {
             }
         }
         company.dateAdded = new Date();
-        company.provinceArray = provinces
+        company.provinceArray = provinces.join();
         data.push(company);
         this.setState({ data: data });
     }
@@ -257,8 +258,24 @@ class LegalWatchlist extends Component {
         this.setState({ addCompany: true });
     }
 
+    buildCompanyButtons = () => {
+        if (!this.state.emailList) {
+            return (<>
+                <button className='btn btn-primary' id='btnCompanies' onClick={() => this.setState({ addCompany: true })}>Add Company</button>
+                <button className='btn btn-primary' id='btnEmails' onClick={() => this.setState({ emailList: true })}>Email List</button>
+                <br /><br />
+            </>)
+        }
+        else {
+            return (
+                <button className='btn btn-primary' onClick={() => this.setState({ emailList: false })}>Company List</button>
+            )
+        }
+    }
+
+
     addCompanies = () => {
-        return (
+        let ret = (
             <>
                 <Container>
                     <Row>
@@ -267,8 +284,7 @@ class LegalWatchlist extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <button className='btn btn-primary' id='btnCompanies' onClick={() => this.setState({ addCompany: true })}>Add Companies</button>
-                            <br /><br />
+                            {this.buildCompanyButtons()}
                         </Col>
                         <Col></Col>
                         <Col></Col>
@@ -281,15 +297,22 @@ class LegalWatchlist extends Component {
                     </Row>
                 </Container>
             </>
-        )
+        );
+        return ret;
     }
 
     showCompanies = (list) => {
-
         return (<>
             <Container>
                 <Row>
                     {this.headData()}
+                </Row>
+                <Row>
+                    <Col>
+                        {this.buildCompanyButtons()}
+                    </Col>
+                    <Col></Col>
+                    <Col></Col>
                 </Row>
                 <Row>
 
@@ -309,11 +332,14 @@ class LegalWatchlist extends Component {
                                     <tr>
                                         <td>{row.name}</td>
                                         <td>{row.refNum}</td>
-                                        <td>{row.dateAdded}</td>
-                                        <td>{row.provinceArray.join()}</td>
+                                        <td>
+                                            {new Date(row.dateAdded).toLocaleDateString()}<br />
+                                            <div style={{ marginTop: '-5px', fontSize: '9px' }}>
+                                                {new Date(row.dateAdded).toLocaleTimeString()}</div></td>
+                                        <td>{row.provinceArray}</td>
                                         <td></td>
                                         <td>
-                                            <button className={styles.tblButton + ' btn btn-primary'}>View More</button>
+                                            {/* <button className={styles.tblButton + ' btn btn-primary'}>View More</button> */}
                                             <button className={styles.tblButton + ' btn btn-warning'}>Remove</button>
                                         </td>
                                     </tr>
@@ -325,13 +351,96 @@ class LegalWatchlist extends Component {
             </Container>
         </>)
     }
+    updateNewEmail = (e) => {
+        this.setState({ tmpEmail: e.target.value })
+    }
+    saveNewEmail = () => {
+        let emails = this.state.emails;
+        let tmpEmail = this.state.tmpEmail
+        if (emails.findIndex(email =>
+            email.email == tmpEmail &&
+            email.watchlist == this.state.currentWatchlist) == -1) {
+
+            emails.push({ email: tmpEmail, watchlist: this.state.currentWatchlist, dateAdded: new Date() });
+            this.setState({ emails: emails, tmpEmail: null });
+        }
+    }
+    removeEmail = (email) => {
+        let emails = this.state.emails
+        for (let i = emails.length - 1; i >= 0; i--) {
+            let eml = emails[i];
+            if (eml.email == email && eml.watchList == this.state.currentWatchlist) {
+                emails.splice(i, 1);
+                this.setState({ emails: emails });
+                return; //only 1 to remove
+            }
+        }
+    }
+
+    showEmailList = (list) => {
+        return (
+            <Container>
+                <Row>
+                    {this.headData()}
+                </Row>
+                <Row>
+                    <Col>
+                        {this.buildCompanyButtons()}
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col>
+                        <input type='text' placeholder='Enter Business Email' onChange={(e) => this.updateNewEmail(e)} />
+                        <button className='btn btn-primary' id='btnCompanies' onClick={() => this.saveNewEmail()}>Add Email</button>
+                        <br /><br />
+                    </Col>
+                    <Col></Col>
+                    <Col></Col>
+                </Row>
+                <Row>
+
+                    <table>
+                        <thead>
+                            <tr><th>Email</th>
+                                <th>Date Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.emails.filter(item => item.watchlist == this.state.currentWatchlist).map(row => {
+                                return (
+                                    <tr>
+                                        <td>{row.email}</td>
+                                        <td>
+                                            {new Date(row.dateAdded).toLocaleDateString()}<br />
+                                            <div style={{ marginTop: '-5px', fontSize: '9px' }}>
+                                                {new Date(row.dateAdded).toLocaleTimeString()}</div></td>
+
+                                        <td>
+                                            {/* <button className={styles.tblButton + ' btn btn-primary'}>View More</button> */}
+                                            <button className={styles.tblButton + ' btn btn-warning'} onClick={() => this.removeEmail(row.email)}>Remove</button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </Row>
+            </Container>
+        )
+    }
 
     mainPage = () => {
         let flag = -1;
         let data = this.state.watchLists;
         let list = [];
         console.log("DATA: ", data)
-        if (!data || data.length === 0) {
+        if (this.state.emailList == true) {
+
+            flag = 3;
+        }
+        else if (!data || data.length === 0) {
             //check to see if we have any watchlists
             let lists = this.state.watchLists;
             if (!lists || lists.length === 0) {
@@ -358,7 +467,8 @@ class LegalWatchlist extends Component {
         switch (flag) {
             case 0: ret = this.createWatchList(); break;
             case 1: ret = this.addCompanies(); break;
-            case 2: ret = this.showCompanies(list);
+            case 2: ret = this.showCompanies(list); break;
+            case 3: ret = this.showEmailList(); break;
             default: console.log("ERROR");
         }
         // console.log(ret)
@@ -428,8 +538,6 @@ class LegalWatchlist extends Component {
     render() {
         return (
             <>
-
-
                 <Modal
                     show={this.state.addCompany}
                     onHide={() => this.setState({ addCompany: false })}
@@ -442,9 +550,9 @@ class LegalWatchlist extends Component {
                         <input type='text' onChange={(e) => this.addCompanyData(e.target, 0)} />
                         <table style={{ width: '80%' }}>
                             <tbody>
-                                {this.getProvinces().map(prov => {
+                                {this.getProvinces().map((prov, index) => {
                                     return (
-                                        <tr><td>{prov.name} - {prov.abbr}</td><td><input type='checkbox' onChange={(e) => this.addCompanyData(e.target, 1, prov.abbr)} />
+                                        <tr><td><label for={'prov_' + index}> {prov.name} - {prov.abbr}</label></td><td><input id={'prov_' + index} type='checkbox' onChange={(e) => this.addCompanyData(e.target, 1, prov.abbr)} />
                                         </td></tr>)
                                 })}
                             </tbody>

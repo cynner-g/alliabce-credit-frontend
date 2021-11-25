@@ -28,7 +28,7 @@ class OrderNewReport extends Component {
             reportList: null,
             columns: null,
             showEditSubmit: false,
-            warning: null
+            warning: null,
         }
     }
 
@@ -132,11 +132,10 @@ class OrderNewReport extends Component {
                 })
 
                 // columns.splice(firstRow, supplierCols.length, [...newSupplierCols]);
-                await this.setState({ data: data, origData: data, isEdit: true, step: 2, columns: columns });
+                await this.setState({ data: data, origData: data, isEdit: false, step: 2, columns: columns });
             });
         }
     }
-
 
     //Display JSON fucntions
     addBank = () => {
@@ -191,6 +190,7 @@ class OrderNewReport extends Component {
                         'model': "general_details.legal_name",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
 
@@ -202,6 +202,7 @@ class OrderNewReport extends Component {
                         'model': "general_details.dba_name",
                         'required': false,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -213,6 +214,7 @@ class OrderNewReport extends Component {
                         'model': "general_details.address.address_line",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -224,6 +226,7 @@ class OrderNewReport extends Component {
                         'model': "general_details.address.city",
                         'required': false,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -234,6 +237,7 @@ class OrderNewReport extends Component {
                         'model': "general_details.address.state",
                         'required': false,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -244,6 +248,7 @@ class OrderNewReport extends Component {
                         'model': "general_details.address.zip",
                         'required': false,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 2
                     }
@@ -263,6 +268,7 @@ class OrderNewReport extends Component {
                         'model': "incorporate_details.quebec_enterprise_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -273,6 +279,7 @@ class OrderNewReport extends Component {
                         'model': "incorporate_details.business_owner_name",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -283,6 +290,7 @@ class OrderNewReport extends Component {
                         'model': "incorporate_details.enterprise_tps",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -293,6 +301,7 @@ class OrderNewReport extends Component {
                         'model': "incorporate_details.enterprise_tvq",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -321,6 +330,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_name",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -332,6 +342,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_phone_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -343,6 +354,7 @@ class OrderNewReport extends Component {
                         'model': "banks.account_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -354,6 +366,7 @@ class OrderNewReport extends Component {
                         'model': "banks.transit_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -365,6 +378,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_address",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -376,6 +390,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_unique_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -387,6 +402,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_manager_name",
                         'required': false,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -398,6 +414,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_manager_email_id",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }
@@ -409,6 +426,7 @@ class OrderNewReport extends Component {
                         'model': "banks.bank_manager_phone_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }
@@ -438,6 +456,7 @@ class OrderNewReport extends Component {
                         'model': "suppliers.business_name",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }, 'dupNum': 0,
@@ -448,6 +467,7 @@ class OrderNewReport extends Component {
                         'model': "suppliers.address",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }, 'dupNum': 0,
@@ -458,6 +478,7 @@ class OrderNewReport extends Component {
                         'model': "suppliers.business_phone_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 0
                     }, 'dupNum': 0,
@@ -468,6 +489,7 @@ class OrderNewReport extends Component {
                         'model': "suppliers.personal_phone_number",
                         'required': true,
                         'fName': "TextRow",
+                        'editable': true,
                         'defaultVal': null,
                         colNum: 1
                     }, 'dupNum': 0,
@@ -658,8 +680,52 @@ class OrderNewReport extends Component {
         })
     }
 
+    beginEdit = () => {
+        this.setState({ isEdit: true });
+    }
+
+    buildForm = () => {
+        let rows = JSON.parse(JSON.stringify(this.state.columns));
+        let submit = this.submit;
+        let cancel = null;
+        let data = null
+        console.log(rows)
+        if (this.state.origData) { //if there is data
+            data = this.state.origData;
+
+            if (!this.state.isEdit) {//if the edit button has been pressed
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    let col = rows[i]
+                    submit = this.beginEdit;
+                    //rename Submit to 'edit'
+                    if (col.params.fName === 'SubmitButton') {
+                        col.params.text = "Edit"
+                    }
+
+                    //remove 'Cancel' button
+                    if (col.params.fName === 'CancelButton') {
+                        rows.splice(i, 1);
+                    }
+
+                    if (col.params.editable) {
+                        col.params.editable = false;
+                    }
+
+                }
+
+            }
+        }
+
+        return (
+            <FormComponent rows={rows}
+                data={data}
+                submit={submit}
+                cancel={cancel}
+            />
+        )
+    }
     render() {
-        if (this.state.step == 1) {
+        if (this.state.step == 1) { //introduction page
             return (
                 <>
                     <Modal
@@ -725,6 +791,7 @@ class OrderNewReport extends Component {
                                             Select Region<br />
                                             <div className={styles.rdoSpan}>
                                                 <input type='checkbox' name='region' value="Quebec"
+                                                    onChange=''
                                                     checked={this.state.region == "Quebec"}
                                                     className={styles.rdoCheck}
                                                     id='rdoQuebec' />
@@ -734,12 +801,14 @@ class OrderNewReport extends Component {
                                                 <input type='checkbox' name='region' value="Canada"
                                                     checked={this.state.region == "Canada"}
                                                     className={styles.rdoCheck}
+                                                    onChange=''
                                                     id='rdoCanada' />
                                                 <label htmlFor='rdoCanada'>Canada</label>
                                             </div>
                                             <div className={styles.rdoSpan}>
                                                 <input type='checkbox' name='region' value="USA"
                                                     checked={this.state.region == "USA"}
+                                                    onChange=''
                                                     className={styles.rdoCheck}
                                                     id='rdoUSA' />
                                                 <label htmlFor='rdoUSA'>USA</label>
@@ -831,10 +900,7 @@ class OrderNewReport extends Component {
                 </>
             )
         }
-        else if (this.state.step == 2 && !this.state.isEdit) {
-            let rows = this.state.columns
-            console.log(rows);
-            // this.state.columns
+        else if (this.state.step == 2) { //show form
             return (
                 <>
                     <Header />
@@ -870,84 +936,145 @@ class OrderNewReport extends Component {
 
                             </Col>
                             <Col>
-                                <FormComponent rows={rows}
-                                    submit={this.submit}
-                                />
+                                {this.buildForm()}
                             </Col>
                         </Row>
                     </Container>
                 </>
             )
-            //data={{ ...this.state.data }}
-            // duplicates={['banks', 'suppliers']}
-        }
-        else if (this.state.step == 2 && this.state.isEdit) {
-            let rows = this.state.columns
-            console.log(rows);
-            return (
-                <>
-                    <Modal
-                        show={this.state.showEditSubmit}
-                        onHide={() => this.setState({ showEditSubmit: false })}
-                        backdrop="static">
-                        <Modal.Header closeButton>
-                            <Modal.Title>Resubmit Form</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Are you sure you want to resubmit the report form?</Modal.Body>
-                        <Modal.Footer>
-                            <button className="btn btn-outline-primary" onClick={() => this.setState({ showEditSubmit: false })}>
-                                Cancel
-                            </button>
-                            <button className="btn btn-primary" onClick={() => this.resubmit(true)}>
-                                Confirm
-                            </button>
-                        </Modal.Footer>
-                    </Modal>
-                    <Header />
-                    <Container>
-                        <Row>
-                            <Col sm={3}>
-                                <Container>
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>1</div>
-                                            Select Reports
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>2</div>
-                                            Fill in Details<br />
 
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <ul> {this.state.reportList} </ul>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepUndone}>
-                                            <div className={styles.stepUnselected}>3</div>
-                                            Done
-                                        </Col>
-                                    </Row>
-                                </Container>
-
-                            </Col>
-                            <Col>
-                                <FormComponent rows={rows}
-                                    submit={this.submit}
-                                    cancel={() => this.setState({ data: this.state.origData })}
-                                />
-                            </Col>
-                        </Row>
-                    </Container>
-                </>
-            )
-            //data={{ ...this.state.data }}
-            // duplicates={['banks', 'suppliers']}
         }
+
+        // else if (this.state.step == 2 && !this.state.isEdit && this.state.origData !== null) {
+        //     let rows = this.state.columns
+        //     console.log(rows);
+        //     return (
+        //         <>
+        //             <Modal
+        //                 show={this.state.showEditSubmit}
+        //                 onHide={() => this.setState({ showEditSubmit: false })}
+        //                 backdrop="static">
+        //                 <Modal.Header closeButton>
+        //                     <Modal.Title>Resubmit Form</Modal.Title>
+        //                 </Modal.Header>
+        //                 <Modal.Body>Are you sure you want to resubmit the report form?</Modal.Body>
+        //                 <Modal.Footer>
+        //                     <button className="btn btn-outline-primary" onClick={() => this.setState({ showEditSubmit: false })}>
+        //                         Cancel
+        //                     </button>
+        //                     <button className="btn btn-primary" onClick={() => this.resubmit(true)}>
+        //                         Confirm
+        //                     </button>
+        //                 </Modal.Footer>
+        //             </Modal>
+        //             <Header />
+        //             <Container>
+        //                 <Row>
+        //                     <Col sm={3}>
+        //                         <Container>
+        //                             <Row>
+        //                                 <Col className={styles.stepContainer}>
+        //                                     <div className={styles.stepBullet}>1</div>
+        //                                     Select Reports
+        //                                 </Col>
+        //                             </Row>
+        //                             <Row>
+        //                                 <Col className={styles.stepContainer}>
+        //                                     <div className={styles.stepBullet}>2</div>
+        //                                     Fill in Details<br />
+        //                                 </Col>
+        //                             </Row>
+        //                             <Row>
+        //                                 <Col>
+        //                                     <ul> {this.state.reportList} </ul>
+        //                                 </Col>
+        //                             </Row>
+        //                             <Row>
+        //                                 <Col className={styles.stepUndone}>
+        //                                     <div className={styles.stepUnselected}>3</div>
+        //                                     Done
+        //                                 </Col>
+        //                             </Row>
+        //                         </Container>
+
+        //                     </Col>
+        //                     <Col>
+        //                        {this.buildForm}
+        //                     </Col>
+        //                 </Row>
+        //             </Container>
+        //         </>
+        //     )
+        //     //data={{ ...this.state.data }}
+        //     // duplicates={['banks', 'suppliers']}
+        // }
+        // else if (this.state.step == 2 && this.state.isEdit && this.state.origData !== null) {
+        //     let rows = this.state.columns
+        //     console.log(rows);
+        //     return (
+        //         <>
+        //             <Modal
+        //                 show={this.state.showEditSubmit}
+        //                 onHide={() => this.setState({ showEditSubmit: false })}
+        //                 backdrop="static">
+        //                 <Modal.Header closeButton>
+        //                     <Modal.Title>Resubmit Form</Modal.Title>
+        //                 </Modal.Header>
+        //                 <Modal.Body>Are you sure you want to resubmit the report form?</Modal.Body>
+        //                 <Modal.Footer>
+        //                     <button className="btn btn-outline-primary" onClick={() => this.setState({ showEditSubmit: false })}>
+        //                         Cancel
+        //                     </button>
+        //                     <button className="btn btn-primary" onClick={() => this.resubmit(true)}>
+        //                         Confirm
+        //                     </button>
+        //                 </Modal.Footer>
+        //             </Modal>
+        //             <Header />
+        //             <Container>
+        //                 <Row>
+        //                     <Col sm={3}>
+        //                         <Container>
+        //                             <Row>
+        //                                 <Col className={styles.stepContainer}>
+        //                                     <div className={styles.stepBullet}>1</div>
+        //                                     Select Reports
+        //                                 </Col>
+        //                             </Row>
+        //                             <Row>
+        //                                 <Col className={styles.stepContainer}>
+        //                                     <div className={styles.stepBullet}>2</div>
+        //                                     Fill in Details<br />
+
+        //                                 </Col>
+        //                             </Row>
+        //                             <Row>
+        //                                 <Col>
+        //                                     <ul> {this.state.reportList} </ul>
+        //                                 </Col>
+        //                             </Row>
+        //                             <Row>
+        //                                 <Col className={styles.stepUndone}>
+        //                                     <div className={styles.stepUnselected}>3</div>
+        //                                     Done
+        //                                 </Col>
+        //                             </Row>
+        //                         </Container>
+
+        //                     </Col>
+        //                     <Col>
+        //                         <FormComponent rows={rows}
+        //                             submit={this.submit}
+        //                             cancel={() => this.setState({ data: this.state.origData })}
+        //                         />
+        //                     </Col>
+        //                 </Row>
+        //             </Container>
+        //         </>
+        //     )
+        //     //data={{ ...this.state.data }}
+        //     // duplicates={['banks', 'suppliers']}
+        // }
         else if (this.state.step == 3) {
             return (
                 <>

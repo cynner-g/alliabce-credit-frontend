@@ -285,7 +285,7 @@ class CreditReports extends Component {
                                             :
                                             ''
                                         }
-                                        <button className="btn btn-outline-primary"
+                                        <button className="btn btn-outline-danger" disabled
                                             onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
                                         <button className="btn btn-outline-primary"
                                             onClick={() => this.orderReport(row._id)}>View Report Form</button>

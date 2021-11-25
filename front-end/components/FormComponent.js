@@ -276,7 +276,8 @@ export class FormComponent extends Component {
             displayRows.forEach((displayCol, index) => {
                 //if col.params.colNum==0 start a new row...
                 if (Cols.length > 0 && displayCol.params.colNum === 0) {
-                    Rows.push(<Row className='form-group' key={displayCol.params.model}>{Cols}</Row>)
+                    let key = displayCol.params.model + '_' + index;
+                    Rows.push(<Row className='form-group' key={key}>{Cols}</Row>)
                     Cols = [];
                 }
                 switch (displayCol.params.fName) {
