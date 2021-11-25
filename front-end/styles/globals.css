@@ -80,10 +80,13 @@ body {
 
 .modal-header {
   border-bottom: 0 !important;
+  padding: 30px 40px 10px;
 }
 
 .modal-footer {
   border-top: 0 !important;
+  padding-right: 40px;
+  padding-bottom: 40px;
 }
 
 /*Navigation*/
@@ -241,6 +244,12 @@ input[type=text] {
   color: #406DCD;
 }
 
+.btnremove {
+  background: #FFF;
+  border: 1px solid #CF5A5A;
+  color: #CF5A5A;
+}
+
 .inactivebtn {
   background: #CF5A5A;
   font-family: Roboto;
@@ -309,6 +318,14 @@ input[type=text] {
 /* company form*/
 
 .companyform .row {
+  margin-bottom: 16px;
+}
+
+.popupform {
+  padding: 0 50px;
+}
+
+.popupform .row {
   margin-bottom: 16px;
 }
 

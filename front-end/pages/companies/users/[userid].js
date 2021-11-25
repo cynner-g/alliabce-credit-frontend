@@ -6,6 +6,7 @@ import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
+import TabButton from "../../../components/tabbutton"
 
 
 const Users = ({ data, page, totalPage, query, companiesData }) => {
@@ -199,7 +200,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     return (
         <>
             <Header />
-
+            <TabButton id={data?._id || 0} />
             <div className="seaarch">
                 <div className="row">
                     <div className="col">
@@ -208,12 +209,12 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         <label htmlFor="companysearch" className="form-label">Search</label>
                     </div>
                     <div className="col  text-end">
-                        <select  className="form-select role">
+                        <select className="form-select role">
                             <option value="admin">Admin</option>
                             <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
                         </select>
-                        <select  className="form-select f1">
+                        <select className="form-select f1">
                             <option>Company Access</option>
                         </select>
                         <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
@@ -271,52 +272,70 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                     }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form method="POST" encType="multipart/form-data">
+                    <div className="popupform">
+                        <form method="POST" encType="multipart/form-data">
 
-                        <label htmlFor="fullname" className="form-label">Full Name</label>
-                        <input className="form-control" name="fullname" type="text" id="fullname" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="fullname" className="form-label">Full Name</label>
+                                    <input className="form-control" name="fullname" type="text" id="fullname" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="emailID" className="form-label">Email</label>
+                                    <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="phone_number" className="form-label">Phone Number</label>
+                                    <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="portal_language" className="form-label">Role</label>
+                                    <select className="form-select" id="portal_language" aria-label="" onChange={(e) => setUser_role(e.target.value)}>
+                                        <option selected>Select Role</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="user">User</option>
+                                        <option value="user-manager">User Manager</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    
+                                        <label htmlFor="groups" className="form-label">Add to group</label>
+                                        <div className="chkox">
+                                            {companiesData?.map((item) => (
+                                                <div className="form-check">
+                                                    <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
+                                                    <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
+
+                                    
+                                </div>
+                            </div>
 
 
-                        <label htmlFor="emailID" className="form-label">Email</label>
-                        <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
-
-                        <label htmlFor="phone_number" className="form-label">Phone Number</label>
-                        <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
-
-                        <label htmlFor="portal_language" className="form-label">Role</label>
-                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
-                            <option selected>Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            <option value="user-manager">User Manager</option>
-                        </select>
-
-                        <div>
-                            <label htmlFor="groups" className="form-label">Add to group</label>
-                            <>
-                                {companiesData?.map((item) => (
-                                    <div className="form-check">
-                                        <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
-                                        <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
-                                    </div>
-                                ))}
-                            </>
-
-                            <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
-
-                        </div>
-                    </form>
-
+                        </form>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     {isEdit == false
                         ? <>
-                            <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                            <Button variant="secondary btnedit" onClick={handleClose}>Cancel</Button>
                             <Button variant="primary" onClick={addUser}>Add User</Button>
                         </>
                         :
                         <>
-                            <Button variant="primary" onClick={removeUser}>Remove User</Button>
+                            <Button variant="primary" className="btnremove" onClick={removeUser}>Remove User</Button>
                             <Button variant="primary" onClick={updateUser}>Update User</Button>
                         </>
                     }

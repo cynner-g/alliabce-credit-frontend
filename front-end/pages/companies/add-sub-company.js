@@ -5,8 +5,15 @@ import { useState } from 'react'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
+import { Modal, Button } from "react-bootstrap";
 
 const addCompany = ({ industry, group, pricing }) => {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
@@ -68,7 +75,7 @@ const addCompany = ({ industry, group, pricing }) => {
     //     }));
     // };
 
-    const addNewSubCompany = async (e) => {
+    const addNewCompany = async (e) => {
 
         e.preventDefault();
         const token = Cookies.get('token');
@@ -117,12 +124,13 @@ const addCompany = ({ industry, group, pricing }) => {
             <Header />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
+                    <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
                     <li>Add Company</li>
                 </ul>
             </div>
-            <div className="col-lg-7">
-                <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewSubCompany(e)}>
+            <div className="col-lg-7 companyform">
+                <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewCompany(e)}>
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_logo_en" className="form-label">English Logo</label>
@@ -170,9 +178,11 @@ const addCompany = ({ industry, group, pricing }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="address_line" className="form-label">Address</label>
-                        <input type="text" className="form-control" id="address_line" placeholder="" value={address_line} onChange={(e) => setaddress_line(e.target.value)} />
+                    <div className="row">
+                        <div className="col">
+                            <label htmlFor="address_line" className="form-label">Address</label>
+                            <input type="text" className="form-control" id="address_line" placeholder="" value={address_line} onChange={(e) => setaddress_line(e.target.value)} />
+                        </div>
                     </div>
                     <div className="row">
                         <div className="col">
@@ -189,26 +199,48 @@ const addCompany = ({ industry, group, pricing }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setportal_language(e.target.value)}>
-                            <option selected>Select Language</option>
-                            <option value="en">English</option>
-                            <option value="fr">French</option>
-                        </select>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="portal_language" className="form-label">Portal Language</label>
+                            <select className="form-select" id="portal_language" aria-label="" onChange={(e) => setportal_language(e.target.value)}>
+                                <option selected>Select Language</option>
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="industry_id" className="form-label">Industry</label>
-                        <select className="form-select form-select-sm" name="industry_id" id="industry_id" aria-label=".form-select-sm example" setindustry_id={(e) => setwebsite(e.target.value)}>
-                            <option selected>Open this select menu</option>
-                            {industry?.data.map((item) => (
-                                <option value={item._id}>{item.name}</option>
-                            ))}
-                        </select>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="industry_id" className="form-label">Industry</label>
+                            <select className="form-select" name="industry_id" id="industry_id" aria-label="" setindustry_id={(e) => setwebsite(e.target.value)}>
+                                <option selected>Open this select menu</option>
+                                {industry?.data.map((item) => (
+                                    <option value={item._id}>{item.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <button type="submit" className="btn btn-primary">Save</button>
+                    <div className="row">
+                        <div className="col">
+                            <p>&nbsp;</p>
+                            <button type="submit" className="btn btn-primary"  onClick={handleShow}>Save</button>
+                        </div>
                     </div>
+                    <div className="row">
+                        <div className="col">
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit Sub Company</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
+                        <Modal.Footer>
+                            <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
+                            <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
+                        </Modal.Footer>
+                    </Modal>
                 </form>
             </div>
         </>
