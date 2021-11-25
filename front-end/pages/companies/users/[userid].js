@@ -235,10 +235,10 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.data?.map((item) => (
+                        {data?.data?.map((item, idx) => (
 
 
-                            <tr>
+                            <tr key={idx}>
                                 <td>{item.full_name}</td>
                                 <td>{item.date_added}</td>
                                 <td>{item.email_id}</td>
@@ -278,7 +278,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
 
                         <label htmlFor="emailID" className="form-label">Email</label>
-                        <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
+                        <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value.toLowerCase())} />
 
                         <label htmlFor="phone_number" className="form-label">Phone Number</label>
                         <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />

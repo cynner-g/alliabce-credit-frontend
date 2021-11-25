@@ -15,6 +15,8 @@ import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
 
 //Simple enums
+const NOTORDERED = -1
+const NEW = 0
 const PENDING = 1;
 const PROCESSING = 2;
 const NEEDACTION = 3;

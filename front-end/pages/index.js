@@ -73,7 +73,7 @@ export default function Login(props) {
             <div className="col align-self-center">
               <div className="mb-3">
                 <label htmlFor="username" className="form-label">{login.email}</label>
-                <input className="form-control" type="text" id="username" placeholder="User Name" value={userName} onChange={(e) => setName(e.target.value)} />
+                <input className="form-control" type="text" id="username" placeholder="User Name" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
               </div>
               <div className="mb-3">
                 <label htmlFor="password">{login.password}</label>
