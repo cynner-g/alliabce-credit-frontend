@@ -1,1 +1,2 @@
-
+Changed login email address to .toLowerCase()
+Changed add user email address to .toLowerCase()
