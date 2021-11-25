@@ -312,7 +312,10 @@ class LegalWatchlist extends Component {
                                         <td>{row.dateAdded}</td>
                                         <td>{row.provinceArray.join()}</td>
                                         <td></td>
-                                        <td><button className={styles.tblButton + ' btn btn-primary'}>View More</button><button className={styles.tblButton + ' btn btn-warning'}>Remove More</button></button></td>
+                                        <td>
+                                            <button className={styles.tblButton + ' btn btn-primary'}>View More</button>
+                                            <button className={styles.tblButton + ' btn btn-warning'}>Remove</button>
+                                        </td>
                                     </tr>
                                 )
                             })}
