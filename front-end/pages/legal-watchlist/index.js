@@ -209,6 +209,7 @@ class LegalWatchlist extends Component {
                 }
             }
         }
+        company.dateAdded = new Date();
         company.provinceArray = provinces
         data.push(company);
         this.setState({ data: data });
@@ -296,7 +297,11 @@ class LegalWatchlist extends Component {
                         <thead>
                             <tr><th>Company Name</th>
                                 <th>Ref Number</th>
-                                <th>Provinces</th></tr>
+                                <th>Date Added</th>
+                                <th>Provinces</th>
+                                <th>Flagged</th>
+                                <th>Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {list.map(row => {
@@ -304,7 +309,10 @@ class LegalWatchlist extends Component {
                                     <tr>
                                         <td>{row.name}</td>
                                         <td>{row.refNum}</td>
+                                        <td>{row.dateAdded}</td>
                                         <td>{row.provinceArray.join()}</td>
+                                        <td></td>
+                                        <td><button className={styles.tblButton + ' btn btn-primary'}>View More</button><button className={styles.tblButton + ' btn btn-warning'}>Remove More</button></button></td>
                                     </tr>
                                 )
                             })}
