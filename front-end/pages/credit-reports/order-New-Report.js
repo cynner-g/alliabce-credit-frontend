@@ -801,14 +801,14 @@ class OrderNewReport extends Component {
                                                 <input type='checkbox' name='region' value="Canada"
                                                     checked={this.state.region == "Canada"}
                                                     className={styles.rdoCheck}
-                                                    onChange=''
+                                                    onChange={() => { }}
                                                     id='rdoCanada' />
                                                 <label htmlFor='rdoCanada'>Canada</label>
                                             </div>
                                             <div className={styles.rdoSpan}>
                                                 <input type='checkbox' name='region' value="USA"
                                                     checked={this.state.region == "USA"}
-                                                    onChange=''
+                                                    onChange={() => { }}
                                                     className={styles.rdoCheck}
                                                     id='rdoUSA' />
                                                 <label htmlFor='rdoUSA'>USA</label>
