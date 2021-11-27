@@ -34,8 +34,10 @@ class OrderNewReport extends Component {
 
     componentDidMount() {
         this.setState({ columns: this.getColumns() });
-        if (Router?.router?.query?.rptId?.length > 0) {
-            let rptId = Router.router.query.rptId;
+        // if (Router?.router?.query?.rptId?.length > 0) {
+        //     let rptId = Router.router.query.rptId;
+        if (true) {
+            let rptId = '61953d9b3be1c7cf53d141b5'
             order_details(rptId).then(async (data) => {
 
                 let columns = this.state.columns;
@@ -512,8 +514,13 @@ class OrderNewReport extends Component {
 
     //Button Functions
     submit = (data) => { //submit from the form component
+        data = this.unflatten(data);
+
         if (this.state.isEdit) { //if we are editing page
             this.setState({ storedEdit: data, showEditSubmit: true });
+            resubmit_report(data).then((data) => {
+                console.log(data)
+            });
         }
 
         //upload data to server here - Resubmit_report(data)
@@ -523,41 +530,41 @@ class OrderNewReport extends Component {
         this.setState({ step: 3 })
     }
 
+    unflatten = (obj = {}) => {
+        const result = {};
+        let temp, substrings, property, i;
+        for (property in obj) {
+            substrings = property.split('.');
+            temp = result;
+            for (i = 0; i < substrings.length - 1; i++) {
+                if (!(substrings[i] in temp)) {
+                    if (isFinite(substrings[i + 1])) {
+                        temp[substrings[i]] = [];
+                    }
+                    else {
+                        temp[substrings[i]] = {};
+                    }
+                }
+                temp = temp[substrings[i]];
+            }
+            temp[substrings[substrings.length - 1]] = obj[property];
+        }
+        return result;
+    }
+    /* CURRENTLY UNUSED
     resubmit = (val) => {
 
         let data = this.state.storedEdit;
         //upload data to server
         resubmit_report(data)
     }
+*/
 
-    //Step 1 functions
-    toggleReport = (reportID) => {
-        let reports = this.state.reports;
-        let enabled = reports[reportID] ? false : true;
-        reports[reportID] = enabled;
-        this.setState({ reports: reports })
-    }
-
-    selectAllReports = () => {
-
-        let reports = this.state.reports;
-        //set all reports to unselected
-        for (let i = 0; i < 4; i++) {
-            reports[i] = true;
-        }
-        this.setState({ reports: reports });
-    }
-
-    setRegion = (e) => {
-        let region = e.target.value;
-        this.setState({ region: region })
-    }
 
     //server call functions
     uploadApplication = (e) => {
         this.setState({ requestFile: e.target.files[0] })
     }
-
 
     quickOrder = (resp) => {
         if (this.state.requestFile == null) {
@@ -599,7 +606,31 @@ class OrderNewReport extends Component {
         }
     }
 
+
     //step functions
+    //Step 1 functions
+    toggleReport = (reportID) => {
+        let reports = this.state.reports;
+        let enabled = reports[reportID] ? false : true;
+        reports[reportID] = enabled;
+        this.setState({ reports: reports })
+    }
+
+    selectAllReports = () => {
+
+        let reports = this.state.reports;
+        //set all reports to unselected
+        for (let i = 0; i < 4; i++) {
+            reports[i] = true;
+        }
+        this.setState({ reports: reports });
+    }
+
+    setRegion = (e) => {
+        let region = e.target.value;
+        this.setState({ region: region })
+    }
+
     nextStep = () => {
 
         //check to see if credit application file selected
@@ -694,6 +725,9 @@ class OrderNewReport extends Component {
                 for (let i = rows.length - 1; i >= 0; i--) {
                     let col = rows[i]
                     submit = this.beginEdit;
+                    //TODO:  TEST TO SEE IF THIS REPORT IS EDITABLE
+                    //IF IT IS NOT REMOVE THE EDIT BUTTON ALSO
+
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Edit"
@@ -701,7 +735,7 @@ class OrderNewReport extends Component {
 
                     //remove 'Cancel' button
                     if (col.params.fName === 'CancelButton') {
-                        rows.splice(i, 1);
+                        col.params.visible = false;
                     }
 
                     if (col.params.editable) {

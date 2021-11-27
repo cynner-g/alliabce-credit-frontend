@@ -50,7 +50,7 @@ export class FormComponent extends Component {
 
     handleChange = (e) => {
         let data = this.state.formData;
-        data[e.target.name] = e.target.value.trim()
+        data[e.target.name] = e.target.value
         // Trimming any whitespace
         this.setState({ formData: data });
     };
@@ -64,7 +64,8 @@ export class FormComponent extends Component {
                 <input type='text' className='formText form-control'
                     name={column.params.model}
                     onChange={(e) => this.handleChange(e)}
-                    value={column.value || undefined}
+                    value={this.state.formData[column.params.model] || undefined}
+                    disabled={!column.params.editable}
                 />
             </Col>
         )
@@ -273,6 +274,7 @@ export class FormComponent extends Component {
 
             //loop through each column in that row
             let Rows = [], Cols = [];
+            let formData = {};
             displayRows.forEach((displayCol, index) => {
                 //if col.params.colNum==0 start a new row...
                 if (Cols.length > 0 && displayCol.params.colNum === 0) {
@@ -280,6 +282,7 @@ export class FormComponent extends Component {
                     Rows.push(<Row className='form-group' key={key}>{Cols}</Row>)
                     Cols = [];
                 }
+
                 switch (displayCol.params.fName) {
                     case 'TextRow': Cols.push(this.buildTextRow(displayCol, index)); break;
                     case 'CheckBox': Cols.push(this.buildCheckBox(displayCol, index)); break;
@@ -298,6 +301,7 @@ export class FormComponent extends Component {
             })
             Rows.push(<Row className='form-group' key={'lastRow'}>{Cols}</Row>) //last row
 
+
             return Rows;
         }
         catch (ex) {
@@ -305,10 +309,45 @@ export class FormComponent extends Component {
         }
     }
 
-    handleSubmit(e) {
-        e.preventDefault()
+    componentDidMount() {
+
+        let formData = {};
+        this.props.rows.forEach((displayCol, index) => {
+            if (displayCol.value) {
+                formData[displayCol.params.model] = displayCol.value;
+                displayCol.value = null;
+            }
+        })
+        if (Object.keys(this.state.formData).length === 0) {
+            this.setState({ formData: formData })
+        }
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
         let data = this.state.formData;
-        this.props.submit(data);
+        let newData = {};
+        //unflatten JSON from dot notation to nested JSON
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                let dataArray = key.split('_')
+                let num = dataArray.pop() //get the last item
+                dataArray = dataArray.join('_');
+                if (!isNaN(num) && !isNaN(parseFloat(num))) { //if it is a number
+                    dataArray = dataArray.split('.');
+                    let first = dataArray.shift();
+
+                    //reorder so the index is no long 'key.item.number' but rather 'key.number.item'
+                    newData[`${first}.${num}.${dataArray}`] = data[key];
+                }
+                else {
+                    newData[key] = data[key]
+                }
+
+            }
+        }
+
+        this.props.submit(newData);
     }
 
     handleCheck(e, id) {
@@ -317,13 +356,14 @@ export class FormComponent extends Component {
         this.setState({ openState: open });
     }
 
+
     render() {
-        let rows = this.buildRows(this.props.rows, this.props.data, this.props.duplicates);
+        let rows = this.buildRows(this.props.rows);
         return (
             <div className='formContainer'>
                 <form
                     className='formRoot'
-                    model='MetFormData'
+                    model='AllianceFormData'
                     onSubmit={(e) => this.handleSubmit(e)}
                 >
                     {rows}

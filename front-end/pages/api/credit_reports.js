@@ -148,7 +148,7 @@ export const resubmit_report = (rptData => {
             return data?.data
         })
         .catch((err) => {
-
+            console.log(err)
         })
     return ret;
 })

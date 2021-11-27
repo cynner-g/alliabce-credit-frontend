@@ -97,26 +97,27 @@ class CreditReports extends Component {
 
     filterText = async (e) => {
         e.preventDefault();
-        let text = e.target.value
+        let text = e.target.value.toLowerCase()
         console.log(text)
         let data = this.state.origReportList;
         let newData = await data.filter(row => {
             //search these 4 columns
             return (
-                row.subject_name.indexOf(text) >= 0 ||
-                row.company_name.indexOf(text) >= 0 ||
-                row.user_name.indexOf(text) >= 0 ||
-                row.reference_id.indexOf(text) >= 0)
+                row.subject_name?.toLowerCase().indexOf(text) >= 0 ||
+                row.company_name?.toLowerCase().indexOf(text) >= 0 ||
+                row.user_name?.toLowerCase().indexOf(text) >= 0 ||
+                row.reference_id?.toLowerCase().indexOf(text) >= 0)
         })
         await this.setState({ filteredReportList: newData })
         this.setVisible(0) //get active page.  State?
     }
 
     filterStatus = async (e) => {
-        console.log(e)
+        console.log("OnChange(): ", e)
         let text = e;
-        let newData = this.state.origReportList;
 
+        let newData = this.state.origReportList;
+        if (e?.length > 0) {
             newData = await newData.filter(row => {
                 let ret = false;
                 text.forEach(t => {
@@ -124,7 +125,7 @@ class CreditReports extends Component {
                 })
                 return ret;
             });
-
+        }
         await this.setState({ filteredReportList: newData })
         this.setVisible(0) //get active page.  State?
     }
@@ -491,6 +492,7 @@ class CreditReports extends Component {
                             <Col className='filterCol'> Search:&nbsp;<input type='text' onChange={(e) => this.filterText(e)}></input></Col>
                             <Col className='filterCol'>Status:&nbsp;
                                 <Select onChange={(e) => this.filterStatus(e)}
+                                    onClick={(e) => this.filterStatus(e)}
                                     options={options}
                                     isMulti
                                     className="multiSelect"
