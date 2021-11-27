@@ -31,7 +31,7 @@ export const order_list = (search, filter) => {
         })
         .then((response) => { return response.json() })
         .then((data) => {
-            return data.data
+            return data?.data
         })
         .catch((err) => {
 
@@ -72,7 +72,7 @@ export const cancel_order = (rptId) => {
         })
         .then((response) => { return response.json() })
         .then((data) => {
-            return data.data
+            return data?.data
 
         })
         .catch((err) => {
@@ -82,7 +82,6 @@ export const cancel_order = (rptId) => {
 }
 
 export const order_details = (rptId) => {
-
     if (!rptId) return;
     let body;
     try {
@@ -113,7 +112,7 @@ export const order_details = (rptId) => {
         })
         .then((response) => { return response.json() })
         .then((data) => {
-            return data.data
+            return data?.data
         })
         .catch((err) => {
 
@@ -146,7 +145,7 @@ export const resubmit_report = (rptData => {
         })
         .then((response) => { return response.json() })
         .then((data) => {
-            return data.data
+            return data?.data
         })
         .catch((err) => {
 
@@ -178,7 +177,7 @@ export const order_report = (rptData => {
         })
         .then((response) => { return response.json() })
         .then((data) => {
-            return data.data
+            return data?.data
         })
         .catch((err) => {
 

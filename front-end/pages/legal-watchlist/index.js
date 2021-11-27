@@ -359,9 +359,9 @@ class LegalWatchlist extends Component {
     saveNewEmail = () => {
         let emails = this.state.emails;
         let tmpEmail = this.state.tmpEmail
-        if (emails.findIndex(email =>
-            email.email == tmpEmail &&
-            email.watchlist == this.state.currentWatchlist) == -1) {
+        if (emails?.findIndex(email =>
+            email?.email == tmpEmail &&
+            email?.watchlist == this.state.currentWatchlist) == -1) {
 
             emails.push({ email: tmpEmail, watchlist: this.state.currentWatchlist, dateAdded: new Date() });
             this.setState({ emails: emails, tmpEmail: null });

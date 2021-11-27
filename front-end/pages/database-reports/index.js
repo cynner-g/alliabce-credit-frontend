@@ -67,10 +67,10 @@ const DatabaseReports = function () {
         let newData = await rowData.filter(row => {
             //search these 4 columns
             return (
-                (row.subject_name && row.subject_name.toLowerCase().indexOf(text) >= 0) ||
-                (row.company_name && row.company_name.toLowerCase().indexOf(text) >= 0) ||
-                (row.user_name && row.user_name.toLowerCase().indexOf(text) >= 0) ||
-                (row.reference_id && row.reference_id.toLowerCase().indexOf(text) >= 0))
+                (row?.subject_name?.toLowerCase().indexOf(text) >= 0) ||
+                (row?.company_name?.toLowerCase().indexOf(text) >= 0) ||
+                (row?.user_name?.toLowerCase().indexOf(text) >= 0) ||
+                (row?.reference_id?.toLowerCase().indexOf(text) >= 0))
         })
 
         setData((prevData) => ({
