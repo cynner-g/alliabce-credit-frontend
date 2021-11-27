@@ -2,10 +2,10 @@ import Link from 'next/link'
 import Lang from './lang';
 import { useRouter } from "next/router";
 import { parseCookies } from 'nookies';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 import Logo from './logo';
 import { Nav, Button } from 'react-bootstrap';
-
+import { useEffect } from 'react';
 const Header = () => {
     const router = useRouter();
     const { token } = parseCookies();
@@ -16,6 +16,13 @@ const Header = () => {
     } else {
         user = false
     }
+
+    useEffect(() => { //componentDidMount
+        if (!user) {
+            router.push('/');
+        }
+    }, [])
+
     const myRole = Cookies.get('role');
     return (
         <header>
