@@ -31,3 +31,12 @@
     width: 175px;
     white-space: nowrap;
 }
+
+.addComment {
+    white-space: nowrap;
+    width: 90%;
+}
+
+.status-1 {
+    display: none;
+}

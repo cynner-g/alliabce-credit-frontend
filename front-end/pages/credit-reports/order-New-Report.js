@@ -34,8 +34,8 @@ class OrderNewReport extends Component {
 
     componentDidMount() {
         this.setState({ columns: this.getColumns() });
-        // if (Router?.router?.query?.rptId?.length > 0) {
-        //     let rptId = Router.router.query.rptId;
+            // if (Router?.router?.query?.rptId?.length > 0) {
+            //     let rptId = Router.router.query.rptId;
         if (true) {
             let rptId = '61953d9b3be1c7cf53d141b5'
             order_details(rptId).then(async (data) => {
@@ -66,6 +66,16 @@ class OrderNewReport extends Component {
 
                 let newBankCols = [];
                 for (let index = 0; index < numBanks; index++) {
+                    newBankCols.push({
+                        'title': `Bank ${index + 1}`,
+                        'params': {
+                            model: 'banksTitle',
+                            'fName': "Header", size: 16,
+                            colNum: 0
+                        },
+                        dupNum: index
+                    })
+
                     bankCols.forEach(bank => {
                         if (bank?.params?.model.split('.').length > 1) {
                             let model = bank.params.model;
@@ -74,7 +84,9 @@ class OrderNewReport extends Component {
                         }
                         newBankCols.push(bank)
                     })
+
                 }
+
 
                 let startCols = columns.slice(0, firstRow);
                 let endCols = columns.splice(firstRow + bankCols.length)
@@ -103,6 +115,16 @@ class OrderNewReport extends Component {
                 })
                 let newSupplierCols = [];
                 for (let index = 0; index < numSuppliers; index++) {
+                    newSupplierCols.push({
+                        'title': `Supplier ${index + 1}`,
+                        'params': {
+                            model: 'suppliersTitle',
+                            'fName': "Header", size: 16,
+                            colNum: 0
+                        },
+                        dupNum: index
+                    })
+
                     supplierCols.forEach(supplier => {
                         if (supplier.params?.model?.split('.').length > 1) {
                             let model = supplier.params.model;
@@ -138,24 +160,75 @@ class OrderNewReport extends Component {
 
     //Display JSON fucntions
     addBank = () => {
+
+
         let columns = this.state.columns;
         let banks = columns.filter(col => col.params?.model?.startsWith("banks"))
-        let numBanks = banks.length;
+        banks.shift()
+        banks.shift(); //remove title and add new button
+        let newDupNum = banks[banks.length - 1].dupNum;//get the dupNum of the last bank
+        newBanks = banks.filter(bank => bank.dupNum == newDupNum); //get only last row of banks
+        let newBanks = JSON.parse(JSON.stringify(newBanks)); //ensure new variable not reference
+        newBanks.forEach(newBank => {
+            newBank.params.model = newBank.params.model.replace(newBank.dupNum, ++newBank.dupNum)
+            // newBank.dupNum++;
+            newBank.value = '';
+            newBank.params.value = ''
 
-        let lastBank = columns.findIndex(col => col.params?.model?.startsWith("banks")) + numBanks;
+            //rename the model to fit the bank number
+        });
 
-        let newDupNum = banks[banks.length - 1].dupNum;
-        banks = banks.filter(bank => bank.dupNum == newDupNum);
-        let newBanks = JSON.parse(JSON.stringify(banks)); //ensure new variable not reference
-        newBanks.forEach(newBank => newBank.dupNum = newDupNum + 1)
-        let startArray = [...columns.slice(0, lastBank)];
-        let endArray = [...columns.splice(lastBank)];
-        //concatenate all temp arrays, then concatenate those with rest of display data
-        columns = startArray.concat(banks, endArray);
+        let numBanks = newBanks.length; //Banks header and Add new bank button
+        let lastBank = columns.findIndex(col => col.params?.model?.startsWith("banks")) + numBanks * newDupNum;
+
+        let titleBank = newBanks.find(bank => bank.params.fName == 'Header');
+        if (titleBank) {
+            let num = +titleBank.title.split(' ').pop();
+            titleBank.title = titleBank.title.replace(num, num + 1);
+        }
+
+        let startArray = [...columns].slice(0, lastBank + numBanks + 2);
+        let endArray = [...columns].splice(lastBank + numBanks + 2);
+        //concatenate start, new and end arrays
+        columns = startArray.concat(newBanks, endArray);
         this.setState({ columns: columns });
     }
 
     addSupplier = () => {
+
+
+        let columns = this.state.columns;
+        let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers"))
+        suppliers.shift()
+        suppliers.shift(); //remove title and add new button
+        let newDupNum = suppliers[suppliers.length - 1].dupNum;//get the dupNum of the last Supplier
+        newSuppliers = suppliers.filter(supplier => supplier.dupNum == newDupNum); //get only last row of Suppliers
+        let newSuppliers = JSON.parse(JSON.stringify(newSuppliers)); //ensure new variable not reference
+        newSuppliers.forEach(newSupplier => {
+            newSupplier.params.model = newSupplier.params.model.replace(newSupplier.dupNum, ++newSupplier.dupNum)
+            // newSupplier.dupNum++;
+            newSupplier.value = '';
+            newSupplier.params.value = ''
+
+            //rename the model to fit the supplier number
+        });
+
+        let numSuppliers = newSuppliers.length; //Suppliers header and Add new supplier button
+        let lastSupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers")) + numSuppliers * newDupNum;
+
+        let titleSupplier = newSuppliers.find(supplier => supplier.params.fName == 'Header');
+        if (titleSupplier) {
+            let num = +titleSupplier.title.split(' ').pop();
+            titleSupplier.title = titleSupplier.title.replace(num, num + 1);
+        }
+
+        let startArray = [...columns].slice(0, lastSupplier + numSuppliers + 2);
+        let endArray = [...columns].splice(lastSupplier + numSuppliers + 2);
+        //concatenate start, new and end arrays
+        columns = startArray.concat(newSuppliers, endArray);
+        this.setState({ columns: columns });
+
+        /*
         let columns = this.state.columns;
         let suppliers = columns.filter(col => col.params.model.startsWith("suppliers"));
         let numsuppliers = suppliers.length;
@@ -171,6 +244,7 @@ class OrderNewReport extends Component {
         //concatenate all temp arrays, then concatenate those with rest of display data
         columns = startArray.concat(suppliers, endArray);
         this.setState({ columns: columns });
+        */
     }
 
     getColumns = () => {
@@ -179,7 +253,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "General",
                     'params': {
-                        'fName': "Header", size: 2, colNum: 0,
+                        'fName': "Header", size: 24, colNum: 0,
                         model: 'general_details',
                     }
                 },
@@ -256,7 +330,7 @@ class OrderNewReport extends Component {
                     'title': "Incorporated",
                     'params': {
                         model: 'incorporate_details',
-                        'fName': "Header", size: 2,
+                        'fName': "Header", size: 24,
                         colNum: 0
                     }
                 },
@@ -309,7 +383,7 @@ class OrderNewReport extends Component {
                     'title': "Bank",
                     'params': {
                         model: 'banksTitle',
-                        'fName': "Header", size: 2,
+                        'fName': "Header", size: 24,
                         colNum: 0
                     }
                 },
@@ -433,7 +507,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "Suppliers",
                     'params': {
-                        'fName': "Header", size: 2,
+                        'fName': "Header", size: 24,
                         model: 'suppliersTitle',
                         colNum: 0
                     }, 'dupNum': 0,
@@ -551,15 +625,6 @@ class OrderNewReport extends Component {
         }
         return result;
     }
-    /* CURRENTLY UNUSED
-    resubmit = (val) => {
-
-        let data = this.state.storedEdit;
-        //upload data to server
-        resubmit_report(data)
-    }
-*/
-
 
     //server call functions
     uploadApplication = (e) => {
@@ -713,13 +778,12 @@ class OrderNewReport extends Component {
     }
 
     buildForm = () => {
-        let rows = JSON.parse(JSON.stringify(this.state.columns));
+        let rows = [...this.state.columns];
         let submit = this.submit;
         let cancel = null;
         let data = null
         console.log(rows)
         if (this.state.origData) { //if there is data
-            data = this.state.origData;
 
             if (!this.state.isEdit) {//if the edit button has been pressed
                 for (let i = rows.length - 1; i >= 0; i--) {
@@ -749,26 +813,63 @@ class OrderNewReport extends Component {
 
         return (
             <FormComponent rows={rows}
-                data={data}
+
                 submit={submit}
                 cancel={cancel}
             />
         )
     }
+
+    buildStep = (stepText, stepNum) => {
+        let style = {}
+        if (stepNum == this.state.step) { style = styles.stepContainer } else { style = styles.stepUndone };
+        return (
+            <Col className={stepNum <= this.state.step ? styles.stepContainer : styles.stepUndone}>
+                <div className={stepNum <= this.state.step ? styles.stepBullet : styles.stepUnselected}>{stepNum}</div>
+                {stepNum <= this.state.step ? <button className={styles.stepLink + " btn btn-link"} onClick={() => this.setState({ step: stepNum })} >{stepText}</button>
+                    : <div className={styles.stepUnselected}>{stepText}</div>
+                }
+            </Col>
+        )
+    }
+
+    buildSteps = () => {
+        return (
+            <Container>
+                <Row>
+                    {this.buildStep("Select Reports", 1)}
+                </Row>
+                <Row>
+                    {this.buildStep("Fill in Details", 2)}
+                    {/* <Col className={styles.stepUndone}>
+                        <div className={styles.stepUnselected}>2</div>
+                        Fill in Details
+                    </Col> */}
+                </Row>
+                <Row>
+                    {this.buildStep("Done", 3)}
+                    {/* <Col className={styles.stepUndone}>
+                        <div className={styles.stepUnselected}>3</div>
+                        Done
+                    </Col> */}
+                </Row>
+            </Container>)
+    }
+
     render() {
         if (this.state.step == 1) { //introduction page
             return (
                 <>
                     <Modal
                         show={this.state.warning !== null}
-                        onHide={() => this.quickOrder(false)}
+                        onHide={() => this.setState({ warning: null })}
                         backdrop="static">
                         <Modal.Header closeButton>
                             <Modal.Title>Information Needed</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>{this.state.warning}</Modal.Body>
                         <Modal.Footer>
-                            <button className="btn btn-primary" onClick={() => this.setState({ warning: null })}>;
+                            <button className="btn btn-primary" onClick={() => this.setState({ warning: null })}>
                                 Continue
                             </button>
                         </Modal.Footer>
@@ -794,26 +895,7 @@ class OrderNewReport extends Component {
                     <Container>
                         <Row>
                             <Col sm={3} >
-                                <Container>
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>1</div>
-                                            Select Reports
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepUndone}>
-                                            <div className={styles.stepUnselected}>2</div>
-                                            Fill in Details
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepUndone}>
-                                            <div className={styles.stepUnselected}>3</div>
-                                            Done
-                                        </Col>
-                                    </Row>
-                                </Container>
+                                {this.buildSteps()}
                             </Col>
                             <Col sm={9}>
                                 <Container>
@@ -938,32 +1020,7 @@ class OrderNewReport extends Component {
                     <Container>
                         <Row>
                             <Col sm={3}>
-                                <Container>
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>1</div>
-                                            Select Reports
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>2</div>
-                                            Fill in Details<br />
-
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <ul> {this.state.reportList} </ul>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepUndone}>
-                                            <div className={styles.stepUnselected}>3</div>
-                                            Done
-                                        </Col>
-                                    </Row>
-                                </Container>
+                                {this.buildSteps()}
 
                             </Col>
                             <Col>

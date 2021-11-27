@@ -5,14 +5,14 @@ import DatePicker from 'react-datepicker'
 import Header from "../../components/header"
 import Router from "next/router"
 import Cookies from "js-cookie"
-// import Pagination from "../../components/datatable/pagination"
-// import DynamicTable from "../../components/DynamicTable"
+
 import { Loading } from "../../components/LoadingComponent"
 import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
 import { order_list, cancel_order } from "../api/credit_reports";
 import React, { Component } from 'react';
 import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
+import "./credit-report.module.css"
 
 //Simple enums
 const NOTORDERED = -1
@@ -136,13 +136,14 @@ class CreditReports extends Component {
     //from setStatus()
     getStatusCss = (code) => {
         code = +code; //ensure it's a number, not a string
-        let css, text = "", icon = "", badge = <></>;
+        let css, text = "", icon = "", badge = <></>, badgeBG = "";
             switch (code) {
                 case -1: text = ""
                 case PENDING:
                     text = "Pending";
                     icon = "faExclamationTriangle";
                     badge = <Badge bg="info">Pending</Badge>;
+                    badgeBG = "info";
                     break;
 
                     break;
@@ -163,6 +164,7 @@ class CreditReports extends Component {
                         color: '#FFFFFF'
                     };
                     badge = <Badge bg="warning">Processing</Badge>;
+                    badgeBG = "warning";
                     text = "Processing";
                     icon = "faClock"
                     break;
@@ -170,11 +172,14 @@ class CreditReports extends Component {
                     text = "warning?????";
                     icon = "faExclamationTriangle";
                     badge = <Badge bg="danger">Warning</Badge>;
+                    badgeBG = "danger";
                     break;
                 case ERROR:
                     text = "Error";
                     icon = "faExclamationTriangle";
                     badge = <Badge bg="secondary">Error</Badge>;
+                    badgeBG = "secondary";
+
                     break;
                 case COMPLETED:
                     css = {
@@ -192,16 +197,41 @@ class CreditReports extends Component {
                     text = "Completed"
                     badge = <Badge bg='success'>Completed</Badge>;
                     icon = "faDownload"
+                    badgeBG = 'success';
                     break;
                 case CANCELLED:
                     text = "Cancelled";
                     badge = <Badge bg='dark'>Cancelled</Badge>;
+                    badgeBG = 'dark';
                     break;
                 default: break;
 
             }
-        return { css: css, text: text, icon: icon, badge: badge };
+        return { css: css, text: text, icon: icon, badge: badge, badgeBG: badgeBG };
+    }
+
+    setNewComment = (row) => {
+        let id = row._id;
+        let rows = this.state.origReportList;
+        let thisRow = rows.findIndex(item => item._id == id);
+        if (thisRow >= 0) {
+            let comment = {
+                comment: this.state.newComment,
+                create_date: new Date(),
+                is_private: this.state.newCommentVisibility == "private",
+                status_code: null,
+                status: null
+            }
+
+
+            if (rows[thisRow].comments.other !== undefined) { //if the other section exists
+                rows[thisRow].comments.other.push(comment)
+            }
+            else {
+                rows[thisRow].comments.other = [comment]
+            }
         }
+    }
 
     tblRow = (row, index) => {
         const getCodes = (rpts) => {
@@ -254,10 +284,14 @@ class CreditReports extends Component {
                     <td>{user_name}<br /><span className="small10">{company_name}</span></td>
 
                     <td><div className={`status status${status.status_code}`}>{status.badge}</div></td>
-                    <td><div className={`incorporate status${reportCodes.incorporate.status_code}`}>{reportCodes.incorporate.text}</div></td>
-                    <td><div className={`bank status${reportCodes.bank.status_code}`}>{reportCodes.bank.text}</div></td>
-                    <td><div className={`legal status${reportCodes.legal.status_code}`}>{reportCodes.legal.text}</div></td>
-                    <td><div className={`suppliers status${reportCodes.suppliers.status_code}`}>{reportCodes.suppliers.text}</div></td>
+                    <td><div className={`incorporate status${row.reports.incorporate.status_code}`}>
+                        {(row.reports.incorporate.status_code == -1) ? '' : <Badge bg={reportCodes.incorporate.badgeBG}>Incorporate</Badge>}</div></td>
+                    <td><div className={`bank status${row.reports.bank.status_code}`}>
+                        {(row.reports.bank.status_code == -1) ? '' : <Badge bg={reportCodes.bank.badgeBG}>Bank</Badge>}</div></td>
+                    <td><div className={`legal status${row.reports.legal.status_code}`}>
+                        {(row.reports.legal.status_code == -1) ? '' : <Badge bg={reportCodes.legal.badgeBG}>Legal</Badge>}</div></td>
+                    <td><div className={`suppliers status${row.reports.suppliers.status_code}`}>
+                        {(row.reports.suppliers.status_code == -1) ? '' : <Badge bg={reportCodes.suppliers.badgeBG}>Suppliers</Badge>}</div></td>
                     <td>
                         <button className="btn btn-outline-primary" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
                     </td>
@@ -292,6 +326,23 @@ class CreditReports extends Component {
                                             onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
                                         <button className="btn btn-outline-primary"
                                             onClick={() => this.orderReport(row._id)}>View Report Form</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan={3}>
+                                        {this.state.role === 'admin' ?
+                                            <div className="addComment">
+                                                <input type='text' onChange={(e) => this.setState({ newComment: e.target.value })}
+                                                    placeHolder='Write a comment here' />
+                                                <select onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
+                                                    <option value='private'>Private</option>
+                                                    <option value='public'>Public</option>
+                                                </select>
+                                                <button className="btn btn-primary" onClick={() => this.setNewComment(row)}>Post</button>
+                                            </div>
+                                            : ''
+                                        }
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -372,6 +423,8 @@ class CreditReports extends Component {
         dt = parseISO(dt); //date-fns parse the ISO string to a correct date object
         let numDays = differenceInDays(new Date(), dt); //get number of days between now and then
         let txt = formatRelative(subDays(dt, numDays), new Date()) //display in easy to read format
+
+        return (<span className='date'>{txt}</span>)
         return txt;
     }
 
@@ -505,6 +558,7 @@ class CreditReports extends Component {
                                     onChange={(update) => {
                                         this.filterDates(update);
                                     }}
+                                    isClearable
                                 />
                             </Col>
                             <Col className="ms-auto filterCol">

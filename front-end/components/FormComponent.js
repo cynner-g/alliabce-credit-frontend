@@ -55,6 +55,10 @@ export class FormComponent extends Component {
         this.setState({ formData: data });
     };
 
+    handleClickEvent = (fn) => {
+        let temp = 0; //only for debug breakpoint
+        fn();
+    }
 
     buildTextRow = (column, index) => {
 
@@ -129,7 +133,7 @@ export class FormComponent extends Component {
             return (
                 <Col className='formCol' md={{ size: 1, offset: 1 }} key={index}>
                     <br />
-                    <button className='formSubmit' onClick={() => this.props.cancel()} color={col.params.color || "primary"}>
+                    <button type="button" className='formSubmit' onClick={() => this.props.cancel()} color={col.params.color || "primary"}>
                         {col.params.text}
                     </button >
                 </Col>
@@ -220,51 +224,55 @@ export class FormComponent extends Component {
     buildLinkButton = (col, index) => {
         return (
             <Col className='formCol' key={index}>
-                <button className="btn btn-outline-primary formLinkButton" onClick={() => col.params.onClick()} key={index}>
+                <button type="button" className="btn btn-outline-primary formLinkButton" onClick={() => this.handleClickEvent(col.params.onClick)} key={index}>
                     {col.Text}
                 </button>
             </Col>
         )
     }
     buildHeader = (col, index) => {
-
-        switch (col.params.size) {
-            case 1:
-                return (<Col className='formCol formHeader' sm={col.length / 12}>
-                    <h1>
-                        {col.title}
-                    </h1>
-                </Col>)
-                break;
-            case 2:
-                return (<Col className='formCol formHeader' sm={col.length / 12}>
-                    <h2>
-                        {col.title}
-                    </h2>
-                </Col>)
-                break;
-            case 3:
-                return (<Col className='formCol formHeader' sm={col.length / 12}>
-                    <h3>
-                        {col.title}
-                    </h3>
-                </Col>)
-                break;
-            case 4:
-                return (<Col className='formCol formHeader' sm={col.length / 12}>
-                    <h4>
-                        {col.title}
-                    </h4>
-                </Col>)
-                break;
-            case 5:
-                return (<Col className='formCol formHeader' sm={col.length / 12}>
-                    <h5>
-                        {col.title}
-                    </h5>
-                </Col>)
-                break;
-        }
+        return (<Col className='formCol formHeader' sm={col.length / 12} style={{ marginTop: '10px' }}>
+            <span style={{ fontSize: `${col.params.size}px`, fontWeight: 600 }}>
+                {col.title}
+            </span>
+        </Col>)
+        // switch (col.params.size) {
+        //     case 1:
+        //         return (<Col className='formCol formHeader{col.params.size}' sm={col.length / 12}>
+        //             <span style={{fontSize:col.params.size+'px',fontWeight:600}}>
+        //                 {col.title}
+        //             </h1>
+        //         </Col>)
+        //         break;
+        //     case 2:
+        //         return (<Col className='formCol formHeader' sm={col.length / 12}>
+        //             <span style={{fontSize:col.params.size+'px',fontWeight:600}}>
+        //                 {col.title}
+        //             </h2>
+        //         </Col>)
+        //         break;
+        //     case 3:
+        //         return (<Col className='formCol formHeader' sm={col.length / 12}>
+        //             <span style={{fontSize:col.params.size+'px',fontWeight:600}}>
+        //                 {col.title}
+        //             </h3>
+        //         </Col>)
+        //         break;
+        //     case 4:
+        //         return (<Col className='formCol formHeader' sm={col.length / 12}>
+        //             <span style={{fontSize:col.params.size+'px',fontWeight:600}}>
+        //                 {col.title}
+        //             </h4>
+        //         </Col>)
+        //         break;
+        //     case 5:
+        //         return (<Col className='formCol formHeader' sm={col.length / 12}>
+        //             <span style={{fontSize:col.params.size+'px',fontWeight:600}}>
+        //                 {col.title}
+        //             </span>
+        //         </Col>)
+        //         break;
+        // }
 
 
     }
