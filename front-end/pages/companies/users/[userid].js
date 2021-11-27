@@ -15,9 +15,20 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
 
+
     /**
      * Manage states
      */
+
+    const [userList, setUserList] = useState(data);
+    const [ischecked, setIsChecked] = useState([]);
+
+    const [search, setSearch] = useState('');
+    const [filter_user_role, setFilter_user_role] = useState([]);
+    const [filter_company, setFilter_company] = useState([]);
+    const [sort_by, setSortby] = useState('full_name');
+    const [is_desc, setDesc] = useState(false);
+
 
     const [show, setShow] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -30,6 +41,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     const [user_role, setUser_role] = useState("");
     const [userID, setUserId] = useState("");
 
+    const qstr = router.query;
     /**
      * Clear values
      */
@@ -46,8 +58,50 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     };
     const handleShow = () => setShow(true);
 
+    const handleOnChange = (e) => {
+        var isChecked1 = e.target.checked;
+        var item = e.target.value;
+        if (isChecked1) {
+            setIsChecked(oldArray => [...oldArray, item]);
+        } else {
+            let arr = ischecked.filter(val => val !== item);
+            setIsChecked(arr);
+        }
+    };
+
+    const fetchData = async () => {
+
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
 
 
+        const req = await fetch('http://dev.alliancecredit.ca/user/list-user', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "language": 'en',
+                "api_token": token,
+                "company_id": qstr.userid,
+                "filter_user_role": filter_user_role,
+                "filter_company": filter_company,
+                "sort_by": sort_by,
+                "is_desc": is_desc
+            })
+
+        });
+        const newData = await req.json();
+        console.log(newData);
+        return setUserList(newData);
+    };
 
 
     /**
@@ -77,7 +131,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 "email_id": emailID,
                 "country_code": "+1",
                 "phone_number": phone_number,
-                "company_access": [company_access],
+                "company_access": ischecked,
                 "user_role": user_role,
                 "api_token": token
             })
@@ -93,7 +147,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             setPhone_number("");
             setCompany_access("");
             setUser_role("");
+            fetchData();
         }
+
     }
 
     /**
@@ -103,9 +159,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      */
     const getUser = async (id) => {
         // e.preventDefault();
-        setIsEdit(true);
-        setShow(true);
-        setUserId(id)
+
         const token = Cookies.get('token');
         if (!token) {
             return {
@@ -136,7 +190,11 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             setCountry_code(userData2?.data?.phone_number?.country_code);
             setPhone_number(userData2?.data?.phone_number?.phone_number);
             setCompany_access(userData2?.data?.full_name);
-            setUser_role(userData2?.data?.display_user_role);
+            setUser_role(userData2?.data?.user_role);
+            // setUser_role(userData2?.data?.display_user_role);
+            setIsEdit(true);
+            setShow(true);
+            setUserId(id)
         }
     }
 
@@ -148,6 +206,24 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     const removeUser = async (id) => {
 
     }
+
+    /**
+     * Stimulate user
+     * @param {*} id 
+     */
+    const stimulateUser = async (id) => {
+        return '';
+    }
+
+    /**
+     * 
+     * @returns 
+     */
+
+    const AcceptUser = async (id) => {
+        return '';
+    }
+
     /**
      *Update User
      *
@@ -175,7 +251,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 "email_id": emailID,
                 "country_code": "+1",
                 "phone_number": phone_number,
-                "company_access": [company_access],
+                "company_access": ischecked,
                 "user_role": user_role,
                 "api_token": token
             })
@@ -200,21 +276,33 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     return (
         <>
             <Header />
-            <TabButton id={data?._id || 0} />
+            <TabButton id={data?._id || 0} url={`/companies/${qstr.userid}` || ''} />
             <div className="seaarch">
                 <div className="row">
                     <div className="col">
 
-                        <input type="text" className="form-control" id="companysearch" placeholder="Search" />
+                        <input type="text" className="form-control" id="companysearch" placeholder="Search" onChange={(e) => {
+                            setSearch(e.target.value);
+                            fetchData();
+                        }
+                        } />
                         <label htmlFor="companysearch" className="form-label">Search</label>
                     </div>
                     <div className="col  text-end">
-                        <select className="form-select role">
+                        <select className="form-select role" onChange={(e) => {
+                            setFilter_user_role([e.target.value]);
+                            fetchData();
+                        }
+                        }>
                             <option value="admin">Admin</option>
                             <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
                         </select>
-                        <select className="form-select f1">
+                        <select className="form-select f1" onChange={(e) => {
+                            setFilter_company([e.target.value]);
+                            fetchData();
+                        }
+                        }>
                             <option>Company Access</option>
                         </select>
                         <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
@@ -227,24 +315,93 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 <table id="example" className="table table-striped">
                     <thead>
                         <tr>
-                            <th><div>User Name</div></th>
-                            <th><div>Date Added</div></th>
-                            <th><div>Email</div></th>
-                            <th><div>Role</div></th>
-                            <th><div>Company Access</div></th>
-                            <th><div>Actions</div></th>
+                            <th><div onClick={(e) => {
+                                const srchval1 = 'full_name'
+                                if (sort_by != srchval1) {
+                                    setDesc(true);
+                                    setSortby('full_name');
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>User Name</div></th>
+                            <th><div onClick={(e) => {
+                                const srchval2 = 'date_added'
+                                if (sort_by != srchval2) {
+                                    setDesc(true);
+                                    setSortby('date_added');
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Date Added</div></th>
+                            <th><div onClick={(e) => {
+                                const srchval3 = 'email_id'
+                                if (sort_by != srchval3) {
+                                    setDesc(true);
+                                    setSortby('email_id');
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Email</div></th>
+                            <th><div onClick={(e) => {
+                                const srchval4 = 'user_role'
+                                if (sort_by != srchval4) {
+                                    setDesc(true);
+                                    setSortby('user_role');
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Role</div></th>
+                            <th><div onClick={(e) => {
+                                const srchval5 = 'company_access'
+                                if (sort_by != srchval5) {
+                                    setDesc(true);
+                                    setSortby('company_access');
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Company Access</div></th>
+                            <th><div style={{ width: '310px' }}>Actions</div></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.data?.map((item) => (
-
+                        {userList?.data?.map((item) => (
 
                             <tr>
                                 <td>{item.full_name}</td>
                                 <td>{item.date_added}</td>
                                 <td>{item.email_id}</td>
                                 <td>{item.display_user_role}</td>
-                                <td>{item.full_name}</td>
+                                <td>{item?.company_access?.join(", ")}</td>
                                 <td>
                                     <>
                                         <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
@@ -296,7 +453,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             <div className="row">
                                 <div className="col">
                                     <label htmlFor="portal_language" className="form-label">Role</label>
-                                    <select className="form-select" id="portal_language" aria-label="" onChange={(e) => setUser_role(e.target.value)}>
+                                    <select className="form-select" value={user_role} id="portal_language" aria-label="" onChange={(e) => setUser_role(e.target.value)}>
                                         <option selected>Select Role</option>
                                         <option value="admin">Admin</option>
                                         <option value="user">User</option>
@@ -306,20 +463,20 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             </div>
                             <div className="row">
                                 <div className="col">
-                                    
-                                        <label htmlFor="groups" className="form-label">Add to group</label>
-                                        <div className="chkox">
-                                            {companiesData?.map((item) => (
-                                                <div className="form-check">
-                                                    <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
-                                                    <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
-                                                </div>
-                                            ))}
-                                        </div>
 
-                                        <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
+                                    <label htmlFor="groups" className="form-label">Add to group</label>
+                                    <div className="chkox">
+                                        {companiesData?.map((item) => (
+                                            <div className="form-check">
+                                                <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
+                                                <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => handleOnChange(e)} />
+                                            </div>
+                                        ))}
+                                    </div>
 
-                                    
+                                    <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
+
+
                                 </div>
                             </div>
 

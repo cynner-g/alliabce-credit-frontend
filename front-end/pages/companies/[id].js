@@ -34,7 +34,7 @@ const CompanyDetails = ({ data }) => {
                 </div>
 
 
-                <TabButton id={data?._id} />
+                <TabButton id={data?._id} url={'#'} />
                 <div className="company_wrap">
                     <Link href={{
                         pathname: `/companies/edit/[title]`,
