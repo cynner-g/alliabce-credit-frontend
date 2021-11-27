@@ -283,6 +283,10 @@ input[type=text] {
   padding-top: 15px;
 }
 
+.popupContent {
+  padding: 0 25px;
+}
+
 .cemail {}
 
 .cphone {}
@@ -377,4 +381,44 @@ input[type=text] {
 .company_nav {
   border-bottom: 1px solid #E6EEFF;
   margin-bottom: 16px;
+}
+
+/*My account*/
+
+.myaccount {}
+
+.acc_title {
+  color: #517BCC;
+  font-size: 20px;
+}
+
+.login_name {
+  font-size: 24px;
+  color: #3B4A68;
+}
+
+.acc_email, .acc_phone {
+  font-size: 18px;
+  color: #3B4A68;
+}
+
+.sidebarwrap {
+  position: relative;
+  min-height: 75vh;
+  border: 1px solid #E5E5E5;
+  padding: 15px;
+}
+
+.sidebarwrap .logoutbtn {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+.ac_left {
+  float: left;
+}
+
+.ac_right {
+  float: right;
 }

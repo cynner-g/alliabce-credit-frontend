@@ -205,51 +205,54 @@ const AdminUsers = ({ data }) => {
                         <UserSidebar data={data} />
                     </div>
                     <div className="col">
-                        {/* <TabButtonUser id={data?._id} /> */}
-                        <h3>My Company</h3>
-                        <h2>Alliance Credit</h2>
-                        <div className="email">
-                            <a href="mailto:email@company.com">email@company.com</a>
-                        </div>
-                        <div className="phone">+1234567890</div>
-                        <Address address={address} />
-                        All Users
-
-                        <div className="seaarch">
-                            <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
-                        </div>
-
-                        <div className="listing">
-                            <table id="example" className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><div>Sr Number</div></th>
-                                        <th><div>User Name</div></th>
-                                        <th><div>Date Added</div></th>
-                                        <th><div>Email</div></th>
-
-                                        <th><div>Actions</div></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data?.map((item, index) => (
+                        <div className="sidebarwrap">
+                            {/* <TabButtonUser id={data?._id} /> */}
+                            <h3 className="acc_title">My Company</h3>
+                            <h2 className="login_name">Alliance Credit</h2>
+                            <div className="acc_email">
+                                <a href="mailto:email@company.com">email@company.com</a>
+                            </div>
+                            <div className="acc_phone">+1234567890</div>
+                            <Address address={address} />
 
 
+                            <div className="ac_left">All User</div>
+                            <div className="ac_right">
+                                <button className="btn btnedit" onClick={handleShow}>Add Sub User</button>
+                            </div>
+                            <div className="clearfix"></div>
+                            <div className="listing">
+                                <table id="example" className="table table-striped">
+                                    <thead>
                                         <tr>
-                                            <td>{index}</td>
-                                            <td>{item.full_name}</td>
-                                            <td>{item.date_added}</td>
-                                            <td>{item.email_id}</td>
-                                            <td>
-                                                <>
-                                                    <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button>
-                                                </>
-                                            </td>
+                                            <th><div>Sr Number</div></th>
+                                            <th><div>User Name</div></th>
+                                            <th><div>Date Added</div></th>
+                                            <th><div>Email</div></th>
+
+                                            <th><div>Actions</div></th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                                    </thead>
+                                    <tbody>
+                                        {data?.map((item, index) => (
+
+
+                                            <tr>
+                                                <td>{index}</td>
+                                                <td>{item.full_name}</td>
+                                                <td>{item.date_added}</td>
+                                                <td>{item.email_id}</td>
+                                                <td>
+                                                    <>
+                                                        <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button>
+                                                    </>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                            </div>
                         </div>
                     </div>
                 </div>
