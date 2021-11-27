@@ -34,7 +34,7 @@ class OrderNewReport extends Component {
 
     componentDidMount() {
         this.setState({ columns: this.getColumns() });
-        if (Router && Router.router && Router.router.query && Router.router.query.rptId && Router.router.query.rptId.length > 0) {
+        if (Router?.router?.query?.rptId?.length > 0) {
             let rptId = Router.router.query.rptId;
             order_details(rptId).then(async (data) => {
 
@@ -54,19 +54,18 @@ class OrderNewReport extends Component {
 
                 //get array position of each item
                 let firstRow = columns.findIndex(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'banks'
+                    return row?.params?.model?.toLowerCase().split('.')[0] == 'banks'
                 })
 
                 let bankCols = columns.filter(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'banks'
+
+                    return row?.params?.model?.toLowerCase().split('.')[0] == 'banks'
                 })
 
                 let newBankCols = [];
                 for (let index = 0; index < numBanks; index++) {
                     bankCols.forEach(bank => {
-                        if (bank.params && bank.params.model.split('.').length > 1) {
+                        if (bank?.params?.model.split('.').length > 1) {
                             let model = bank.params.model;
                             model = `${model}_${index}`;
                             bank.params.model = model;
@@ -94,18 +93,16 @@ class OrderNewReport extends Component {
                 data.suppliers = suppliers;
 
                 firstRow = columns.findIndex(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'suppliers'
+                    return row.params?.model?.toLowerCase().split('.')[0] == 'suppliers'
                 })
 
                 let supplierCols = columns.filter(row => {
-                    if (!(row.params && row.params.model)) return false;
-                    return row.params.model.toLowerCase().split('.')[0] == 'suppliers'
+                    return row.params?.model?.toLowerCase().split('.')[0] == 'suppliers'
                 })
                 let newSupplierCols = [];
                 for (let index = 0; index < numSuppliers; index++) {
                     supplierCols.forEach(supplier => {
-                        if (supplier.params && supplier.params.model.split('.').length > 1) {
+                        if (supplier.params?.model?.split('.').length > 1) {
                             let model = supplier.params.model;
                             model = `${model}_${index}`;
                             supplier.params.model = model;
@@ -140,10 +137,10 @@ class OrderNewReport extends Component {
     //Display JSON fucntions
     addBank = () => {
         let columns = this.state.columns;
-        let banks = columns.filter(col => col.params.model && col.params.model.startsWith("banks"))
+        let banks = columns.filter(col => col.params?.model?.startsWith("banks"))
         let numBanks = banks.length;
 
-        let lastBank = columns.findIndex(col => col.params.model && col.params.model.startsWith("banks")) + numBanks;
+        let lastBank = columns.findIndex(col => col.params?.model?.startsWith("banks")) + numBanks;
 
         let newDupNum = banks[banks.length - 1].dupNum;
         banks = banks.filter(bank => bank.dupNum == newDupNum);
@@ -634,12 +631,12 @@ class OrderNewReport extends Component {
                     default: field = null;
                 }
                 try {
-                    if (field && field.length > 0) {
+                    if (field?.length > 0) {
                         let startRow = columns.findIndex(row => {
-                            return row.params.model && row.params.model.startsWith(field)
+                            return row.params?.model?.startsWith(field)
                         });
                         let numRows = columns.filter(row => {
-                            return row.params.model && row.params.model.startsWith(field)
+                            return row.params?.model?.startsWith(field)
                         })
                         numRows = numRows.length;
 
@@ -944,137 +941,6 @@ class OrderNewReport extends Component {
             )
 
         }
-
-        // else if (this.state.step == 2 && !this.state.isEdit && this.state.origData !== null) {
-        //     let rows = this.state.columns
-        //     console.log(rows);
-        //     return (
-        //         <>
-        //             <Modal
-        //                 show={this.state.showEditSubmit}
-        //                 onHide={() => this.setState({ showEditSubmit: false })}
-        //                 backdrop="static">
-        //                 <Modal.Header closeButton>
-        //                     <Modal.Title>Resubmit Form</Modal.Title>
-        //                 </Modal.Header>
-        //                 <Modal.Body>Are you sure you want to resubmit the report form?</Modal.Body>
-        //                 <Modal.Footer>
-        //                     <button className="btn btn-outline-primary" onClick={() => this.setState({ showEditSubmit: false })}>
-        //                         Cancel
-        //                     </button>
-        //                     <button className="btn btn-primary" onClick={() => this.resubmit(true)}>
-        //                         Confirm
-        //                     </button>
-        //                 </Modal.Footer>
-        //             </Modal>
-        //             <Header />
-        //             <Container>
-        //                 <Row>
-        //                     <Col sm={3}>
-        //                         <Container>
-        //                             <Row>
-        //                                 <Col className={styles.stepContainer}>
-        //                                     <div className={styles.stepBullet}>1</div>
-        //                                     Select Reports
-        //                                 </Col>
-        //                             </Row>
-        //                             <Row>
-        //                                 <Col className={styles.stepContainer}>
-        //                                     <div className={styles.stepBullet}>2</div>
-        //                                     Fill in Details<br />
-        //                                 </Col>
-        //                             </Row>
-        //                             <Row>
-        //                                 <Col>
-        //                                     <ul> {this.state.reportList} </ul>
-        //                                 </Col>
-        //                             </Row>
-        //                             <Row>
-        //                                 <Col className={styles.stepUndone}>
-        //                                     <div className={styles.stepUnselected}>3</div>
-        //                                     Done
-        //                                 </Col>
-        //                             </Row>
-        //                         </Container>
-
-        //                     </Col>
-        //                     <Col>
-        //                        {this.buildForm}
-        //                     </Col>
-        //                 </Row>
-        //             </Container>
-        //         </>
-        //     )
-        //     //data={{ ...this.state.data }}
-        //     // duplicates={['banks', 'suppliers']}
-        // }
-        // else if (this.state.step == 2 && this.state.isEdit && this.state.origData !== null) {
-        //     let rows = this.state.columns
-        //     console.log(rows);
-        //     return (
-        //         <>
-        //             <Modal
-        //                 show={this.state.showEditSubmit}
-        //                 onHide={() => this.setState({ showEditSubmit: false })}
-        //                 backdrop="static">
-        //                 <Modal.Header closeButton>
-        //                     <Modal.Title>Resubmit Form</Modal.Title>
-        //                 </Modal.Header>
-        //                 <Modal.Body>Are you sure you want to resubmit the report form?</Modal.Body>
-        //                 <Modal.Footer>
-        //                     <button className="btn btn-outline-primary" onClick={() => this.setState({ showEditSubmit: false })}>
-        //                         Cancel
-        //                     </button>
-        //                     <button className="btn btn-primary" onClick={() => this.resubmit(true)}>
-        //                         Confirm
-        //                     </button>
-        //                 </Modal.Footer>
-        //             </Modal>
-        //             <Header />
-        //             <Container>
-        //                 <Row>
-        //                     <Col sm={3}>
-        //                         <Container>
-        //                             <Row>
-        //                                 <Col className={styles.stepContainer}>
-        //                                     <div className={styles.stepBullet}>1</div>
-        //                                     Select Reports
-        //                                 </Col>
-        //                             </Row>
-        //                             <Row>
-        //                                 <Col className={styles.stepContainer}>
-        //                                     <div className={styles.stepBullet}>2</div>
-        //                                     Fill in Details<br />
-
-        //                                 </Col>
-        //                             </Row>
-        //                             <Row>
-        //                                 <Col>
-        //                                     <ul> {this.state.reportList} </ul>
-        //                                 </Col>
-        //                             </Row>
-        //                             <Row>
-        //                                 <Col className={styles.stepUndone}>
-        //                                     <div className={styles.stepUnselected}>3</div>
-        //                                     Done
-        //                                 </Col>
-        //                             </Row>
-        //                         </Container>
-
-        //                     </Col>
-        //                     <Col>
-        //                         <FormComponent rows={rows}
-        //                             submit={this.submit}
-        //                             cancel={() => this.setState({ data: this.state.origData })}
-        //                         />
-        //                     </Col>
-        //                 </Row>
-        //             </Container>
-        //         </>
-        //     )
-        //     //data={{ ...this.state.data }}
-        //     // duplicates={['banks', 'suppliers']}
-        // }
         else if (this.state.step == 3) {
             return (
                 <>

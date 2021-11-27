@@ -49,7 +49,7 @@ export default function Login(props) {
     const res2 = await res.json();
     console.log(res2);
     if (res2.status_code == 403) {
-      setloginMessage("Either User name or Password doesnot exists");
+      setloginMessage("Either User name or password does not exist");
     } else if (res2.status_code == 200) {
       setloginMessage("");
       Cookies.set('token', res2?.data?.auth_token)

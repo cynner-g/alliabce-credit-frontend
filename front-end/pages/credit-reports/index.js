@@ -430,35 +430,35 @@ class CreditReports extends Component {
                                         <td><input type='checkbox'
                                             onClick={(e) => this.setStatus(this.state.statusChangeRow, PROCESSING, 0)}
                                             onChange={(e) => this.setStatus(this.state.statusChangeRow, PROCESSING, 0)}
-                                            checked={this.state.statusChangeRow && this.state.statusChangeRow.status_code == PROCESSING} /></td>
+                                            checked={this.state.statusChangeRow?.status_code == PROCESSING} /></td>
                                         <td>Processing</td>
                                     </tr>
                                     <tr>
                                         <td><input type='checkbox'
                                             onClick={(e) => this.setStatus(this.state.statusChangeRow, NEEDACTION, 0)}
                                             onChange={(e) => this.setStatus(this.state.statusChangeRow, NEEDACTION, 0)}
-                                            checked={this.state.statusChangeRow && this.state.statusChangeRow.status_code == NEEDACTION} /></td>
+                                            checked={this.state.statusChangeRow?.status_code == NEEDACTION} /></td>
                                         <td>Need Action</td>
                                     </tr>
                                     <tr>
                                         <td><input type='checkbox'
                                             onClick={(e) => this.setStatus(this.state.statusChangeRow, ERROR, 0)}
                                             onChange={(e) => this.setStatus(this.state.statusChangeRow, ERROR, 0)}
-                                            checked={this.state.statusChangeRow && this.state.statusChangeRow.status_code == ERROR} /></td>
+                                            checked={this.state.statusChangeRow?.status_code == ERROR} /></td>
                                         <td>Error</td>
                                     </tr>
                                     <tr>
                                         <td><input type='checkbox'
                                             onClick={(e) => this.setStatus(this.state.statusChangeRow, PENDING, 0)}
                                             onChange={(e) => this.setStatus(this.state.statusChangeRow, PENDING, 0)}
-                                            checked={this.state.statusChangeRow && this.state.statusChangeRow.status_code == PENDING} /></td>
+                                            checked={this.state.statusChangeRow?.status_code == PENDING} /></td>
                                         <td>Pending</td>
                                     </tr>
                                     <tr>
                                         <td><input type='checkbox'
                                             onClick={(e) => this.setStatus(this.state.statusChangeRow, COMPLETED, 0)}
                                             onChange={(e) => this.setStatus(this.state.statusChangeRow, COMPLETED, 0)}
-                                            checked={this.state.statusChangeRow && this.state.statusChangeRow.status_code == COMPLETED} /></td>
+                                            checked={this.state.statusChangeRow?.status_code == COMPLETED} /></td>
                                         <td>Completed</td>
                                     </tr>
                                     <tr><td colSpan={2}>{this.state.statusChangeRow ? this.state.statusChangeRow.badge : ''}</td></tr>

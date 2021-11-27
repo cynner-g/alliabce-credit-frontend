@@ -138,7 +138,7 @@ export class FormComponent extends Component {
 
     buildDropDown = (col, index) => {
         let model = `${col.params.model}`;
-        if (col.params.placeHolder && col.params.options[0].value !== col.params.placeHolder) {
+        if (col.params?.options[0]?.value !== col.params?.placeHolder) {
             col.params.options.unshift({ value: col.params.placeHolder, id: false, disabled: true })
         }
         return (
@@ -302,17 +302,6 @@ export class FormComponent extends Component {
         }
         catch (ex) {
             return (<br />)
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        Object.entries(this.props).forEach(([key, val]) =>
-            prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-        );
-        if (this.state) {
-            Object.entries(this.state).forEach(([key, val]) =>
-                prevState[key] !== val && console.log(`State '${key}' changed`)
-            );
         }
     }
 
