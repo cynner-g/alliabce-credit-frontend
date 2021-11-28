@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react';
 import ContentEditable from 'react-contenteditable'
 import { Table, Button, Checkbox, Popup, Pagination } from 'semantic-ui-react'
 import { formatDate } from '../Utility/UtilFunctions';
+import { Badge } from 'react-bootstrap';
 
 import '../styles/DynamicTable.module.css';
 /*
@@ -330,6 +331,36 @@ class DynamicTable extends Component {
                             text = parseFloat(text).toFixed(2);
                             if (text === 'NaN') text = ''
                             break;
+                        case 'button':
+                            if (!ret) {
+                                ret = (
+                                    <Table.Cell className={`buttonCell`}
+                                        key={keyName}
+                                        name={column.colName.replace(' ', '_')}
+                                        tabstop='true'
+                                        onClick={(e) => column.onClick(e, column.colName, row)}
+                                    >
+                                        <button>{column.buttonText}</button>
+                                    </Table.Cell>
+                                )
+                            }
+                        case 'badge':
+                            if (!ret) {
+                                let fn = column.styleFn;
+                                let styleParam = row[column.styleParam]
+                                let bgColor = column.styleFn(row[column.styleParam]);
+                                ret = (
+                                    <Table.Cell
+                                        className={`badgeCell`}
+                                        key={keyName}
+                                        name={column.colName.replace(' ', '_')}
+                                        tabstop='false'
+                                    >
+                                        <Badge bg={bgColor}>{text}</Badge>
+                                    </Table.Cell>
+                                )
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -452,7 +483,7 @@ class DynamicTable extends Component {
         try {
             let id = 0; //if a row needs an ID column because of aggregates etc
             let ret = null;
-            if (params.data && params.data.length <= 0) {
+            if (params.data && params.data?.length <= 0) {
                 //print no data message
 
                 //get # visible cells, all cells if none listed as visible
