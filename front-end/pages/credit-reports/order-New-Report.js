@@ -904,7 +904,7 @@ class OrderNewReport extends Component {
                                             Select Region<br />
                                             <div className={styles.rdoSpan}>
                                                 <input type='checkbox' name='region' value="Quebec"
-                                                    onChange=''
+                                                    onChange={() => { }}
                                                     checked={this.state.region == "Quebec"}
                                                     className={styles.rdoCheck}
                                                     id='rdoQuebec' />

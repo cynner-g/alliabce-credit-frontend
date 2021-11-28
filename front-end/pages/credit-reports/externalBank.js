@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Router from 'next/router';
 import { Row, Col, Container } from 'react-bootstrap'
 
-const ExternalLinks = () => {
+export const ExternalBank = () => {
 
     let [data, setData] = useState({
         CustomerSince: null,

@@ -212,11 +212,13 @@ const AdminUsers = ({ data }) => {
                             <a href="mailto:email@company.com">email@company.com</a>
                         </div>
                         <div className="phone">+1234567890</div>
+
                         <Address address={address} />
-                        All Users
+                        <br /><br />
+                        <h2>My Team Members</h2>
 
                         <div className="seaarch">
-                            <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
+                            <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add Team Member</a></Link>
                         </div>
 
                         <div className="listing">
