@@ -40,3 +40,9 @@
 .status-1 {
     display: none;
 }
+
+/* remove this 'today' highlighting on all months */
+.react-datepicker__day.react-datepicker__day--keyboard-selected {
+    background: none;
+    color: black;
+}
