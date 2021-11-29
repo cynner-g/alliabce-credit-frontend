@@ -84,8 +84,8 @@ const UserSidebar = ({ data }) => {
                 </Modal.Header>
                 <Modal.Body><div className="popupContent">Are you sure you want to reset your password?</div></Modal.Body>
                 <Modal.Footer>
-                    <button type="button" className="btn btn-primary" onClick={handleClose}>Cancel</button>
-                    <button type="submit" className="btn btn-primary" onClick={resetPassword}>Confirm</button>
+                    <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" onClick={resetPassword}>Reset Password</button>
                 </Modal.Footer>
             </Modal>
         </div>

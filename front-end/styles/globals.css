@@ -378,9 +378,24 @@ input[type=text] {
 
 /**Company tab Nav*/
 
-.company_nav {
+.company_nav_inner, .company_nav {
   border-bottom: 1px solid #E6EEFF;
+}
+
+.company_nav {
   margin-bottom: 16px;
+}
+
+.company_blocks {
+  padding-bottom: 30px;
+}
+
+.company_nav_inner .nav-link {
+  padding: 16px 25px;
+}
+.inner_search{
+  padding: 15px;
+  margin-bottom: 0px !important;
 }
 
 /*My account*/
@@ -402,6 +417,13 @@ input[type=text] {
   color: #3B4A68;
 }
 
+.sidebarwrap_inner {
+  position: relative;
+  min-height: 75vh;
+  border: 1px solid #E5E5E5;
+  /* padding: 15px; */
+}
+
 .sidebarwrap {
   position: relative;
   min-height: 75vh;
@@ -421,4 +443,5 @@ input[type=text] {
 
 .ac_right {
   float: right;
+  padding-bottom: 10px;
 }

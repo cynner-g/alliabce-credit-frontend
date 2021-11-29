@@ -7,7 +7,6 @@ const Lang = () => {
     return (
         <>
             <div>
-                <span>Current Language: </span>
                 <span
                     style={{
                         borderRadius: "3px",

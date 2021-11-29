@@ -13,13 +13,14 @@ const Account = function ({ data }) {
             <div className="container">
                 <div className="row">
                     <div className="col-3">
-                        <UserSidebar data={data}/>
+                        <UserSidebar data={data} />
                     </div>
                     <div className="col">
-                        <TabButtonUser id={data?._id} />
+                        <div className="sidebarwrap_inner">
+                            <TabButtonUser id={data?._id} />
 
-                        <div className="company_wrap">
-                            {/* <Link href={{
+                            <div className="company_wrap">
+                                {/* <Link href={{
                                 pathname: `/companies/edit/[title]`,
                                 query: {
                                     title: data?._id, // should be `title` not `id`
@@ -28,28 +29,37 @@ const Account = function ({ data }) {
                                 as={`/companies/edit/${data?._id}`}
                             ><a className="btn btnedit edit_company">Edit Company</a></Link> */}
 
-                            {data?.child_companies?.reverse().map((item => {
-                                return (
-                                    <>
-                                        <h4>{item?.company_name}</h4>
-                                        <div className="cwebsite data_block"><a href={item?.website} target="_blank">{item?.website}</a></div>
-                                        <div className="cemail data_block"><a href={`mailto:${item?.website}`} target="_blank">{item?.website}</a></div>
-                                        <div className="cphone data_block">{item?.phone_number?.country_code} - {item?.phone_number?.phone_number}</div>
-                                        <div className="caddress data_block">
-                                            <Address address={item?.address} />
+                                {data?.child_companies?.reverse().map((item => {
+                                    return (
+                                        <div className="company_blocks">
+                                            <div className="imagewrap"></div>
+                                            <div className="rightdata">
+                                                <h4>{item?.company_name}</h4>
+                                                <div className="cwebsite data_block"><a href={item?.website} target="_blank">{item?.website}</a></div>
+                                            </div>
+                                            <div className="clearB"></div>
+
+
+
+                                            <div className="cemail data_block"><a href={`mailto:${item?.website}`} target="_blank">{item?.website}</a></div>
+                                            <div className="cphone data_block">{item?.phone_number?.country_code} - {item?.phone_number?.phone_number}</div>
+                                            <div className="caddress data_block">
+                                                <Address address={item?.address} />
+                                            </div>
+                                            <div>
+                                                <span>Langauge</span> <strong>{item?.portal_language}</strong>
+                                            </div>
+                                            <div className="isactive">Active: {item?.is_active ? 'Active' : 'Not Active'}</div>
+
                                         </div>
-                                        <div>
-                                            <span>Langauge</span> <strong>{item?.portal_language}</strong>
-                                        </div>
-                                        <div className="isactive">is_active: {item?.is_active ? 'Active' : 'Not Active'}</div>
-                                    </>
-                                )
-                            }
+                                    )
+                                }
 
-                            ))}
+                                ))}
 
 
 
+                            </div>
                         </div>
                     </div>
                 </div>

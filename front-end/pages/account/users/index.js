@@ -16,11 +16,20 @@ const Users = ({ data, listUsers }) => {
     // const limit = 3
     // const lastPage = Math.ceil(totalPage / limit)
     // console.log(data)
-    // console.log(listUsers)
+    console.log(listUsers)
 
     /**
      * Manage states
      */
+
+    const [userList, setUserList] = useState(data);
+
+    const [search, setSearch] = useState('');
+    const [filter_user_role, setFilter_user_role] = useState([]);
+    const [filter_company, setFilter_company] = useState([]);
+    const [sort_by, setSortby] = useState('user_name');
+    const [is_desc, setDesc] = useState(false);
+
 
     const [show, setShow] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -50,6 +59,40 @@ const Users = ({ data, listUsers }) => {
     const handleShow = () => setShow(true);
 
 
+
+    const fetchData = async () => {
+
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+
+
+        const req = await fetch('http://dev.alliancecredit.ca/user/list-associate-user', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "language": 'en',
+                "api_token": token,
+                "company_id": qstr.userid,
+                "filter_user_role": filter_user_role,
+                "filter_company": filter_company,
+                "sort_by": sort_by,
+                "is_desc": is_desc
+            })
+
+        });
+        const newData = await req.json();
+        console.log(newData);
+        return setUserList(newData);
+    };
 
 
 
@@ -209,68 +252,145 @@ const Users = ({ data, listUsers }) => {
                         <UserSidebar data={data} />
                     </div>
                     <div className="col">
-                        <TabButtonUser id={data?._id} />
-                        <div className="seaarch">
-                            <div className="row">
-                                <div className="col">
+                        <div className="sidebarwrap_inner">
+                            <TabButtonUser id={data?._id} />
+                            <div className="seaarch inner_search">
+                                <div className="row">
+                                    <div className="col-4">
+                                        <input type="text" className="form-control" id="companysearch" placeholder="Search" />
+                                        <label htmlFor="companysearch" className="form-label">Search</label>
+                                    </div>
+                                    <div className="col  text-end">
+                                        <select className="form-select role" onChange={(e) => {
+                                            setFilter_user_role([e.target.value]);
+                                            fetchData();
+                                        }}>
+                                            <option value="user">User</option>
+                                            <option value="user-manager">User Manager</option>
+                                        </select>
+                                        <select className="form-select f1" onChange={(e) => {
+                                            setFilter_company([e.target.value]);
+                                            fetchData();
+                                        }}>
+                                            <option>Company Access</option>
+                                        </select>
+                                        {/* <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link> */}
 
-                                    <input type="text" className="form-control" id="companysearch" placeholder="Search" />
-                                    <label htmlFor="companysearch" className="form-label">Search</label>
-                                </div>
-                                <div className="col  text-end">
-                                    <select className="form-select role">
-                                        <option value="user">User</option>
-                                        <option value="user-manager">User Manager</option>
-                                    </select>
-                                    <select className="form-select f1">
-                                        <option>Company Access</option>
-                                    </select>
-                                    <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
-
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="listing">
-                            <table id="example" className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><div>User Name1111</div></th>
-                                        <th><div>Date Added</div></th>
-                                        <th><div>Email</div></th>
-                                        <th><div>Role</div></th>
-                                        <th><div>Company Access</div></th>
-                                        <th><div>Actions</div></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listUsers?.map((item) => (
-
-
+                            <div className="listing">
+                                <table id="example" className="table table-striped">
+                                    <thead>
                                         <tr>
-                                            <td>{item.full_name}</td>
-                                            <td>{item.date_added}</td>
-                                            <td>{item.email_id}</td>
-                                            <td>{item.display_user_role}</td>
-                                            <td>{item.full_name}</td>
-                                            <td>
-                                                <>
-                                                    {/* <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp; */}
-                                                    <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
-                                                    {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
+                                            <th><div onClick={(e) => {
+                                                const srchval1 = 'user_name'
+                                                if (sort_by != srchval1) {
+                                                    setDesc(true);
+                                                    setSortby('user_name');
+                                                } else {
+                                                    if (is_desc == true) {
+                                                        setDesc(false);
+                                                    } else {
+                                                        setDesc(true);
+                                                    }
+                                                }
+                                                fetchData();
+                                            }
+                                            }>User Name</div></th>
+                                            <th><div onClick={(e) => {
+                                                const srchval2 = 'date_added'
+                                                if (sort_by != srchval2) {
+                                                    setDesc(true);
+                                                    setSortby('date_added');
+                                                } else {
+                                                    if (is_desc == true) {
+                                                        setDesc(false);
+                                                    } else {
+                                                        setDesc(true);
+                                                    }
+                                                }
+                                                fetchData();
+                                            }
+                                            }>Date Added</div></th>
+                                            <th><div onClick={(e) => {
+                                                const srchval3 = 'email_id'
+                                                if (sort_by != srchval3) {
+                                                    setDesc(true);
+                                                    setSortby('email_id');
+                                                } else {
+                                                    if (is_desc == true) {
+                                                        setDesc(false);
+                                                    } else {
+                                                        setDesc(true);
+                                                    }
+                                                }
+                                                fetchData();
+                                            }
+                                            }>Email</div></th>
+                                            <th><div onClick={(e) => {
+                                                const srchval4 = 'display_user_role'
+                                                if (sort_by != srchval4) {
+                                                    setDesc(true);
+                                                    setSortby('display_user_role');
+                                                } else {
+                                                    if (is_desc == true) {
+                                                        setDesc(false);
+                                                    } else {
+                                                        setDesc(true);
+                                                    }
+                                                }
+                                                fetchData();
+                                            }
+                                            }>Role</div></th>
+                                            <th><div onClick={(e) => {
+                                                const srchval5 = 'company_access'
+                                                if (sort_by != srchval5) {
+                                                    setDesc(true);
+                                                    setSortby('company_access');
+                                                } else {
+                                                    if (is_desc == true) {
+                                                        setDesc(false);
+                                                    } else {
+                                                        setDesc(true);
+                                                    }
+                                                }
+                                                fetchData();
+                                            }
+                                            }>Company Access</div></th>
+                                            {/* <th><div>Actions</div></th> */}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listUsers?.map((item) => (
+
+
+                                            <tr>
+                                                <td>{item.full_name}</td>
+                                                <td>{item.date_added}</td>
+                                                <td>{item.email_id}</td>
+                                                <td>{item.display_user_role}</td>
+                                                <td>{item.full_name}</td>
+                                                {/* <td>
+                                                    <> */}
+                                                {/* <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp; */}
+                                                {/* <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp; */}
+                                                {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
                                     {user.isDeleting 
                                         ? <span className="spinner-border spinner-border-sm"></span>
                                         : <span>Delete</span>
                                     }
                                 </button> */}
-                                                    {/* <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp; */}
-                                                </>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                                                {/* <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp; */}
+                                                {/* </>
+                                                </td> */}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                            </div>
                         </div>
                     </div>
                 </div>
