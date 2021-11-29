@@ -4,15 +4,57 @@ import Link from 'next/link'
 import Pagination from "../../components/datatable/pagination"
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
+import { useState } from "react"
 
 
 
 const Companies = ({ data, page, totalPage }) => {
 
+    const [dataList, setData] = useState(data);
+    const [search, setSearch] = useState('');
+    const [sort_by, setSortby] = useState('company_name');
+    const [is_desc, setDesc] = useState(false);
+
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
-    console.warn(data.data);
+    console.log(data);
+
+    const fetchData = async () => {
+        const token = Cookies.get('token');
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+
+
+        const req = await fetch('http://dev.alliancecredit.ca/company/list-companies', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "language": 'en',
+                "api_token": token,
+                "search": search,
+                "sort_by": sort_by,
+                "is_desc": is_desc
+            })
+
+        });
+        const newData = await req.json();
+
+        return setData(newData);
+    };
+
+
+
+
+
     return (
         <>
             <Header />
@@ -20,7 +62,11 @@ const Companies = ({ data, page, totalPage }) => {
             <div className="seaarch">
                 <div className="row">
                     <div className="col">
-                        <input type="text" className="form-control" id="companysearch" placeholder="Search" />
+                        <input type="text" className="form-control" id="companysearch" onChange={(e) => {
+                            setSearch(e.target.value);
+                            fetchData();
+                        }
+                        } placeholder="Search" />
                         <label htmlFor="companysearch" className="form-label"></label>
                     </div>
                     <div className="col text-end">
@@ -32,24 +78,68 @@ const Companies = ({ data, page, totalPage }) => {
                 <table id="example" className="table table-striped">
                     <thead>
                         <tr>
-                            <th><div>Ref. Id</div></th>
-                            <th><div>Company Name</div></th>
-                            <th><div>Date added</div></th>
+                            <th><div onClick={(e) => {
+                                const srchval1 = 'id'
+                                if (sort_by != srchval1) {
+                                    setDesc(true);
+                                    setSortby('id');
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Ref. Id</div></th>
+                            <th><div onClick={(e) => {
+                                // reference_id
+                                const srchval2 = 'company_name'
+                                if (sort_by != srchval2) {
+                                    setDesc(true);
+                                    setSortby(srchval2);
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Company Name</div></th>
+                            <th><div onClick={(e) => {
+                                // reference_id
+                                const srchval3 = 'date_added'
+                                if (sort_by != srchval3) {
+                                    setDesc(true);
+                                    setSortby(srchval3);
+                                } else {
+                                    if (is_desc == true) {
+                                        setDesc(false);
+                                    } else {
+                                        setDesc(true);
+                                    }
+                                }
+                                fetchData();
+                            }
+                            }>Date added</div></th>
                             <th><div>Group</div></th>
                             <th><div>No. of Sub-company</div></th>
                             <th><div>Actions</div></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.data?.map((item) => (
+                        {dataList?.data?.map((item) => (
 
 
                             <tr key={item._id}>
                                 {/* {post.title} */}
-                                <td>{item._id}</td>
+                                <td>{item?._id}</td>
                                 <td>{item?.company_name}</td>
                                 <td>{item?.date_added}</td>
-                                <td>{item?.sub_companies_count}</td>
+                                <td>{item?.group_data.join(", ")}</td>
                                 <td>{item?.sub_companies_count}</td>
                                 <td>
                                     <>

@@ -25,6 +25,68 @@ body {
 
 .breadcrumb ul li {
   display: inline-block;
+  float: left;
+  padding: 8px 16px;
+}
+
+.breadcrumb ul li a {
+  padding: 0;
+}
+
+.back {
+  background: #F1F1F1;
+  padding: 0 !important;
+}
+
+.back a {
+  display: block;
+  text-indent: -999999px;
+  width: 40px;
+  height: 40px;
+}
+
+.subtitle {
+  font-size: 24px;
+  color: #517BCC;
+  padding-top: 30px;
+  padding-bottom: 15px;
+}
+
+.companyform {
+  padding-top: 40px;
+}
+
+.chkox {
+  border: 2px solid #E0E0E0;
+  padding: 10px 15px;
+  max-width: 100%;
+}
+
+.chkox input[type="checkbox"] {
+  float: right;
+}
+
+.chkox .form-check {
+  padding-left: 0;
+}
+
+/*Modal*/
+
+.modal-title.h4 {
+  color: #747474;
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.modal-header {
+  border-bottom: 0 !important;
+  padding: 30px 40px 10px;
+}
+
+.modal-footer {
+  border-top: 0 !important;
+  padding-right: 40px;
+  padding-bottom: 40px;
 }
 
 /*Navigation*/
@@ -66,6 +128,55 @@ header {
   position: absolute;
   top: 16px;
   right: 16px;
+}
+
+.add_company {
+  position: absolute;
+  top: -50px;
+  right: 0px;
+}
+
+h1 {
+  font-size: 56px;
+  color: #517BCC;
+  font-weight: 400;
+  font-family: 'Roboto', sans-serif;
+}
+
+.welcome, .subheading {
+  font-size: 36px;
+  color: #747474;
+}
+
+.gmsg {
+  font-size: 18px;
+  color: #747474;
+  margin-bottom: 25px;
+}
+
+.form_wrap label {
+  display: none;
+}
+
+.form_wrap button {
+  width: 100%;
+  margin-top: 25px;
+}
+
+.center_nav {
+  text-align: center;
+}
+
+.logowrap {
+  margin-bottom: 25px;
+}
+
+.msgwrap {
+  background: #E6EEFF;
+  color: #517BCC;
+  font-size: 18px;
+  padding: 10px 15px;
+  margin-bottom: 30px;
 }
 
 h2 {
@@ -133,6 +244,95 @@ input[type=text] {
   color: #406DCD;
 }
 
+.btnremove {
+  background: #FFF;
+  border: 1px solid #CF5A5A;
+  color: #CF5A5A;
+}
+
+.inactivebtn {
+  background: #CF5A5A;
+  font-family: Roboto;
+  /* font-style: Medium; */
+  font-size: 14px;
+  color: #FFF;
+  padding: 1px 6px;
+}
+
+.active {
+  border-bottom: 3px solid #517BCC;
+}
+
+.clearB {
+  clear: both;
+}
+
+.imagewrap {
+  float: left;
+  width: 95px;
+  height: 95px;
+  border-radius: 100%;
+  overflow: hidden;
+  background: #000;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+
+.rightdata {
+  margin-left: 110px;
+  padding-top: 15px;
+}
+
+.popupContent {
+  padding: 0 25px;
+}
+
+.cemail {}
+
+.cphone {}
+
+.subcompany_wrap {
+  position: relative;
+}
+
+.caddress {
+  margin-bottom: 30px;
+}
+
+.caddress p {
+  margin-bottom: 3px;
+}
+
+.colbox2 span {
+  width: 200px;
+  display: inline-block;
+}
+
+.sub-company {
+  font-size: 24px;
+  font-weight: 400;
+  padding-top: 35px;
+  margin-bottom: 16px;
+}
+
+.subcompany_wrap .company_wrap {
+  margin-bottom: 16px;
+}
+
+/* company form*/
+
+.companyform .row {
+  margin-bottom: 16px;
+}
+
+.popupform {
+  padding: 0 50px;
+}
+
+.popupform .row {
+  margin-bottom: 16px;
+}
+
 /*Grid*/
 
 .listing th {
@@ -178,7 +378,70 @@ input[type=text] {
 
 /**Company tab Nav*/
 
-.company_nav {
+.company_nav_inner, .company_nav {
   border-bottom: 1px solid #E6EEFF;
+}
+
+.company_nav {
   margin-bottom: 16px;
+}
+
+.company_blocks {
+  padding-bottom: 30px;
+}
+
+.company_nav_inner .nav-link {
+  padding: 16px 25px;
+}
+.inner_search{
+  padding: 15px;
+  margin-bottom: 0px !important;
+}
+
+/*My account*/
+
+.myaccount {}
+
+.acc_title {
+  color: #517BCC;
+  font-size: 20px;
+}
+
+.login_name {
+  font-size: 24px;
+  color: #3B4A68;
+}
+
+.acc_email, .acc_phone {
+  font-size: 18px;
+  color: #3B4A68;
+}
+
+.sidebarwrap_inner {
+  position: relative;
+  min-height: 75vh;
+  border: 1px solid #E5E5E5;
+  /* padding: 15px; */
+}
+
+.sidebarwrap {
+  position: relative;
+  min-height: 75vh;
+  border: 1px solid #E5E5E5;
+  padding: 15px;
+}
+
+.sidebarwrap .logoutbtn {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+.ac_left {
+  float: left;
+}
+
+.ac_right {
+  float: right;
+  padding-bottom: 10px;
 }

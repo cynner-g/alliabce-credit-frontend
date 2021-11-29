@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import langTrans from "../components/i18n";
 import Lang from "../components/lang";
-
+import Logo from '../components/logo';
+import Image from 'next/image'
 
 const ForgotPassword = () => {
 
@@ -50,23 +51,32 @@ const ForgotPassword = () => {
 
         <div className=" vertical-center">
             <div className="container">
-                <Lang />
-                <h1 className="mb-5 text-center">{t.forgot_password.title}</h1>
+                {/* <Lang /> */}
+
                 <div className="row">
-                    <div className="col"></div>
+                    <div className="col-7">
+                        <Image src="/img/Forgot Password.svg" alt="Logo" width="510" height="505" />
+                    </div>
                     <div className="col align-self-center">
-                        <div className="mb-3">
-                            <label htmlFor="username" className="form-label">{t.forgot_password.email}</label>
-                            <input className="form-control" type="text" id="username" placeholder="User Name" value={userName} onChange={(e) => setName(e.target.value)} />
+                        <div className="logowrap">
+                            <Logo />
                         </div>
-                        <div className="mb-3">
-                            <button type="submit" className="btn btn-primary mb-3" onClick={forgotPass}>{t.btn_continue}</button>
+                        <h1 className="mb-2">{t.forgot_password.title}</h1>
+                        <div className="gmsg">Enter the email associated with your account, and we’ll send an email with instructions to reset your password.</div>
+                        <div className="form_wrap">
+                            <div className="mb-3">
+                                <label htmlFor="username" className="form-label">{t.forgot_password.email}</label>
+                                <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value)} />
+                            </div>
+                            <div className="mb-3">
+                                <button type="submit" className="btn btn-primary mb-3" onClick={forgotPass}>{t.btn_continue}</button>
+                            </div>
                         </div>
-                        <div><Link href="/"><a>{t.btn_login}</a></Link></div>
+                        <div className="center_nav"><Link href="/"><a>{t.btn_login}</a></Link></div>
                         <div>{loginMessage}</div>
                     </div>
 
-                    <div className="col"></div>
+
                 </div>
             </div>
         </div>

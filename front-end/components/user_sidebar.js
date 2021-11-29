@@ -57,11 +57,11 @@ const UserSidebar = ({ data }) => {
 
 
     return (
-        <>
-            <h3>My Account</h3>
-            <h4>{data?.full_name}</h4>
-            <div className="email">{data?.email_id}</div>
-            <div className="phone">{data?.phone_number?.country_code} {data?.phone_number?.phone_number}</div>
+        <div className="sidebarwrap">
+            <h3 className="acc_title">My Account</h3>
+            <h4 className="login_name">{data?.full_name}</h4>
+            <div className="acc_email">{data?.email_id}</div>
+            <div className="acc_phone">{data?.phone_number?.country_code} {data?.phone_number?.phone_number}</div>
 
             {/* <div className="logout">
                 <>
@@ -76,19 +76,19 @@ const UserSidebar = ({ data }) => {
                     }>Logout</a></div>
                 </>
             </div> */}
-            <button onClick={handleShow}>Reset password</button>
+            <button onClick={handleShow} className="btn btnedit logoutbtn">Reset password</button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add Company</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to reset your password?</Modal.Body>
+                <Modal.Body><div className="popupContent">Are you sure you want to reset your password?</div></Modal.Body>
                 <Modal.Footer>
-                    <button type="button" className="btn btn-primary" onClick={handleClose}>Cancel</button>
-                    <button type="submit" className="btn btn-primary" onClick={resetPassword}>Confirm</button>
+                    <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" onClick={resetPassword}>Reset Password</button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     )
 }
 

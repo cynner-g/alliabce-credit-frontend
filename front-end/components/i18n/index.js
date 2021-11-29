@@ -3,7 +3,7 @@ const langTrans = {
         title: "Translated",
         btn_login: "Login",
         btn_continue: "Continue",
-        a_forgot_pass: "Forgot Password",
+        a_forgot_pass: "Forgot your password",
         login: {
             title: "Login en",
             email: "Email Address",
@@ -21,7 +21,7 @@ const langTrans = {
         title: "Vos nouvelles",
         btn_login: "Login fr",
         btn_continue: "Continue fr",
-        a_forgot_pass: "Forgot Password fr",
+        a_forgot_pass: "Forgot your Password fr",
         login:
         {
             title: "Login fr",

@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 const Header = () => {
     const router = useRouter();
     const { token } = parseCookies();
-    const role=Cookies.get('role');
+    const role = Cookies.get('role');
     let user = false
     if (token) {
         user = true
@@ -32,12 +32,12 @@ const Header = () => {
                         <Logo />
                         <ul className=" me-auto mb-2 mb-lg-0">
                             {/*  */}
-                            <li><Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports"><a className="nav-link">Credit Reports</a></Link></li>
+                            <li className={router.pathname == "/credit-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports"><a className="nav-link">Credit Reports</a></Link></li>
                             {myRole == 'admin' ?
-                                <li><Link activeClassName={router.pathname === "/database-reports"} href="/companies"><a className="nav-link">Companies</a></Link></li>
+                                <li className={router.pathname == "/companies" ? "active" : ""}><Link activeClassName={router.pathname === "/companies"} href="/companies"><a className="nav-link">Companies</a></Link></li>
                                 : ''}
-                            <li><Link activeClassName={router.pathname === "/database-reports"} href="/groups"><a className="nav-link">Groups</a></Link></li>
-                            <li><Link activeClassName={router.pathname === "/database-reports"} href="/legal-uploads"><a className="nav-link">Legal Uploads</a></Link></li>
+                            <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/database-reports"} href="/groups"><a className="nav-link">Groups</a></Link></li>
+                            <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/database-reports"} href="/legal-uploads"><a className="nav-link">Legal Uploads</a></Link></li>
                             {/* User */}
                             {/* <li className="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist"><a className="nav-link">Legal Watch list</a></Link></li> */}
@@ -66,12 +66,12 @@ const Header = () => {
                                             router.push('/');
                                         }
                                         }>Logout</a></li>
-                                        {role=='admin'?(
+                                        {role == 'admin' ? (
                                             <li><a className="dropdown-item" href="/account/admin">My Account</a></li>
-                                        ):(
+                                        ) : (
                                             <li><a className="dropdown-item" href="/account">My Account</a></li>
                                         )}
-                                        
+
                                     </>
                                     :
                                     <li><a className="dropdown-item" href="#">Action</a></li>

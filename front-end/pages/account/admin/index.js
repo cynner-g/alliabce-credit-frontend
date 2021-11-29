@@ -205,6 +205,7 @@ const AdminUsers = ({ data }) => {
                         <UserSidebar data={data} />
                     </div>
                     <div className="col">
+<<<<<<< HEAD
                         {/* <TabButtonUser id={data?._id} /> */}
                         <h3>My Company</h3>
                         <h2>Alliance Credit</h2>
@@ -235,23 +236,56 @@ const AdminUsers = ({ data }) => {
                                 </thead>
                                 <tbody>
                                     {data?.map((item, index) => (
+=======
+                        <div className="sidebarwrap">
+                            {/* <TabButtonUser id={data?._id} /> */}
+                            <h3 className="acc_title">My Company</h3>
+                            <h2 className="login_name">Alliance Credit</h2>
+                            <div className="acc_email">
+                                <a href="mailto:email@company.com">email@company.com</a>
+                            </div>
+                            <div className="acc_phone">+1234567890</div>
+                            <Address address={address} />
+>>>>>>> 473d5595dcfb847a8f05e7b1415fa94896481de7
 
 
+                            <div className="ac_left acc_title">All Users</div>
+                            <div className="ac_right">
+                                <button className="btn btnedit" onClick={handleShow}>Add Sub Admin</button>
+                            </div>
+                            <div className="clearfix"></div>
+                            <div className="listing">
+                                <table id="example" className="table table-striped">
+                                    <thead>
                                         <tr>
-                                            <td>{index}</td>
-                                            <td>{item.full_name}</td>
-                                            <td>{item.date_added}</td>
-                                            <td>{item.email_id}</td>
-                                            <td>
-                                                <>
-                                                    <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button>
-                                                </>
-                                            </td>
+                                            <th><div>Sr. Number</div></th>
+                                            <th><div>User Name</div></th>
+                                            <th><div>Date Added</div></th>
+                                            <th><div>Email</div></th>
+
+                                            <th><div>Actions</div></th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                                    </thead>
+                                    <tbody>
+                                        {data?.map((item, index) => (
+
+
+                                            <tr>
+                                                <td>{index + 1}</td>
+                                                <td>{item.full_name}</td>
+                                                <td>{item.date_added}</td>
+                                                <td>{item.email_id}</td>
+                                                <td>
+                                                    <>
+                                                        <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button>
+                                                    </>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -261,47 +295,63 @@ const AdminUsers = ({ data }) => {
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEdit == false
-                        ? "Add User"
-                        : "Edit User"
+                        ? "Add Sub-Admin"
+                        : "Edit Sub-Admin"
                     }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form method="POST">
+                    <div className="popupform">
+                        <form method="POST">
+                            <div className="row">
+                                <div className="col">
 
-                        <label htmlFor="fullname" className="form-label">Full Name</label>
-                        <input className="form-control" name="fullname" type="text" id="fullname" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
 
-                        <label htmlFor="emailID" className="form-label">Email</label>
-                        <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
-
-                        <label htmlFor="phone_number" className="form-label">Phone Number</label>
-                        <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
-                        {isEdit ? (
-                            <>
-                                <label htmlFor="phone_number" className="form-label">Active status</label>
-                                <select className="form-select role" onChange={(e) => setActive(e.target.value)}>
-                                    <option value="0">Active</option>
-                                    <option value="1">Deactivate</option>
-                                </select>
-                            </>
-                        ) : ''}
-
-                        <div>
-                            <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
-                        </div>
-                    </form>
-
+                                    <label htmlFor="fullname" className="form-label">Full Name</label>
+                                    <input className="form-control" name="fullname" type="text" id="fullname" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="emailID" className="form-label">Email</label>
+                                    <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    <label htmlFor="phone_number" className="form-label">Phone Number</label>
+                                    <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col">
+                                    {isEdit ? (
+                                        <>
+                                            <label htmlFor="phone_number" className="form-label">Active status</label>
+                                            <select className="form-control form-select" onChange={(e) => setActive(e.target.value)}>
+                                                <option value="0">Active</option>
+                                                <option value="1">Deactivate</option>
+                                            </select>
+                                        </>
+                                    ) : ''}
+                                </div>
+                            </div>
+                            <div>
+                                <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
+                            </div>
+                        </form>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     {isEdit == false
                         ? <>
-                            <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                            <Button variant="secondary" className="btn btnedit" onClick={handleClose}>Cancel</Button>
                             <Button variant="primary" onClick={addUser}>Add User</Button>
                         </>
                         :
                         <>
-                            <Button variant="primary" onClick={removeUser}>Remove User</Button>
-                            <Button variant="primary" onClick={updateUser}>Update User</Button>
+                            <Button variant="primary" className="btn btnremove" onClick={removeUser}>Remove User</Button>
+                            <Button variant="primary" className="btn btnedit">Reset User</Button>
+                            <Button variant="primary" onClick={updateUser}>Save</Button>
                         </>
                     }
                 </Modal.Footer>

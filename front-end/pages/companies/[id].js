@@ -34,7 +34,7 @@ const CompanyDetails = ({ data }) => {
                 </div>
 
 
-                <TabButton id={data?._id} />
+                <TabButton id={data?._id} url={'#'} />
                 <div className="company_wrap">
                     <Link href={{
                         pathname: `/companies/edit/[title]`,
@@ -44,23 +44,41 @@ const CompanyDetails = ({ data }) => {
                     }}
                         as={`/companies/edit/${data?._id}`}
                     ><a className="btn btnedit edit_company">Edit Company</a></Link>
-                    <h4>{data?.company_name}</h4>
-                    <div className="cwebsite data_block"><a href={data?.website} target="_blank">{data?.website}</a></div>
-                    <div className="cemail data_block"><a href={`mailto:${data?.website}`} target="_blank">{data?.website}</a></div>
+                    <div className="imagewrap">
+
+                    </div>
+                    <div className="rightdata">
+                        <h4>{data?.company_name}</h4>
+                        <div className="cwebsite data_block"><a href={data?.website} target="_blank">{data?.website}</a></div>
+                    </div>
+                    <div className="clearB"></div>
+                    <div className="cemail data_block"><a href={`mailto:${data?.email_id}`} target="_blank">{data?.email_id}</a></div>
                     <div className="cphone data_block">{data?.phone_number?.country_code} - {data?.phone_number?.phone_number}</div>
                     <div className="caddress data_block">
                         <Address address={data?.address} />
                     </div>
-                    <div>
-                    <span>Langauge</span> <strong></strong>
+                    <div className="colbox2">
+                        <span>Langauge</span> <strong>English</strong>
                     </div>
-                    is_active: {data?.is_active}<br />
+                    <div className="colbox2">
+                        <span>Sub company</span> <strong>Sub Company</strong>
+                    </div>
+                    <div className="colbox2">
+                        <span>Industry</span> <strong>{data?.industry_data?.name}</strong>
+                    </div>
+                    <div className="colbox2">
+                        <span>Group</span> <strong>{data?.group_data[0]?.name}</strong>
+                    </div>
+                    {/* <div>
+                        <span>Group</span> <strong>{data?.group_data[0]?.name}</strong>
+                    </div> */}
+                    {/* is_active: {data?.is_active==true?'Active':'Not Active'}<br /> */}
                 </div>
-                <h2>Sub Companies</h2>
+                <h2 className="sub-company">Sub Companies</h2>
                 <div className="subcompany_wrap">
                     <SubCompanies id={data?._id} subCompanies={data?.sub_companies} />
                 </div>
-                configuration<br />
+                {/* configuration<br />
                 id: {data?.configuration?.pricing_chart_id}<br />
                 bank_report_count: {data?.configuration?.bank_report_count}<br />
                 suppliers_report_count: {data?.configuration?.suppliers_report_count}<br />
@@ -72,7 +90,7 @@ const CompanyDetails = ({ data }) => {
 
                 date_added: {data?.date_added}<br />
                 industry_data: {data?.industry_data?._id}<br />
-                industry_data: {data?.industry_data?.name}<br />
+                industry_data: {data?.industry_data?.name}<br /> */}
             </div>
 
         </>

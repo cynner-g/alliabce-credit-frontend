@@ -6,9 +6,11 @@ import Cookies from 'js-cookie'
 
 import langTrans from './../components/i18n';
 import Lang from '../components/lang';
+
 // import gql from 'graphql-tag';
 // import client from './apollo-client';
-
+import Logo from '../components/logo';
+import Image from 'next/image'
 
 // export const GET_USERS = gql`
 //   query getUsers {
@@ -66,9 +68,10 @@ export default function Login(props) {
     <div className=" vertical-center">
       <div className="container">
         {/* <Lang /> */}
-        <h1 className="mb-5 text-center">{login.title}</h1>
+
         <form onSubmit={(e) => userLogin(e)}>
           <div className="row">
+<<<<<<< HEAD
             <div className="col"></div>
             <div className="col align-self-center">
               <div className="mb-3">
@@ -84,8 +87,35 @@ export default function Login(props) {
               </div>
               <Link href="/forgot-password"><a>{a_forgot_pass}</a></Link>
               {loginMessage}
+=======
+            <div className="col-7">
+            <Image src="/img/Login.svg" alt="Logo" width="510" height="505" />
+>>>>>>> 473d5595dcfb847a8f05e7b1415fa94896481de7
             </div>
-            <div className="col"></div>
+            <div className="col-5 align-self-center">
+              <div className="logowrap">
+                <Logo />
+              </div>
+              <h1 className="mb-2">{login.title}</h1>
+              <div className="welcome">Welcome</div>
+              <div className="gmsg">Enter your credentials to access your account.</div>
+              <div className="form_wrap">
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label">{login.email}</label>
+                  <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="password">{login.password}</label>
+                  <input className="form-control" type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div className="mb-3">
+                  <button type="submit" className="btn btn-primary mb-3">{btn_login}</button>
+                </div>
+              </div>
+              <div className="center_nav"><Link href="/forgot-password"><a>{a_forgot_pass}</a></Link></div>
+              <div>{loginMessage}</div>
+            </div>
+
           </div>
         </form>
       </div>

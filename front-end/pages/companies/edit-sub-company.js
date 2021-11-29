@@ -5,8 +5,14 @@ import { useState } from 'react'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
+import { Modal, Button } from "react-bootstrap";
 
 const addCompany = ({ industry, group, pricing }) => {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
@@ -117,11 +123,12 @@ const addCompany = ({ industry, group, pricing }) => {
             <Header />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
+                    <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
                     <li>Add Company</li>
                 </ul>
             </div>
-            <div className="col-lg-7">
+            <div className="col-lg-7 companyform">
                 <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewCompany(e)}>
                     <div className="row">
                         <div className="col">
@@ -167,9 +174,11 @@ const addCompany = ({ industry, group, pricing }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="address_line" className="form-label">Address</label>
-                        <input type="text" className="form-control" id="address_line" placeholder="" value={query.name} onChange={handleChange()} />
+                    <div className="row">
+                        <div className="col">
+                            <label htmlFor="address_line" className="form-label">Address</label>
+                            <input type="text" className="form-control" id="address_line" placeholder="" value={query.name} onChange={handleChange()} />
+                        </div>
                     </div>
                     <div className="row">
                         <div className="col">
@@ -186,85 +195,53 @@ const addCompany = ({ industry, group, pricing }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Select Language</option>
-                            <option value="en">English</option>
-                            <option value="fr">French</option>
-                        </select>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="portal_language" className="form-label">Portal Language</label>
+                            <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
+                                <option selected>Select Language</option>
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="industry_id" className="form-label">Industry</label>
-                        <select className="form-select form-select-sm" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Open this select menu</option>
-                            {industry?.data.map((item) => (
-                                <option value={item._id}>{item.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="groups" className="form-label">Add to group</label>
-                        <>
-                            {group?.data.map((item) => (
-                                <div className="form-check">
-                                    <label className="form-check-label" htmlFor={item._id}>{item.name}</label>
-                                    <input className="form-check-input" name="groups" type="checkbox" value="" id={item._id} />
-                                </div>
-                            ))}
-
-
-                        </>
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="industry_id" className="form-label">Industry</label>
+                            <select className="form-select form-select-sm" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
+                                <option selected>Open this select menu</option>
+                                {industry?.data.map((item) => (
+                                    <option value={item._id}>{item.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
 
-                    <h3>Configurations</h3>
-                    <div>
-                        <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
-                        <select className="form-select form-select-sm" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                            <option selected>Pricing Chart</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                    </div>
 
                     <div className="row">
                         <div className="col">
-                            <label htmlFor="bank_report_coun" className="form-label">Maximum Bank Account Report Limit</label>
-                            <input type="text" className="form-control" id="bank_report_coun" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="suppliers_report_count" className="form-label">Maximum Suppliers Report Limit</label>
-                            <input type="text" className="form-control" id="suppliers_report_count" placeholder="" value={query.name} onChange={handleChange()} />
+                            <p>&nbsp;</p>
+                            <button type="submit" className="btn btn-primary"  onClick={handleShow}>Save</button>
+                            <button type="submit" className="btn btn-primary">Remove Company</button>
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
-                            <label htmlFor="company_in_watchlist_count" className="form-label">Maximum Companies in Watchlists</label>
-                            <input type="text" className="form-control" id="company_in_watchlist_count" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="watchlist_count" className="form-label">Maximum Number of Watchlist</label>
-                            <input type="text" className="form-control" id="watchlist_count" placeholder="" value={query.name} onChange={handleChange()} />
+                            <p>&nbsp;</p>
                         </div>
                     </div>
-
-                    <div className="row">
-                        <div className="col">
-                            <label htmlFor="quick_report_price" className="form-label">Extra Price For Quick Orders</label>
-                            <input type="text" className="form-control" id="quick_report_price" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                        <div className="col">
-                            <label htmlFor="aging_discount" className="form-label">Discount For Aging Uploads</label>
-                            <input type="text" className="form-control" id="aging_discount" placeholder="" value={query.name} onChange={handleChange()} />
-                        </div>
-                    </div>
-
-                    <div>
-                        <button type="submit" className="btn btn-primary">Add Company</button>
-                    </div>
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit Sub Company</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
+                        <Modal.Footer>
+                            <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
+                            <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
+                        </Modal.Footer>
+                    </Modal>
                 </form>
             </div>
         </>

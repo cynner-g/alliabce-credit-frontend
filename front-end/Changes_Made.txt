@@ -1,0 +1,13 @@
+Changed login email address to .toLowerCase()
+pages/index.js line 76: 
+<input className="form-control" type="text" id="username" placeholder="User Name" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
+
+Changed add user email address to .toLowerCase()
+pages/companies/users/[userid],js line 281:
+<input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value.toLowerCase())} />
+
+Added key to user information table
+pages/companies/users/[userid],js lines 238, 241:
+{data?.data?.map((item, idx) => (
+     ...
+ <tr key={idx}>  
