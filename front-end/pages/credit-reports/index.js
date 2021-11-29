@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faDownload, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { differenceInDays, formatRelative, subDays, parseISO } from 'date-fns'
-import DatePicker from 'react-datepicker'
+import { differenceInDays, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
+import DatePicker, { CalendarContainer } from 'react-datepicker'
 import Header from "../../components/header"
 import Router from "next/router"
 import Cookies from "js-cookie"
@@ -12,7 +12,7 @@ import { order_list, cancel_order } from "../api/credit_reports";
 import React, { Component } from 'react';
 import Select from 'react-select';
 import "react-datepicker/dist/react-datepicker.css";
-import "./credit-report.module.css"
+import "./index.module.css"
 
 //Simple enums
 const NOTORDERED = -1
@@ -23,7 +23,6 @@ const NEEDACTION = 3;
 const ERROR = 4;
 const COMPLETED = 5;
 const CANCELLED = 6;
-
 
 class CreditReports extends Component {
     constructor(props) {
@@ -329,11 +328,11 @@ class CreditReports extends Component {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan={3}>
+                                    <td colSpan={3}>
                                         {this.state.role === 'admin' ?
                                             <div className="addComment">
-                                                <input type='text' onChange={(e) => this.setState({ newComment: e.target.value })}
-                                                    placeHolder='Write a comment here' />
+                                                <input type='text' onChange={() => this.setState({ newComment: e.target.value })}
+                                                    placeholder='Write a comment here' />
                                                 <select onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
                                                     <option value='private'>Private</option>
                                                     <option value='public'>Public</option>
@@ -450,6 +449,70 @@ class CreditReports extends Component {
         }
     }
 
+    setDates = (rangeNum) => {
+        let startDate, endDate;
+        let today = new Date();
+        let month, year;
+        switch (rangeNum) {
+
+            case 0: //today
+                startDate = today;
+                endDate = today;
+                break;
+            case 1: //yesterday
+                startDate = add(today, { days: -1 });
+                endDate = add(today, { days: -1 })
+                break;
+            case 2://last 7 days
+                startDate = add(today, { days: -7 })
+                endDate = add(today, { days: -1 })
+                break;
+            case 3: //last 30 days
+                startDate = add(today, { days: -30 })
+                endDate = add(today, { days: -1 })
+                break;
+            case 4://this month
+                month = getMonth(today);
+                year = getYear(today);
+                startDate = new Date(year, month, 1)
+                endDate = lastDayOfMonth(today);
+                break;
+            case 5://this year
+                month = getMonth(today);
+                year = getYear(today);
+                startDate = new Date(year, 0, 1)
+                endDate = lastDayOfYear(today);
+                break;
+        }
+
+        //send calculated values to default "date change" function of DatePicker component
+        this.filterDates([startDate, endDate]);
+        this.setState({ dateRange: rangeNum })
+
+    }
+
+    rangeContainer = ({ className, children }) => {
+        //div sill call setDates to calculate and display date range
+        //backround 'dateRange' variable will also be set to change color
+        return (
+
+            <CalendarContainer className={className}>
+                <Row>
+                    <Col>
+                        <div onClick={() => this.setDates(0)} className={this.state.dateRange == 0 ? "bg-primary" : "bg-white"} >Today</div>
+                        <div onClick={() => this.setDates(1)} className={this.state.dateRange == 1 ? "bg-primary" : "bg-white"} >Yesterday</div>
+                        <div onClick={() => this.setDates(2)} className={this.state.dateRange == 2 ? "bg-primary" : "bg-white"} >Last 7 Days</div>
+                        <div onClick={() => this.setDates(3)} className={this.state.dateRange == 3 ? "bg-primary" : "bg-white"} >Last 30 Days</div>
+                        <div onClick={() => this.setDates(4)} className={this.state.dateRange == 4 ? "bg-primary" : "bg-white"} >This Month</div>
+                        <div onClick={() => this.setDates(5)} className={this.state.dateRange == 5 ? "bg-primary" : "bg-white"} >This Year</div>
+                    </Col><Col>
+                        <div style={{ position: "relative" }}>{children}</div>
+                    </Col>
+                </Row>
+            </CalendarContainer>
+        );
+    };
+
     render() {
         if (this.state.reportList === null || this.state.visibleReportList === null) {
             return (
@@ -550,7 +613,9 @@ class CreditReports extends Component {
                                     isMulti
                                     className="multiSelect"
                                 /></Col>
-                            <Col className='filterCol'>Filter By Date:&nbsp;
+                            <Col className='filterCol'
+                                onClick={e => this.setState({ showDates: true })}
+                            >Filter By Date:&nbsp;
                                 <DatePicker
                                     selectsRange={true}
                                     startDate={this.state.startFilter}
@@ -558,8 +623,10 @@ class CreditReports extends Component {
                                     onChange={(update) => {
                                         this.filterDates(update);
                                     }}
-                                    isClearable
+                                    isClearable={true}
+                                    calendarContainer={this.rangeContainer}
                                 />
+
                             </Col>
                             <Col className="ms-auto filterCol">
                                 <button className="btn btn-primary" onClick={this.orderReport}>Order New Report</button>
