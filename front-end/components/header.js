@@ -37,7 +37,11 @@ const Header = () => {
                                 <li className={router.pathname == "/companies" ? "active" : ""}><Link activeClassName={router.pathname === "/companies"} href="/companies"><a className="nav-link">Companies</a></Link></li>
                                 : ''}
                             <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/database-reports"} href="/groups"><a className="nav-link">Groups</a></Link></li>
+                            <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a className="nav-link">Database Reports</a></Link></li>
+
+                            {myRole == 'admin' ?
                             <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/database-reports"} href="/legal-uploads"><a className="nav-link">Legal Uploads</a></Link></li>
+                                : ''}
                             {/* User */}
                             {/* <li className="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist"><a className="nav-link">Legal Watch list</a></Link></li> */}

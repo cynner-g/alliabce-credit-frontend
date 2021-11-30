@@ -244,9 +244,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      * @returns 
      */
 
-    const AcceptUser = async (id) => {
-        return '';
-    }
+    // const AcceptUser = async (id) => {
+    //     return '';
+    // }
 
     /**
      *Update User
@@ -423,12 +423,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         </tr>
                     </thead>
                     <tbody>
-<<<<<<< HEAD
-                        {data?.data?.map((item, idx) => (
-
-=======
-                        {userList?.data?.map((item) => (
->>>>>>> 473d5595dcfb847a8f05e7b1415fa94896481de7
+                        {userList?.data?.map((item, idx) => (
 
                             <tr key={idx}>
                                 <td>{item.full_name}</td>
@@ -503,30 +498,6 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             <div className="row">
                                 <div className="col">
 
-<<<<<<< HEAD
-
-                        <label htmlFor="emailID" className="form-label">Email</label>
-                        <input className="form-control" name="emailID" type="text" id="emailID" value={emailID} onChange={(e) => setEmailID(e.target.value.toLowerCase())} />
-
-                        <label htmlFor="phone_number" className="form-label">Phone Number</label>
-                        <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
-
-                        <label htmlFor="portal_language" className="form-label">Role</label>
-                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
-                            <option selected>Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            <option value="user-manager">User Manager</option>
-                        </select>
-
-                        <div>
-                            <label htmlFor="groups" className="form-label">Add to group</label>
-                            <>
-                                {companiesData?.map((item) => (
-                                    <div className="form-check">
-                                        <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
-                                        <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
-=======
                                     <label htmlFor="groups" className="form-label">Add to group</label>
                                     <div className="chkox">
                                         {companiesData?.map((item) => (
@@ -535,7 +506,6 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                                 <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => handleOnChange(e)} />
                                             </div>
                                         ))}
->>>>>>> 473d5595dcfb847a8f05e7b1415fa94896481de7
                                     </div>
 
                                     <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />

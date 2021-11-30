@@ -2,18 +2,23 @@ const langTrans = {
     "en": {
         title: "Translated",
         btn_login: "Login",
+        btn_Change: "Change Password",
         btn_continue: "Continue",
         a_forgot_pass: "Forgot your password",
         login: {
             title: "Login en",
             email: "Email Address",
             password: "Password",
+
         },
         forgot_password: {
             title: "Forgot Password",
             email: "Email Address",
+            origPassword: "Original Password",
+            password: "New Password",
+            confirm: "Confirm New Password",
             error: "Change pass error",
-            success: "Sucess message",
+            success: "Success message",
         },
 
     },

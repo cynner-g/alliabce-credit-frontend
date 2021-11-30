@@ -205,38 +205,6 @@ const AdminUsers = ({ data }) => {
                         <UserSidebar data={data} />
                     </div>
                     <div className="col">
-<<<<<<< HEAD
-                        {/* <TabButtonUser id={data?._id} /> */}
-                        <h3>My Company</h3>
-                        <h2>Alliance Credit</h2>
-                        <div className="email">
-                            <a href="mailto:email@company.com">email@company.com</a>
-                        </div>
-                        <div className="phone">+1234567890</div>
-
-                        <Address address={address} />
-                        <br /><br />
-                        <h2>My Team Members</h2>
-
-                        <div className="seaarch">
-                            <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add Team Member</a></Link>
-                        </div>
-
-                        <div className="listing">
-                            <table id="example" className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th><div>Sr Number</div></th>
-                                        <th><div>User Name</div></th>
-                                        <th><div>Date Added</div></th>
-                                        <th><div>Email</div></th>
-
-                                        <th><div>Actions</div></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data?.map((item, index) => (
-=======
                         <div className="sidebarwrap">
                             {/* <TabButtonUser id={data?._id} /> */}
                             <h3 className="acc_title">My Company</h3>
@@ -246,10 +214,9 @@ const AdminUsers = ({ data }) => {
                             </div>
                             <div className="acc_phone">+1234567890</div>
                             <Address address={address} />
->>>>>>> 473d5595dcfb847a8f05e7b1415fa94896481de7
 
 
-                            <div className="ac_left acc_title">All Users</div>
+                            <div className="ac_left acc_title">All Team Members</div>
                             <div className="ac_right">
                                 <button className="btn btnedit" onClick={handleShow}>Add Sub Admin</button>
                             </div>

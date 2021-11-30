@@ -238,6 +238,20 @@ input[type=text] {
   font-size: 14px;
 }
 
+.resetPassBtn {
+  padding: 8px 20px;
+  background: #406DCD;
+  color: #FFF;
+  font-size: 14px;
+}
+
+.changePassBtn {
+  padding: 8px 20px;
+  background: #406DCD;
+  color: #FFF;
+  font-size: 14px;
+}
+
 .btnedit {
   background: #FFF;
   border: 1px solid #406DCD;
@@ -393,7 +407,8 @@ input[type=text] {
 .company_nav_inner .nav-link {
   padding: 16px 25px;
 }
-.inner_search{
+
+.inner_search {
   padding: 15px;
   margin-bottom: 0px !important;
 }
@@ -436,6 +451,12 @@ input[type=text] {
   bottom: 15px;
   left: 15px;
 }
+
+.alignBottom {
+  position: absolute;
+  bottom: 0px;
+}
+
 
 .ac_left {
   float: left;

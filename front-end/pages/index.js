@@ -43,7 +43,7 @@ export default function Login(props) {
       },
       body: JSON.stringify({
         "language": locale,
-        "email_id": userName,
+        "email_id": userName.toLowerCase(),
         password
       })
 
@@ -71,26 +71,8 @@ export default function Login(props) {
 
         <form onSubmit={(e) => userLogin(e)}>
           <div className="row">
-<<<<<<< HEAD
-            <div className="col"></div>
-            <div className="col align-self-center">
-              <div className="mb-3">
-                <label htmlFor="username" className="form-label">{login.email}</label>
-                <input className="form-control" type="text" id="username" placeholder="User Name" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="password">{login.password}</label>
-                <input className="form-control" type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-              </div>
-              <div className="mb-3">
-                <button type="submit" className="btn btn-primary mb-3">{btn_login}</button>
-              </div>
-              <Link href="/forgot-password"><a>{a_forgot_pass}</a></Link>
-              {loginMessage}
-=======
             <div className="col-7">
-            <Image src="/img/Login.svg" alt="Logo" width="510" height="505" />
->>>>>>> 473d5595dcfb847a8f05e7b1415fa94896481de7
+              <Image src="/img/Login.svg" alt="Logo" width="510" height="505" />
             </div>
             <div className="col-5 align-self-center">
               <div className="logowrap">
@@ -102,7 +84,7 @@ export default function Login(props) {
               <div className="form_wrap">
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label">{login.email}</label>
-                  <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value)} />
+                  <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="password">{login.password}</label>

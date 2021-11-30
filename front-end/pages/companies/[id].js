@@ -133,6 +133,6 @@ export async function getServerSideProps(ctx) {
             data: data?.data
         }
     }
-
 }
 export default CompanyDetails
+
