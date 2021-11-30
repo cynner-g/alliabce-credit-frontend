@@ -46,8 +46,8 @@ export default function Login(props) {
         "email_id": userName.toLowerCase(),
         password
       })
-
     })
+
     const res2 = await res.json();
     console.log(res2);
     if (res2.status_code == 403) {

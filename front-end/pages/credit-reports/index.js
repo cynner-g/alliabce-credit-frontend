@@ -37,18 +37,24 @@ class CreditReports extends Component {
             startFilter: null,
             endFilter: null,
             role: Cookies.get('role'),
-            statusChangeRow: null
+            statusChangeRow: null,
+            token: Cookies.get('token')
         };
+
+
     }
 
-    componentDidMount() {
-        order_list(null, null).then(async (data) => {
+    async componentDidMount() {
+        let body = { 'api_token': this.state.token }
+        order_list(body).then(async (data) => {
             await this.setState({ origReportList: data, filteredReportList: data })
         }).then(() => {
             try {
                 this.setVisible();
             }
-            catch (ex) { console.log(ex.message) }
+            catch (ex) {
+                console.log(ex.message)
+            }
         })
 
 
@@ -514,7 +520,7 @@ class CreditReports extends Component {
     };
 
     render() {
-        if (this.state.reportList === null || this.state.visibleReportList === null) {
+        if (this.state.reportList === null) {
             return (
                 <>
                     <Header />
@@ -531,8 +537,6 @@ class CreditReports extends Component {
             ]
             return (
                 <>
-
-
                     <Modal
                         show={this.state.statusChangeRow !== null}
                         onHide={() => this.setState({ statusChangeRow: null })}
@@ -599,8 +603,6 @@ class CreditReports extends Component {
                         </Modal.Footer>
                     </Modal>
 
-
-
                     <Header />
                     <br />
                     <Container>
@@ -614,8 +616,8 @@ class CreditReports extends Component {
                                     className="multiSelect"
                                 /></Col>
                             <Col className='filterCol'
-                                onClick={e => this.setState({ showDates: true })}
-                            >Filter By Date:&nbsp;
+                                onClick={e => this.setState({ showDates: true })}>
+                                Filter By Date:&nbsp;
                                 <DatePicker
                                     selectsRange={true}
                                     startDate={this.state.startFilter}
@@ -647,7 +649,7 @@ class CreditReports extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.visibleReportList.map((row, index) => {
+                                    {this.state.visibleReportList?.map((row, index) => {
                                         return this.tblRow(row, index);
                                     })}
                                 </tbody>

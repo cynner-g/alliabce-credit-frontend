@@ -3,18 +3,21 @@ const init = {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': 'no-cors'
     },
-    body: {
-        api_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxNzM1MTVhMzFmN2YyYjUwNGI4N2Y1MyIsImVtYWlsX2lkIjoiaml0ZW5kcmFAamtsYWJzLmNhIiwiY3JlYXRlX2RhdGUiOiIyMDIxLTExLTE0VDE5OjI5OjMyLjQwMVoiLCJpYXQiOjE2MzY5MTgxNzJ9.vSVFsenePK75v8XAUbBUPZIxCqAc8rh7rSjnIDgKo44"
-    }
+    method: 'POST'
 }
 
-export const order_list = (search, filter) => {
-    init.method = "POST"
-    init.body = JSON.stringify(init.body);
+export const order_list = (body) => {
 
-    var myReq = new Request(`${process.env.API_URL}/report/list-order`, init);
+    const init = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    }
+    // var myReq = new Request(`${process.env.API_URL}/report/list-order`, init);
     console.log('fetching');
-    let ret = fetch(myReq)
+    const ret = fetch(`${process.env.API_URL}/report/list-order`, init)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -34,7 +37,7 @@ export const order_list = (search, filter) => {
             return data?.data
         })
         .catch((err) => {
-
+            console.log(err)
         })
     return ret;
 }

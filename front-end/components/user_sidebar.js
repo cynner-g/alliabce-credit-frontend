@@ -90,7 +90,7 @@ const UserSidebar = ({ data }) => {
                 </>
             </div> */}
             <div className='alignBottom'>
-                <button onClick={handleShowReset} className="btn btnedit resetPassBtn">Reset password</button>
+                {/* <button onClick={handleShowReset} className="btn btnedit resetPassBtn">Reset password</button> */}
                 <button onClick={handleShowChange} className="btn btnedit changePassBtn">Change password</button>
             </div>
             <Modal show={showReset} onHide={handleCloseReset}>
