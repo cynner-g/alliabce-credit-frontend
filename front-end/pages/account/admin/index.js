@@ -1,10 +1,11 @@
 import Header from "../../../components/header"
+import UserList from "../../../components/userlist"
 import { useRouter } from "next/router"
 import Link from 'next/link'
 import Pagination from "../../../components/datatable/pagination"
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Modal, Button } from "react-bootstrap";
 import UserSidebar from "../../../components/user_sidebar"
 import TabButtonUser from "../../../components/tabbuttonuser"
@@ -33,6 +34,30 @@ const AdminUsers = ({ data }) => {
     const [company_access, setCompany_access] = useState("");
     const [isActive, setActive] = useState("");
     const [userID, setUserId] = useState("");
+    const [role, setRole] = useState("");
+    const [thisUserData, setThisUser] = useState({})
+    const [deleteUserDisplay, showDeleteUser] = useState(false)
+
+    useEffect(() => {
+        const token = Cookies.get('token');
+        const uid = Cookies.get('userid');
+        fetch(`${process.env.API_URL}/user/user-details`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_id: uid,
+                api_token: token,
+            }),
+        })
+            .then((user) => user.json())
+            .then((thisUserData) => {
+                if (thisUserData.status_code == 200) {
+                    setThisUser(thisUserData?.data);
+                }
+            });
+    }, []);
 
     /**
      * Clear values
@@ -48,147 +73,227 @@ const AdminUsers = ({ data }) => {
     };
     const handleShow = () => setShow(true);
 
+    // /**
+    //  * Add User
+    //  * @param {*} e 
+    //  * @returns 
+    //  */
+    // const addUser = async (e) => {
+    //     e.preventDefault();
+    //     const token = Cookies.get('token');
+    //     if (!token) {
+    //         return {
+    //             redirect: {
+    //                 destination: '/',
+    //                 permanent: false,
+    //             },
+    //         }
+    //     }
+    //     const resUser = await fetch(`${process.env.API_URL}/user/create-sub-admin`, {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify({
+    //             "full_name": fullNname,
+    //             "email_id": emailID,
+    //             "country_code": "+1",
+    //             "phone_number": phone_number,
+    //             "api_token": token
+    //         })
+    //     })
 
+    //     const res2User = await resUser.json();
+    //     console.log(res2User);
+    //     if (res2User.status_code == 200) {
+    //         handleClose();
+    //         setFullName("");
+    //         setEmailID("");
+    //         setCountry_code("");
+    //         setPhone_number("");
+    //     }
+    // }
 
+    // /**
+    //  * Get user details basis of user id for edit purpose
+    //  * @param {*} id 
+    //  * @returns 
+    //  */
+    // const getUser = async (id) => {
+    //      e.preventDefault();
+    //     setIsEdit(true);
+    //     setShow(true);
+    //     setUserId(id)
+    //     const token = Cookies.get('token');
+    //     if (!token) {
+    //         return {
+    //             redirect: {
+    //                 destination: '/',
+    //                 permanent: false,
+    //             },
+    //         }
+    //     }
+    //     const userData = await fetch(`${process.env.API_URL}/user/user-details`, {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify({
+    //             "user_id": id,
+    //             "language": "en",
+    //             "api_token": token
+    //         })
 
+    //     })
+    //     const userData2 = await userData.json();
+    //     console.log(userData2);
+    //     if (userData2.status_code == 200) {
+    //         // handleClose();
+    //         setFullName(userData2?.data?.full_name);
+    //         setEmailID(userData2?.data?.email_id);
+    //         setCountry_code(userData2?.data?.phone_number?.country_code);
+    //         setPhone_number(userData2?.data?.phone_number?.phone_number);
+    //     }
+    // }
 
+    // const closeDeleteUser = () => {
+    //     handleClose();
+    //     showDeleteUser(false);
+    // }
+
+    // const askDeleteUser = (id) => {
+    //     showDeleteUser(true)
+    //     setIsEdit(false)
+    // }
     /**
-     * Add User
-     * @param {*} e 
-     * @returns 
-     */
-    const addUser = async (e) => {
-
-        e.preventDefault();
-        const token = Cookies.get('token');
-        if (!token) {
-            return {
-                redirect: {
-                    destination: '/',
-                    permanent: false,
-                },
-            }
-        }
-        const resUser = await fetch(`http://dev.alliancecredit.ca/user/create-sub-admin`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "api_token": token
-            })
-
-        })
-        const res2User = await resUser.json();
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-            handleClose();
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-        }
-    }
-
-    /**
-     * Get user details basis of user id for edit purpose
-     * @param {*} id 
-     * @returns 
-     */
-    const getUser = async (id) => {
-        // e.preventDefault();
-        setIsEdit(true);
-        setShow(true);
-        setUserId(id)
-        const token = Cookies.get('token');
-        if (!token) {
-            return {
-                redirect: {
-                    destination: '/',
-                    permanent: false,
-                },
-            }
-        }
-        const userData = await fetch(`http://dev.alliancecredit.ca/user/user-details`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": id,
-                "language": "en",
-                "api_token": token
-            })
-
-        })
-        const userData2 = await userData.json();
-        console.log(userData2);
-        if (userData2.status_code == 200) {
-            // handleClose();
-            setFullName(userData2?.data?.full_name);
-            setEmailID(userData2?.data?.email_id);
-            setCountry_code(userData2?.data?.phone_number?.country_code);
-            setPhone_number(userData2?.data?.phone_number?.phone_number);
-        }
-    }
-
-    /**
-     * Remove user 
+     * Remove user
      * Api is pending
-     * @param {*} id 
+     * @param {*} id
      */
-    const removeUser = async (id) => {
+    // const deleteUser = async (id) => {
+    //     closeDeleteUser()
+    //     const token = Cookies.get('token');
 
-    }
-    /**
-     *Update User
-     *
-     * @return {*} 
-     */
-    const updateUser = async () => {
-        // e.preventDefault();
-        const token = Cookies.get('token');
-        if (!token) {
-            return {
-                redirect: {
-                    destination: '/',
-                    permanent: false,
-                },
-            }
-        }
-        const resUser = await fetch(`http://dev.alliancecredit.ca/user/update-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": userID,
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "api_token": token,
-                "is_active": isActive
-            })
+//          if (!token) {
+//              return {
+//                  redirect: {
+//                      destination: '/',
+//                      permanent: false,
+//                  },
+//              }
+//          }
+//          const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
+//              method: "POST",
+//              headers: {
+//                  "Content-Type": "application/json",
+//              },
+//              body: JSON.stringify({
+//                  "api_token": token,
+//                  "user_id": userID
+//              })
 
-        })
-        const res2User = await resUser.json();
-        console.log(res2User);
-        if (res2User.status_code == 200) {
+//          })
+//          const res2User = await resUser.json();
+//          console.log(res2User);
+//          if (res2User.status_code == 200) {
 
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-            setIsEdit(false);
-            setShow(false);
-            setUserId("")
-        }
-    }
+//              setFullName("");
+//              setEmailID("");
+//              setCountry_code("");
+//              setPhone_number("");
+//              setIsEdit(false);
+//              setShow(false);
+//              setUserId("")
+//          }
+//      }
+//      /**
+//       *Update User
+//       *
+//       * @return {*} 
+//       */
+//      const updateUser = async () => {
+//          // e.preventDefault();
+//          const token = Cookies.get('token');
+//          if (!token) {
+//              return {
+//                  redirect: {
+//                      destination: '/',
+//                      permanent: false,
+//                  },
+//              }
+//          }
+//          const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
+//              method: "POST",
+//              headers: {
+//                  "Content-Type": "application/json",
+//              },
+//              body: JSON.stringify({
+//                  "user_id": userID,
+//                  "full_name": fullNname,
+//                  "email_id": emailID,
+//                  "country_code": "+1",
+//                  "phone_number": phone_number,
+//                  "api_token": token,
+//                  "is_active": isActive
+//              })
+
+//          })
+//          const res2User = await resUser.json();
+//          console.log(res2User);
+//          if (res2User.status_code == 200) {
+
+//              setFullName("");
+//              setEmailID("");
+//              setCountry_code("");
+//              setPhone_number("");
+//              setIsEdit(false);
+//              setShow(false);
+//              setUserId("")
+//          }
+//      }
+
+
+// /**
+//      * Add User
+//      * @param {*} e 
+//      * @returns 
+//      */
+//     const addUser = async (e) => {
+//         e.preventDefault();
+//         const token = Cookies.get('token');
+//         if (!token) {
+//             return {
+//                 redirect: {
+//                     destination: '/',
+//                     permanent: false,
+//                 },
+//             }
+//         }
+//         const resUser = await fetch(`${process.env.API_URL}/user/create-sub-admin`, {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//                 "full_name": fullNname,
+//                 "email_id": emailID,
+//                 "country_code": "+1",
+//                 "phone_number": phone_number,
+//                 "api_token": token
+//             })
+//         })
+
+//         const res2User = await resUser.json();
+//         console.log(res2User);
+//         if (res2User.status_code == 200) {
+//             handleClose();
+//             setFullName("");
+//             setEmailID("");
+//             setCountry_code("");
+//             setPhone_number("");
+//         }
+//     }
+
 
     const address = {
         "address_line": "",
@@ -196,13 +301,26 @@ const AdminUsers = ({ data }) => {
         "state_name": "",
         "zip_code": ""
     }
+
     return (
         <>
+            <Modal show={deleteUserDisplay} onHide={() => closeDeleteUser}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Reset Password</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><div className="popupContent">Are you sure you want to reset your password?</div></Modal.Body>
+                <Modal.Footer>
+                    <button type="button" className="btn btnedit" onClick={() => closeDeleteUser}>Cancel</button>
+                    <button type="submit" className="btn btn-primary" onClick={() => deleteUser(userId)}>Reset Password</button>
+                </Modal.Footer>
+            </Modal>
+
+
             <Header />
             <div className="container">
                 <div className="row">
                     <div className="col-3">
-                        <UserSidebar data={data} />
+                        <UserSidebar data={thisUserData} />
                     </div>
                     <div className="col">
                         <div className="sidebarwrap">
@@ -217,40 +335,49 @@ const AdminUsers = ({ data }) => {
 
 
                             <div className="ac_left acc_title">All Team Members</div>
-                            <div className="ac_right">
-                                <button className="btn btnedit" onClick={handleShow}>Add Sub Admin</button>
-                            </div>
+                            {/* <div className="ac_right">
+                              {role.indexOf('admin') > -1 ?
+                                  <button className="btn btnedit" onClick={handleShow}>Add Sub-Admin</button>
+                                  : ''}
+                          </div> */}
                             <div className="clearfix"></div>
                             <div className="listing">
-                                <table id="example" className="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th><div>Sr. Number</div></th>
-                                            <th><div>User Name</div></th>
-                                            <th><div>Date Added</div></th>
-                                            <th><div>Email</div></th>
+                                <UserList
+                                    allowDelete={true}
+                                    allowEdit={true}
+                                    addUser={true}
+                                    data={data}
+                                    allowAddTitle={"Sub-Admin"} />
+                                {/* <table id="example" className="table table-striped">
 
-                                            <th><div>Actions</div></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data?.map((item, index) => (
+                                  <thead>
+                                      <tr>
+                                          <th><div>Sr. Number</div></th>
+                                          <th><div>User Name</div></th>
+                                          <th><div>Date Added</div></th>
+                                          <th><div>Email</div></th>
+
+                                          <th><div>Actions</div></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {data?.map((item, index) => (
 
 
-                                            <tr>
-                                                <td>{index + 1}</td>
-                                                <td>{item.full_name}</td>
-                                                <td>{item.date_added}</td>
-                                                <td>{item.email_id}</td>
-                                                <td>
-                                                    <>
-                                                        <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button>
-                                                    </>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                          <tr key={index}>
+                                              <td>{index + 1}</td>
+                                              <td>{item.full_name}</td>
+                                              <td>{item.date_added}</td>
+                                              <td>{item.email_id}</td>
+                                              <td>
+                                                  <>
+                                                      <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit</button>
+                                                  </>
+                                              </td>
+                                          </tr>
+                                      ))}
+                                  </tbody>
+                              </table> */}
                                 {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
                             </div>
                         </div>
@@ -259,7 +386,7 @@ const AdminUsers = ({ data }) => {
             </div>
 
 
-            <Modal show={show} onHide={handleClose}>
+            {/* <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEdit == false
                         ? "Add Sub-Admin"
@@ -299,7 +426,8 @@ const AdminUsers = ({ data }) => {
                                                 <option value="1">Deactivate</option>
                                             </select>
                                         </>
-                                    ) : ''}
+                                    ) : ''
+                                    }
                                 </div>
                             </div>
                             <div>
@@ -316,13 +444,13 @@ const AdminUsers = ({ data }) => {
                         </>
                         :
                         <>
-                            <Button variant="primary" className="btn btnremove" onClick={removeUser}>Remove User</Button>
+                            <Button variant="primary" className="btn btnremove" onClick={askDeleteUser}>Remove User</Button>
                             <Button variant="primary" className="btn btnedit">Reset User</Button>
                             <Button variant="primary" onClick={updateUser}>Save</Button>
                         </>
                     }
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </>
     )
 }
