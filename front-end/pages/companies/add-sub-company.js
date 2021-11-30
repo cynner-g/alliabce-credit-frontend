@@ -88,7 +88,7 @@ const addCompany = ({ industry, group, pricing }) => {
                 },
             }
         }
-        const addCompanyDB = await fetch(`http://dev.alliancecredit.ca/company/add-sub-company`, {
+        const addCompanyDB = await fetch(`${process.env.API_URL}/company/add-sub-company`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

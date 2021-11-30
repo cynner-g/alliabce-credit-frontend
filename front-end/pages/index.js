@@ -36,7 +36,7 @@ export default function Login(props) {
     // });
 
     // console.log(data);
-    const res = await fetch(`http://dev.alliancecredit.ca/user/login`, {
+    const res = await fetch(`${process.env.API_URL}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

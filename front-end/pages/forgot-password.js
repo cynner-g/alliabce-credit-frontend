@@ -25,7 +25,7 @@ const ForgotPassword = () => {
         // });
 
         // console.log(data);
-        const res = await fetch(`http://dev.alliancecredit.ca/user/forgot-password`, {
+        const res = await fetch(`${process.env.API_URL}/user/forgot-password`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const ForgotPassword = () => {
 
                 <div className="row">
                     <div className="col-7">
-                        <Image src="/img/Forgot Password.svg" alt="Logo" width="510" height="505" />
+                        <Image src="/img/Forgot_Password.svg" alt="Logo" width="510" height="505" />
                     </div>
                     <div className="col align-self-center">
                         <div className="logowrap">

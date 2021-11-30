@@ -73,7 +73,7 @@ const Users = ({ data, listUsers }) => {
         }
 
 
-        const req = await fetch('http://dev.alliancecredit.ca/user/list-associate-user', {
+        const req = await fetch('${process.env.API_URL}/user/list-associate-user', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -113,7 +113,7 @@ const Users = ({ data, listUsers }) => {
                 },
             }
         }
-        const resUser = await fetch(`http://dev.alliancecredit.ca/user/create-user`, {
+        const resUser = await fetch(`${process.env.API_URL}/user/create-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -161,7 +161,7 @@ const Users = ({ data, listUsers }) => {
                 },
             }
         }
-        const userData = await fetch(`http://dev.alliancecredit.ca/user/user-details`, {
+        const userData = await fetch(`${process.env.API_URL}/user/user-details`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -210,7 +210,7 @@ const Users = ({ data, listUsers }) => {
                 },
             }
         }
-        const resUser = await fetch(`http://dev.alliancecredit.ca/user/update-user`, {
+        const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

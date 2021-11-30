@@ -18,8 +18,6 @@ const Companies = ({ data, page, totalPage }) => {
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
-    console.log(data);
-
     const fetchData = async () => {
         const token = Cookies.get('token');
         if (!token) {
@@ -31,8 +29,7 @@ const Companies = ({ data, page, totalPage }) => {
             }
         }
 
-
-        const req = await fetch('http://dev.alliancecredit.ca/company/list-companies', {
+        const req = await fetch('${process.env.API_URL}/company/list-companies', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -50,10 +47,6 @@ const Companies = ({ data, page, totalPage }) => {
 
         return setData(newData);
     };
-
-
-
-
 
     return (
         <>

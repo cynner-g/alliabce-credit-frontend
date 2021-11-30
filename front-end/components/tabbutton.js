@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 const TabButton = ({ id, url }) => {
     const router = useRouter();
     return (
-        <ul class="nav company_nav">
+        <ul className="nav company_nav">
             <li className="nav-item" className={router.pathname == "/companies/[id]" ? "active" : ""}><Link href={url}><a className="nav-link">General</a></Link></li>
             <li className="nav-item" className={router.pathname == "/companies/users/[userid]" ? "active" : ""}>
                 <Link href={{
