@@ -113,6 +113,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
         e.preventDefault();
         const token = Cookies.get('token');
+        const role = Cookies.get('role');
         if (!token) {
             return {
                 redirect: {
@@ -126,6 +127,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             headers: {
                 "Content-Type": "application/json",
             },
+            //automatically verified if user is in an admin role
             body: JSON.stringify({
                 "full_name": fullNname,
                 "email_id": emailID,
@@ -133,6 +135,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 "phone_number": phone_number,
                 "company_access": ischecked,
                 "user_role": user_role,
+                "is_verified": role?.toLowerCase().indexOf('admin') >= 0,
                 "api_token": token
             })
 
@@ -152,6 +155,27 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
     }
 
+    /**
+     * Verify user as a valid member of the team
+     * @params {*} id
+     * @returns
+     */
+    const AcceptUser = (id) => {
+
+        const token = Cookies.get('token');
+        const userId = Cookies.get('userid')
+        const userData = fetch(`http://dev.alliancecredit.ca/user/verify-user`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "user_id": id,
+                "request_by_user_id": "en",
+                "api_token": token
+            })
+        })
+    }
     /**
      * Get user details basis of user id for edit purpose
      * @param {*} id 
@@ -220,9 +244,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      * @returns 
      */
 
-    const AcceptUser = async (id) => {
-        return '';
-    }
+    // const AcceptUser = async (id) => {
+    //     return '';
+    // }
 
     /**
      *Update User
@@ -273,6 +297,11 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         }
     }
 
+    const isUserManager = () => {
+        let role = Cookies.get('role');
+        return (role?.toLowerCase() === "user")
+
+    }
     return (
         <>
             <Header />
@@ -305,7 +334,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         }>
                             <option>Company Access</option>
                         </select>
-                        <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
+                        <Link href="#"><a className="btn addbtn" onClick={handleShow} disabled={isUserManager}>Add User</a></Link>
 
                     </div>
                 </div>
@@ -394,24 +423,29 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {userList?.data?.map((item) => (
+                        {userList?.data?.map((item, idx) => (
 
-                            <tr>
+                            <tr key={idx}>
                                 <td>{item.full_name}</td>
                                 <td>{item.date_added}</td>
                                 <td>{item.email_id}</td>
                                 <td>{item.display_user_role}</td>
                                 <td>{item?.company_access?.join(", ")}</td>
                                 <td>
+                                    <>{item.is_verified ? '' :
                                     <>
                                         <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
                                         <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
+                                        </>
+                                    }
                                         {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
                                     {user.isDeleting 
                                         ? <span className="spinner-border spinner-border-sm"></span>
                                         : <span>Delete</span>
+
                                     }
                                 </button> */}
+
                                         <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp;
                                     </>
                                 </td>

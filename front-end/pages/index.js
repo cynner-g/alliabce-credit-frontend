@@ -43,15 +43,15 @@ export default function Login(props) {
       },
       body: JSON.stringify({
         "language": locale,
-        "email_id": userName,
+        "email_id": userName.toLowerCase(),
         password
       })
-
     })
+
     const res2 = await res.json();
     console.log(res2);
     if (res2.status_code == 403) {
-      setloginMessage("Either User name or Password doesnot exists");
+      setloginMessage("Either User name or password does not exist");
     } else if (res2.status_code == 200) {
       setloginMessage("");
       Cookies.set('token', res2?.data?.auth_token)
@@ -72,7 +72,7 @@ export default function Login(props) {
         <form onSubmit={(e) => userLogin(e)}>
           <div className="row">
             <div className="col-7">
-            <Image src="/img/Login.svg" alt="Logo" width="510" height="505" />
+              <Image src="/img/Login.svg" alt="Logo" width="510" height="505" />
             </div>
             <div className="col-5 align-self-center">
               <div className="logowrap">
@@ -84,7 +84,7 @@ export default function Login(props) {
               <div className="form_wrap">
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label">{login.email}</label>
-                  <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value)} />
+                  <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="password">{login.password}</label>

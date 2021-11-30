@@ -1,0 +1,48 @@
+.collapse {
+    visibility: hidden;
+    height: 1px;
+}
+
+.show {
+    visibility: visible;
+    height: auto;
+}
+
+.comments_indent {
+    padding-right: 20px;
+}
+
+.small10 {
+    font-size: 10px;
+}
+
+.filterCol {
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.filterCol+* {
+    display: inline-block;
+    width: 175px;
+}
+
+.multiSelect {
+    max-width: 175px !important;
+    width: 175px;
+    white-space: nowrap;
+}
+
+.addComment {
+    white-space: nowrap;
+    width: 90%;
+}
+
+.status-1 {
+    display: none;
+}
+
+/* remove this 'today' highlighting on all months */
+.react-datepicker__day.react-datepicker__day--keyboard-selected {
+    background: none;
+    color: black;
+}

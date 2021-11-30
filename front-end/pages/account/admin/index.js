@@ -216,7 +216,7 @@ const AdminUsers = ({ data }) => {
                             <Address address={address} />
 
 
-                            <div className="ac_left acc_title">All Users</div>
+                            <div className="ac_left acc_title">All Team Members</div>
                             <div className="ac_right">
                                 <button className="btn btnedit" onClick={handleShow}>Add Sub Admin</button>
                             </div>
