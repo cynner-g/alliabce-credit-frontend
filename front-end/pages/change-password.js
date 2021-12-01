@@ -34,7 +34,7 @@ const ChangePassword = (props) => {
         // });
 
         // console.log(data);
-        const res = await fetch(`http://dev.alliancecredit.ca/user/change-password`, {
+        const res = await fetch(`${process.env.API_URL}/user/change-password`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

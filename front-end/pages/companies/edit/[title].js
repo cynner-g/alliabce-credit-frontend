@@ -165,7 +165,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                 <ul className=" me-auto mb-2 mb-lg-0">
                     <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
-                    <li><Link href="/companies"><a className="nav-link">{query.company_name_en}</a></Link></li>
+                    <li><Link href={`/companies/${query.company_id}`}><a className="nav-link">{query.company_name_en}</a></Link></li>
                     <li>Edit Company</li>
                 </ul>
             </div>

@@ -32,43 +32,49 @@ class CreditReports extends Component {
             origReportList: null,
             filteredReportList: null,
             rotation: [],
-            visibleReportList: null,
+            filteredReportList: null,
             pageSize: 10,
             startFilter: null,
             endFilter: null,
+            searchFilter: "",
             role: Cookies.get('role'),
             statusChangeRow: null,
+            filterStatusData: [],
             token: Cookies.get('token')
         };
-
-
     }
 
     async componentDidMount() {
-        let body = { 'api_token': this.state.token }
+        this.get_data();
+    }
+
+    get_data = () => {
+        let dates = {
+            startDate: this.state.startFilter,
+            endDate: this.state.endFilter
+        }
+
+        let body = {
+            'api_token': this.state.token,
+            'search': this.state.searchFilter,
+            'status_filter': this.state.filterStatusData,
+            'dateRange': dates
+        }
+
         order_list(body).then(async (data) => {
-            await this.setState({ origReportList: data, filteredReportList: data })
-        }).then(() => {
-            try {
-                this.setVisible();
-            }
-            catch (ex) {
-                console.log(ex.message)
-            }
+            this.setState({ origReportList: data, filteredReportList: data })
         })
-
-
     }
 
-    setVisible = (page = 0) => {
-        let start = this.state.pageSize * page
-        let end = page + this.state.pageSize;
-        if (start < 0) start = 0;
-        let fList = this.state.filteredReportList;
-        if (!fList) fList = this.state.origReportList;
-        let visible = fList.slice(start, end);
-        this.setState({ visibleReportList: visible })
-    }
+    // setVisible = (page = 0) => {
+    //     let start = this.state.pageSize * page
+    //     let end = page + this.state.pageSize;
+    //     if (start < 0) start = 0;
+    //     let fList = this.state.filteredReportList;
+    //     if (!fList) fList = this.state.origReportList;
+    //     let visible = fList.slice(start, end);
+    //     this.setState({ filteredReportList: visible })
+    // }
 
     showDropdownRow = (e, item) => {
         let rotation = [...this.state.rotation];
@@ -86,53 +92,52 @@ class CreditReports extends Component {
     filterDates = async (update) => {
         this.setState({ startFilter: update[0], endFilter: update[1] });
         let newData = this.state.origReportList;
-        if (this.state.startFilter != null) {
+        if (update[0] != null) {
             newData = await newData.filter(row => {
                 return differenceInDays(parseISO(row.create_date), parseISO(this.state.startFilter)) >= 0;
             })
-
-            newData = await newData.filter(row => {
-                return differenceInDays(parseISO(row.create_date), parseISO(this.state.startFilter)) < 0;
-            })
-
-            await this.setState({ filteredReportList: newData })
-            this.setVisible(0) //get active page.  State?
+            if (update[1] != null) {
+                newData = await newData.filter(row => {
+                    return differenceInDays(parseISO(row.create_date), parseISO(this.state.startFilter)) < 0;
+                })
+            }
         }
+        await this.setState({ filteredReportList: newData })
     }
 
     filterText = async (e) => {
         e.preventDefault();
         let text = e.target.value.toLowerCase()
-        console.log(text)
-        let data = this.state.origReportList;
-        let newData = await data.filter(row => {
-            //search these 4 columns
-            return (
-                row.subject_name?.toLowerCase().indexOf(text) >= 0 ||
-                row.company_name?.toLowerCase().indexOf(text) >= 0 ||
-                row.user_name?.toLowerCase().indexOf(text) >= 0 ||
-                row.reference_id?.toLowerCase().indexOf(text) >= 0)
-        })
-        await this.setState({ filteredReportList: newData })
-        this.setVisible(0) //get active page.  State?
+        // console.log(text)
+        // let data = this.state.origReportList;
+        // let newData = await data.filter(row => {
+        //     //search these 4 columns
+        //     return (
+        //         row.subject_name?.toLowerCase().indexOf(text) >= 0 ||
+        //         row.company_name?.toLowerCase().indexOf(text) >= 0 ||
+        //         row.user_name?.toLowerCase().indexOf(text) >= 0 ||
+        //         row.reference_id?.toLowerCase().indexOf(text) >= 0)
+        // })
+        // await this.setState({ filteredReportList: newData })
+        await this.setState({ searchFilter: text })
+        this.get_data();
     }
 
     filterStatus = async (e) => {
-        console.log("OnChange(): ", e)
-        let text = e;
-
-        let newData = this.state.origReportList;
-        if (e?.length > 0) {
-            newData = await newData.filter(row => {
-                let ret = false;
-                text.forEach(t => {
-                    if (+row.status_code == +t.value) ret = true;
-                })
-                return ret;
-            });
-        }
-        await this.setState({ filteredReportList: newData })
-        this.setVisible(0) //get active page.  State?
+        await this.setState({ filterStatusData: e });
+        this.get_data();
+        // let text = e;
+        // let newData = this.state.origReportList;
+        // if (e?.length > 0) {
+        //     newData = await newData.filter(row => {
+        //         let ret = false;
+        //         text.forEach(t => {
+        //             if (+row.status_code == +t.value) ret = true;
+        //         })
+        //         return ret;
+        //     });
+        // }
+        // await this.setState({ filteredReportList: newData })
     }
 
     //returns markup and text for report Status 
@@ -149,8 +154,6 @@ class CreditReports extends Component {
                 icon = "faExclamationTriangle";
                 badge = <Badge bg="info">Pending</Badge>;
                 badgeBG = "info";
-                break;
-
                 break;
             case PROCESSING:
                 css = {
@@ -531,9 +534,9 @@ class CreditReports extends Component {
         }
         else {
             let options = [
-                { value: "6", label: "Cancelled" },
-                { value: "5", label: "Completed" },
-                { value: "2", label: "Processing" },
+                { value: "Canceled", label: "Cancelled" },
+                { value: "Completed", label: "Completed" },
+                { value: "Processing", label: "Processing" },
             ]
             return (
                 <>
@@ -658,7 +661,7 @@ class CreditReports extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.visibleReportList?.map((row, index) => {
+                                    {this.state.filteredReportList?.map((row, index) => {
                                         return this.tblRow(row, index);
                                     })}
                                 </tbody>

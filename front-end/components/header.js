@@ -33,16 +33,73 @@ const Header = () => {
                         <Logo />
                         <ul className=" me-auto mb-2 mb-lg-0">
                             {/*  */}
-                            <li className={router.pathname == "/credit-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports"><a className="nav-link">Credit Reports</a></Link></li>
                             {myRole == 'admin' ?
-                                <li className={router.pathname == "/companies" ? "active" : ""}><Link activeClassName={router.pathname === "/companies"} href="/companies"><a className="nav-link">Companies</a></Link></li>
-                                : ''}
-                            <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/groups"} href="/groups"><a className="nav-link">Groups</a></Link></li>
-                            <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a className="nav-link">Database Reports</a></Link></li>
+                                <>
+                                    <li className={router.pathname == "/credit-reports" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports">
+                                            <a className="nav-link">Credit Reports</a>
+                                        </Link>
+                                    </li>
 
-                            {myRole == 'admin' ?
-                                <li className={router.pathname == "/database-reports" ? "active" : ""}><Link activeClassName={router.pathname === "/legal-uploads"} href="/legal-uploads"><a className="nav-link">Legal Uploads</a></Link></li>
-                                : ''}
+
+                                    <li className={router.pathname == "/database-reports" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/database-reports"} href="/database-reports">
+                                            <a className="nav-link">Database Reports</a>
+                                        </Link>
+                                    </li>
+
+                                    <li className={router.pathname == "/companies" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/companies"} href="/companies">
+                                            <a className="nav-link">Companies</a>
+                                        </Link>
+                                    </li>
+
+                                    <li className={router.pathname == "/groups" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/groups"} href="/groups">
+                                            <a className="nav-link">Groups</a>
+                                        </Link>
+                                    </li>
+
+                                    <li className={router.pathname == "/legal-uploads" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/legal-uploads"} href="/legal-uploads">
+                                            <a className="nav-link">Legal Upload</a>
+                                        </Link>
+                                    </li>
+
+                                </>
+                                :
+                                <>
+                                    <li className={router.pathname == "/credit-reports" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports">
+                                            <a className="nav-link">Credit Reports</a>
+                                        </Link>
+                                    </li>
+
+                                    <li className={router.pathname == "/database-reports" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/database-reports"} href="/database-reports">
+                                            <a className="nav-link">Database Reports</a>
+                                        </Link>
+                                    </li>
+
+                                    <li className={router.pathname == "/legal-watchlist" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
+                                            <a className="nav-link">Legal Watchlist</a>
+                                        </Link>
+                                    </li>
+
+
+                                    <li className={router.pathname == "/aging" ? "active" : ""}>
+                                        <Link activeClassName={router.pathname === "/aging"} href="/aging">
+                                            <a className="nav-link">Aging</a>
+                                        </Link>
+                                    </li>
+
+                                </>
+
+
+
+
+                            }
                             {/* User */}
                             {/* <li className="nav-item"><Link activeClassName={router.pathname === "/database-reports"} href="/database-reports"><a>Database Reports</a></Link></li> */}
                             {/* <li><Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist"><a className="nav-link">Legal Watch list</a></Link></li> */}

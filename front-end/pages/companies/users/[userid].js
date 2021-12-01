@@ -82,7 +82,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         }
 
 
-        const req = await fetch('http://dev.alliancecredit.ca/user/list-user', {
+        const req = await fetch('${process.env.API_URL}/user/list-user', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -122,7 +122,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
-        const resUser = await fetch(`http://dev.alliancecredit.ca/user/create-user`, {
+        const resUser = await fetch(`${process.env.API_URL}/user/create-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -164,7 +164,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
         const token = Cookies.get('token');
         const userId = Cookies.get('userid')
-        const userData = fetch(`http://dev.alliancecredit.ca/user/verify-user`, {
+        const userData = fetch(`${process.env.API_URL}/user/verify-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -193,7 +193,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
-        const userData = await fetch(`http://dev.alliancecredit.ca/user/user-details`, {
+        const userData = await fetch(`${process.env.API_URL}/user/user-details`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -264,7 +264,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
-        const resUser = await fetch(`http://dev.alliancecredit.ca/user/update-user`, {
+        const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -313,16 +313,14 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         <input type="text" className="form-control" id="companysearch" placeholder="Search" onChange={(e) => {
                             setSearch(e.target.value);
                             fetchData();
-                        }
-                        } />
+                        }} />
                         <label htmlFor="companysearch" className="form-label">Search</label>
                     </div>
                     <div className="col  text-end">
                         <select className="form-select role" onChange={(e) => {
                             setFilter_user_role([e.target.value]);
                             fetchData();
-                        }
-                        }>
+                        }}>
                             <option value="">All</option>
                             <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
@@ -330,11 +328,10 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         <select className="form-select f1" onChange={(e) => {
                             setFilter_company([e.target.value]);
                             fetchData();
-                        }
-                        }>
+                        }}>
                             <option>Company Access</option>
                         </select>
-                        <Link href="#"><a className="btn addbtn" onClick={handleShow} disabled={isUserManager}>Add User</a></Link>
+                        <Link href="#"><a className="btn addbtn" onClick={handleShow} disabled={isUserManager()}>Add User</a></Link>
 
                     </div>
                 </div>
@@ -500,8 +497,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
                                     <label htmlFor="groups" className="form-label">Company Access</label>
                                     <div className="chkox">
-                                        {companiesData?.map((item) => (
-                                            <div className="form-check">
+                                        {companiesData?.map((item, idx) => (
+                                            <div className="form-check" key={idx}>
                                                 <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
                                                 <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => handleOnChange(e)} />
                                             </div>

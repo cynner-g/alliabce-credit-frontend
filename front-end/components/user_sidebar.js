@@ -36,7 +36,7 @@ const UserSidebar = ({ data }) => {
                 },
             }
         }
-        // const resUser = await fetch(`http://dev.alliancecredit.ca/user/reset-password`, {
+        // const resUser = await fetch(`${process.env.API_URL}/user/reset-password`, {
         //     method: "POST",
         //     headers: {
         //         "Content-Type": "application/json",
