@@ -142,76 +142,76 @@ class CreditReports extends Component {
     getStatusCss = (code) => {
         code = +code; //ensure it's a number, not a string
         let css, text = "", icon = "", badge = <></>, badgeBG = "";
-            switch (code) {
-                case -1: text = ""
-                case PENDING:
-                    text = "Pending";
-                    icon = "faExclamationTriangle";
-                    badge = <Badge bg="info">Pending</Badge>;
-                    badgeBG = "info";
-                    break;
+        switch (code) {
+            case -1: text = ""
+            case PENDING:
+                text = "Pending";
+                icon = "faExclamationTriangle";
+                badge = <Badge bg="info">Pending</Badge>;
+                badgeBG = "info";
+                break;
 
-                    break;
-                case PROCESSING:
-                    css = {
-                        padding: '5px',
-                        backgroundColor: "gold",
-                        alignItems: ' stretch',
-                        width: '81px',
-                        left: '6px',
-                        top: '2px',
-                        fontFamily: 'Roboto',
-                        fontStyle: 'normal',
-                        fontWeight: '500',
-                        fontSize: '14px',
-                        lineHeight: '150%',
-                        /* identical to box height, or 21px */
-                        color: '#FFFFFF'
-                    };
-                    badge = <Badge bg="warning">Processing</Badge>;
-                    badgeBG = "warning";
-                    text = "Processing";
-                    icon = "faClock"
-                    break;
-                case NEEDACTION:
-                    text = "warning?????";
-                    icon = "faExclamationTriangle";
-                    badge = <Badge bg="danger">Warning</Badge>;
-                    badgeBG = "danger";
-                    break;
-                case ERROR:
-                    text = "Error";
-                    icon = "faExclamationTriangle";
-                    badge = <Badge bg="secondary">Error</Badge>;
-                    badgeBG = "secondary";
+                break;
+            case PROCESSING:
+                css = {
+                    padding: '5px',
+                    backgroundColor: "gold",
+                    alignItems: ' stretch',
+                    width: '81px',
+                    left: '6px',
+                    top: '2px',
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '150%',
+                    /* identical to box height, or 21px */
+                    color: '#FFFFFF'
+                };
+                badge = <Badge bg="warning">Processing</Badge>;
+                badgeBG = "warning";
+                text = "Processing";
+                icon = "faClock"
+                break;
+            case NEEDACTION:
+                text = "warning?????";
+                icon = "faExclamationTriangle";
+                badge = <Badge bg="danger">Warning</Badge>;
+                badgeBG = "danger";
+                break;
+            case ERROR:
+                text = "Error";
+                icon = "faExclamationTriangle";
+                badge = <Badge bg="secondary">Error</Badge>;
+                badgeBG = "secondary";
 
-                    break;
-                case COMPLETED:
-                    css = {
-                        width: '35px',
-                        height: '21px',
-                        left: '6px',
-                        top: '2px',
-                        fontFamily: 'Roboto',
-                        fontStyle: 'normal',
-                        fontWeight: '500',
-                        fontSize: '14px',
-                        lineHeight: '150%',
-                        color: '#388F46',
-                    }
-                    text = "Completed"
-                    badge = <Badge bg='success'>Completed</Badge>;
-                    icon = "faDownload"
-                    badgeBG = 'success';
-                    break;
-                case CANCELLED:
-                    text = "Cancelled";
-                    badge = <Badge bg='dark'>Cancelled</Badge>;
-                    badgeBG = 'dark';
-                    break;
-                default: break;
+                break;
+            case COMPLETED:
+                css = {
+                    width: '35px',
+                    height: '21px',
+                    left: '6px',
+                    top: '2px',
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: '500',
+                    fontSize: '14px',
+                    lineHeight: '150%',
+                    color: '#388F46',
+                }
+                text = "Completed"
+                badge = <Badge bg='success'>Completed</Badge>;
+                icon = "faDownload"
+                badgeBG = 'success';
+                break;
+            case CANCELLED:
+                text = "Cancelled";
+                badge = <Badge bg='dark'>Cancelled</Badge>;
+                badgeBG = 'dark';
+                break;
+            default: break;
 
-            }
+        }
         return { css: css, text: text, icon: icon, badge: badge, badgeBG: badgeBG };
     }
 
@@ -298,7 +298,7 @@ class CreditReports extends Component {
                     <td><div className={`suppliers status${row.reports.suppliers.status_code}`}>
                         {(row.reports.suppliers.status_code == -1) ? '' : <Badge bg={reportCodes.suppliers.badgeBG}>Suppliers</Badge>}</div></td>
                     <td>
-                        <button className="btn btn-outline-primary" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
+                        <button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
                     </td>
                     <td>
                         <FontAwesomeIcon icon={faCaretDown} style={{ transform: `rotate(${this.state.rotation[index] || 0}deg)`, height: '15px' }} onClick={(e) => this.showDropdownRow(e, index)} />
@@ -604,38 +604,47 @@ class CreditReports extends Component {
                     </Modal>
 
                     <Header />
-                    <br />
-                    <Container>
-                        <Row >
-                            <Col className='filterCol'> Search:&nbsp;<input type='text' onChange={(e) => this.filterText(e)}></input></Col>
-                            <Col className='filterCol'>Status:&nbsp;
-                                <Select onChange={(e) => this.filterStatus(e)}
-                                    onClick={(e) => this.filterStatus(e)}
-                                    options={options}
-                                    isMulti
-                                    className="multiSelect"
-                                /></Col>
-                            <Col className='filterCol'
-                                onClick={e => this.setState({ showDates: true })}>
-                                Filter By Date:&nbsp;
-                                <DatePicker
-                                    selectsRange={true}
-                                    startDate={this.state.startFilter}
-                                    endDate={this.state.endFilter}
-                                    onChange={(update) => {
-                                        this.filterDates(update);
-                                    }}
-                                    isClearable={true}
-                                    calendarContainer={this.rangeContainer}
-                                />
 
-                            </Col>
-                            <Col className="ms-auto filterCol">
-                                <button className="btn btn-primary" onClick={this.orderReport}>Order New Report</button>
-                            </Col>
-                        </Row>
-                        <Row><Col>
-                            <Table striped>
+                    <Container>
+                        <div className="seaarch">
+                            <Row>
+
+                                <div className="col-4"><input type='text' className="form-control" id="companysearch" placeholder="Search" onChange={(e) => this.filterText(e)} />
+                                    <label htmlFor="companysearch" className="form-label"></label>
+                                </div>
+
+                                <Col className='filterCol text-end'>
+                                    <div className="status">
+                                        <Select className="form-select role" onChange={(e) => this.filterStatus(e)}
+                                            onClick={(e) => this.filterStatus(e)}
+                                            options={options}
+                                            isMulti
+                                            className="multiSelect"
+                                        />
+                                        <label htmlFor="Status" className="form-label">Status</label>
+                                    </div>
+                                    <div className="select_date">
+                                        <div className='filterCol'
+                                            onClick={e => this.setState({ showDates: true })}>
+                                            <DatePicker
+                                                selectsRange={true}
+                                                startDate={this.state.startFilter}
+                                                endDate={this.state.endFilter}
+                                                onChange={(update) => {
+                                                    this.filterDates(update);
+                                                }}
+                                                isClearable={true}
+                                                calendarContainer={this.rangeContainer}
+                                            />
+                                            <label htmlFor="Status" className="form-label">Filter By Date</label>
+                                        </div>
+                                    </div>
+                                    <button className="btn addbtn" onClick={this.orderReport}>Order New Report</button>
+                                </Col>
+                            </Row>
+                        </div>
+                        <div className="listing">
+                            <Table>
                                 <thead>
                                     <tr>
                                         <th>Ref. Id</th>
@@ -654,7 +663,7 @@ class CreditReports extends Component {
                                     })}
                                 </tbody>
                             </Table>
-                        </Col></Row>
+                        </div>
                     </Container>
 
                     {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
