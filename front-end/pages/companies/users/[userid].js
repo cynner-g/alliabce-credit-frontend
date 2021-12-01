@@ -323,7 +323,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             fetchData();
                         }
                         }>
-                            <option value="admin">Admin</option>
+                            <option value="">All</option>
                             <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
                         </select>
@@ -489,7 +489,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                     <label htmlFor="portal_language" className="form-label">Role</label>
                                     <select className="form-select" value={user_role} id="portal_language" aria-label="" onChange={(e) => setUser_role(e.target.value)}>
                                         <option selected>Select Role</option>
-                                        <option value="admin">Admin</option>
+                                        {/* <option value="admin">Admin</option> */}
                                         <option value="user">User</option>
                                         <option value="user-manager">User Manager</option>
                                     </select>
@@ -498,7 +498,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             <div className="row">
                                 <div className="col">
 
-                                    <label htmlFor="groups" className="form-label">Add to group</label>
+                                    <label htmlFor="groups" className="form-label">Company Access</label>
                                     <div className="chkox">
                                         {companiesData?.map((item) => (
                                             <div className="form-check">

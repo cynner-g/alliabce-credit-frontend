@@ -240,10 +240,10 @@ class CreditReports extends Component {
 
     tblRow = (row, index) => {
         const getCodes = (rpts) => {
-            let incorporate = rpts.incorporate;
-            let bank = rpts.bank;
-            let legal = rpts.legal;
-            let suppliers = rpts.suppliers;
+            let incorporate = rpts?.incorporate;
+            let bank = rpts?.bank;
+            let legal = rpts?.legal;
+            let suppliers = rpts?.suppliers;
             //not entirely necessary now....
             let incorporateCSS = this.getStatusCss(incorporate.status_code);
             let bankCSS = this.getStatusCss(bank.status_code);

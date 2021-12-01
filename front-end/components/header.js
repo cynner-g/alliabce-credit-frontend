@@ -62,20 +62,12 @@ const Header = () => {
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 {user ?
                                     <>
-                                        <li><a className="dropdown-item" onClick={() => {
-                                            Cookies.remove('token');
-                                            Cookies.remove('role')
-                                            Cookies.remove('userid')
-                                            Cookies.remove('name')
-                                            Cookies.remove('company_id')
-                                            router.push('/');
-                                        }
-                                        }>Logout</a></li>
                                         {role == 'admin' ? (
                                             <li><a className="dropdown-item" href="/account/admin">My Account</a></li>
                                         ) : (
                                             <li><a className="dropdown-item" href="/account">My Account</a></li>
                                         )}
+
 
                                     </>
                                     :
@@ -83,6 +75,17 @@ const Header = () => {
                                 }
 
                                 <li><Lang /></li>
+                                {user ?
+                                    <li><a className="dropdown-item" onClick={() => {
+                                        Cookies.remove('token');
+                                        Cookies.remove('role')
+                                        Cookies.remove('userid')
+                                        Cookies.remove('name')
+                                        Cookies.remove('company_id')
+                                        router.push('/');
+                                    }
+                                    }>Logout</a></li>
+                                    : ''}
                             </ul>
                         </div>
                     </div>
