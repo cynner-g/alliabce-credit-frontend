@@ -64,7 +64,7 @@ export default function ResetPassword(props) {
                 <form onSubmit={(e) => userLogin(e)}>
                     <div className="row">
                         <div className="col-7">
-                            <Image src="/img/Reset Password.svg" alt="Logo" width="664" height="494" />
+                            <Image src="/img/Reset_Password.svg" alt="Logo" width="664" height="494" />
                         </div>
                         <div className="col-5 align-self-center">
                             <div className="logowrap">

@@ -24,17 +24,17 @@ const AdminUsers = ({ data }) => {
      * Manage states
      */
 
-    const [show, setShow] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
+    // const [show, setShow] = useState(false);
+    // const [isEdit, setIsEdit] = useState(false);
 
-    const [fullNname, setFullName] = useState("");
-    const [emailID, setEmailID] = useState("");
-    const [country_code, setCountry_code] = useState("");
-    const [phone_number, setPhone_number] = useState("");
-    const [company_access, setCompany_access] = useState("");
-    const [isActive, setActive] = useState("");
-    const [userID, setUserId] = useState("");
-    const [role, setRole] = useState("");
+    // const [fullNname, setFullName] = useState("");
+    // const [emailID, setEmailID] = useState("");
+    // const [country_code, setCountry_code] = useState("");
+    // const [phone_number, setPhone_number] = useState("");
+    // const [company_access, setCompany_access] = useState("");
+    // const [isActive, setActive] = useState("");
+    // const [userID, setUserId] = useState("");
+    // const [role, setRole] = useState("");
     const [thisUserData, setThisUser] = useState({})
     const [deleteUserDisplay, showDeleteUser] = useState(false)
 
