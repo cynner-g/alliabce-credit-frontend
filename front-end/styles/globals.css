@@ -13,6 +13,7 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+  padding-top: 102px;
 }
 
 /*Breadcrumb*/
@@ -99,6 +100,12 @@ header {
   border-bottom: 1px solid #F2F2F2;
   padding: 7px 0;
   margin-bottom: 20px;
+  position: fixed;
+  width: 96.9%;
+  background: #FFF;
+  top: 0;
+  left: 24px;
+  z-index: 9;
 }
 
 .navbar ul {
@@ -655,6 +662,9 @@ p small {
 
 .comments_items:last-child {
   border-bottom: 0;
+}
+.header_wrap{
+  position: relative;
 }
 
 /* .comments_wrapper {

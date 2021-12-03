@@ -224,40 +224,51 @@ const DatabaseReports = function () {
         <>
             <Header />
             <Container>
-                <Row >
-                    <Col className={styles.filterCol}> Search:&nbsp;<input type='text' onChange={(e) => filterText(e)}></input></Col>
-                    <Col className={styles.filterCol}>Status:&nbsp;
-                        <div className={styles.selectDiv}>
-                            <Select onChange={(e) => filterStatus(e)}
-                                options={reportTypes}
-                                isMulti
-                            />
+                <div className="seaarch">
+                    <Row >
+
+                        <div className={`col-4 ${styles.filterCol}`}>
+                            <input className="form-control" type='text' id="companysearch" onChange={(e) => filterText(e)} />
+                            <label htmlFor="companysearch" className="form-label">Search</label>
                         </div>
-                    </Col>
-                    <Col className={styles.filterCol} >Filter By Date:&nbsp;
-                        <div className={styles.datePickerDiv}>
-                            <DatePicker
-                                selectsRange={true}
-                                className={styles.bordered}
-                                startDate={filters.StartDate}
-                                endDate={filters.EndDate}
-                                isClearable
-                                onChange={(update) => {
-                                    filterDates(update);
-                                }}
-                            />
-                        </div>
+                        <Col className={`text-end ${styles.filterCol}`}>
+                            <div className="status">
+                                <div className={styles.selectDiv}>
+                                    <Select onChange={(e) => filterStatus(e)}
+                                        options={reportTypes}
+                                        isMulti
+                                    />
+                                    <label className="form-label">Status</label>
+                                </div>
+                            </div>
+                            {/* </Col>
+                    <Col className={styles.filterCol} > */}
+                            <div className="select_date">
+                                <DatePicker
+                                    selectsRange={true}
+                                    className={styles.bordered}
+                                    startDate={filters.StartDate}
+                                    endDate={filters.EndDate}
+                                    isClearable
+                                    onChange={(update) => {
+                                        filterDates(update);
+                                    }}
+                                />
+                            </div>
 
+                            <button className="btn addbtn" onClick={searchNewReport}>Search New Report</button>
 
-
-                    </Col>
-                    <Col className={styles.filterCol + ' ' + styles.textRight}>
-                        <button className="btn btn-primary" onClick={searchNewReport}>Search New Report</button>
-                    </Col>
-                </Row >
+                        </Col>
+                        {/* <Col className={styles.filterCol + ' ' + styles.textRight}>
+                        
+                    </Col> */}
+                    </Row >
+                </div>
                 <Row>
                     <Col>
-                        <DynamicTable data={data.filtered} columns={[...colData]} />
+                        <div className="listing">
+                            <DynamicTable data={data.filtered} columns={[...colData]} />
+                        </div>
                     </Col>
                 </Row>
             </Container >
