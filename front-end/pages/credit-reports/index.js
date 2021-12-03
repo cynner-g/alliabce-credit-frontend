@@ -371,52 +371,47 @@ class CreditReports extends Component {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan={3}>
-                                        {this.state.role === 'admin' ?
-                                            <div className="addComment">
-                                                <input type='text' onChange={() => this.setState({ newComment: e.target.value })}
-                                                    placeholder='Write a comment here' />
-                                                <select onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
-                                                    <option value='private'>Private</option>
-                                                    <option value='public'>Public</option>
-                                                </select>
-                                                <button className="btn btn-primary" onClick={() => this.setNewComment(row)}>Post</button>
+                                    <td colSpan={11} className="comments_indent">
+                                        <h5>Status & Comments</h5>
+                                        <div className="comments_wrapper">
+                                            {this.state.role === 'admin' ?
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td>
+                                                            <input type='text' className="form-control" onChange={() => this.setState({ newComment: e.target.value })}
+                                                                placeholder='Write a comment here' />
+                                                        </td>
+                                                        <td className="post_status_wrap">
+                                                            <select className="form-select" onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
+                                                                <option value='private'>Private</option>
+                                                                <option value='public'>Public</option>
+                                                            </select>
+                                                        </td>
+                                                        <td className="post_add_wrap">
+                                                            <button className="btn btn-primary" onClick={() => this.setNewComment(row)}>Post</button>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                : ''
+                                            }
+                                            <div className="comments_item_wrap">
+                                                <div className="comments_items">
+                                                    <h6>System</h6>
+                                                    <p>{row.comments.system.comment}
+                                                        <small>{this.getDate(row.comments.system.create_date)}</small>
+                                                    </p>
+                                                </div>
+                                                <div className="comments_items">
+                                                    <h6>Alliance Credit</h6>
+                                                    <p>{row.comments.custom.comment}
+                                                        <small>{this.getDate(row.comments.custom.create_date)}</small>
+                                                    </p>
+                                                </div>
                                             </div>
-                                            : ''
-                                        }
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={1}>
-                                        <h3>System</h3>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={3}>
-                                        {row.comments.system.comment}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={1} className="small10">
-                                        {this.getDate(row.comments.system.create_date)}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={1}>
-                                        <h3>Alliance Credit</h3>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={3}>
-                                        {row.comments.custom.comment}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={1} className="small10">
-                                        {this.getDate(row.comments.custom.create_date)}
-                                    </td>
-                                </tr>
                             </tbody>
                         </Table>
 

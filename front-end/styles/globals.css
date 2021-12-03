@@ -398,11 +398,7 @@ input[type=text] {
   background-size: 12px;
 }
 
-.change-status {}
 
-.external-link {}
-
-.view-credit-app {}
 
 .active {
   border-bottom: 3px solid #517BCC;
@@ -628,9 +624,60 @@ h5 {
   color: #747474;
 }
 
+h6 {
+  font-size: 18px;
+  color: #3B4A68;
+}
+
+p {
+  color: #323232;
+  font-size: 16px;
+}
+
+p.warning {
+  color: #CF5A5A;
+}
+
+p small {
+  color: #3B4A68;
+  font-size: 10px;
+}
+
+.comments_item_wrap {
+  padding: 16px 16px 0;
+}
+
+.comments_items {
+  background: #FBFBFB;
+  padding: 15px;
+  border-bottom: 1px solid #F2F2F2;
+}
+
+.comments_items:last-child {
+  border-bottom: 0;
+}
+
+/* .comments_wrapper {
+  padding: 16px;
+} */
+
+.comments_wrapper,
 .more_info_wrap {
   background: #FBFBFB;
   border: 1px solid #F2F2F2;
+}
+
+td.comments_indent {
+  padding: 15px 0;
+  border-bottom: 0;
+}
+
+.post_status_wrap {
+  width: 110px;
+}
+
+.post_add_wrap {
+  width: 60px;
 }
 
 /*My account*/
