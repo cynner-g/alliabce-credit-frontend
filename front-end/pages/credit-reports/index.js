@@ -157,21 +157,21 @@ class CreditReports extends Component {
                 break;
             case PROCESSING:
                 css = {
-                    padding: '5px',
-                    backgroundColor: "gold",
-                    alignItems: ' stretch',
-                    width: '81px',
-                    left: '6px',
-                    top: '2px',
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '150%',
+                    // padding: '5px',
+                    // backgroundColor: "gold",
+                    // alignItems: ' stretch',
+                    // width: '81px',
+                    // left: '6px',
+                    // top: '2px',
+                    // fontFamily: 'Roboto',
+                    // fontStyle: 'normal',
+                    // fontWeight: '500',
+                    // fontSize: '14px',
+                    // lineHeight: '150%',
                     /* identical to box height, or 21px */
-                    color: '#FFFFFF'
+                    // color: '#FFFFFF'
                 };
-                badge = <Badge bg="warning">Processing</Badge>;
+                badge = <span className="btn processing" bg="warning">Processing</span>;
                 badgeBG = "warning";
                 text = "Processing";
                 icon = "faClock"
@@ -191,25 +191,25 @@ class CreditReports extends Component {
                 break;
             case COMPLETED:
                 css = {
-                    width: '35px',
-                    height: '21px',
-                    left: '6px',
-                    top: '2px',
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: '500',
-                    fontSize: '14px',
-                    lineHeight: '150%',
-                    color: '#388F46',
+                    // width: '35px',
+                    // height: '21px',
+                    // left: '6px',
+                    // top: '2px',
+                    // fontFamily: 'Roboto',
+                    // fontStyle: 'normal',
+                    // fontWeight: '500',
+                    // fontSize: '14px',
+                    // lineHeight: '150%',
+                    // color: '#388F46',
                 }
                 text = "Completed"
-                badge = <Badge bg='success'>Completed</Badge>;
+                badge = <span className="btn completed" bg='success'>Completed</span>;
                 icon = "faDownload"
                 badgeBG = 'success';
                 break;
             case CANCELLED:
                 text = "Cancelled";
-                badge = <Badge bg='dark'>Cancelled</Badge>;
+                badge = <span className="btn canceled" bg='dark'>Cancelled</span>;
                 badgeBG = 'dark';
                 break;
             default: break;
@@ -291,49 +291,83 @@ class CreditReports extends Component {
                     <td>{subject_name}</td>
                     <td>{user_name}<br /><span className="small10">{company_name}</span></td>
 
-                    <td><div className={`status status${status.status_code}`}>{status.badge}</div></td>
-                    <td><div className={`incorporate status${row.reports.incorporate.status_code}`}>
-                        {(row.reports.incorporate.status_code == -1) ? '' : <Badge bg={reportCodes.incorporate.badgeBG}>Incorporate</Badge>}</div></td>
-                    <td><div className={`bank status${row.reports.bank.status_code}`}>
-                        {(row.reports.bank.status_code == -1) ? '' : <Badge bg={reportCodes.bank.badgeBG}>Bank</Badge>}</div></td>
-                    <td><div className={`legal status${row.reports.legal.status_code}`}>
-                        {(row.reports.legal.status_code == -1) ? '' : <Badge bg={reportCodes.legal.badgeBG}>Legal</Badge>}</div></td>
-                    <td><div className={`suppliers status${row.reports.suppliers.status_code}`}>
-                        {(row.reports.suppliers.status_code == -1) ? '' : <Badge bg={reportCodes.suppliers.badgeBG}>Suppliers</Badge>}</div></td>
+                    <td><div className={`status${status.status_code}`}>{status.badge}</div></td>
+                    <td><div className={`status${row.reports.incorporate.status_code}`}>
+                        {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div></td>
+                    <td><div className={`status${row.reports.bank.status_code}`}>
+                        {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div></td>
+                    <td><div className={`status${row.reports.legal.status_code}`}>
+                        {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div></td>
+                    <td>
+                        <div className={`suppliers status${row.reports.suppliers.status_code}`}>
+                            {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
+                    </td>
                     <td>
                         <button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
                     </td>
                     <td>
-                        <FontAwesomeIcon icon={faCaretDown} style={{ transform: `rotate(${this.state.rotation[index] || 0}deg)`, height: '15px' }} onClick={(e) => this.showDropdownRow(e, index)} />
+                        <button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} />
                     </td>
                 </tr>
                 <tr className="collapse" key={index + "_2"}>
-                    <td colSpan={10} className="comments_indent">
+                    <td colSpan={11} className="comments_indent">
+
                         <Table style={{ width: '100%' }} >
                             <tbody>
                                 <tr>
                                     <td colSpan={1}>
-                                        <button className="btn btn-outline-danger"
+                                        <button className="btn btnremove"
                                             onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
                                     </td>
                                     <td colSpan={1}>
 
                                     </td>
                                     <td colSpan={1}>
-                                        {this.state.role === 'admin' ?
-                                            <>
-                                                <button className="btn btn-outline-primary" style={{ borderWidth: '1px' }}
-                                                    onClick={() => this.changeStatus(row)}>Change Status</button>
-                                                <button className="btn btn-outline-primary" style={{ borderWidth: '1px' }}
-                                                    onClick={() => this.showLinks(row._id)}>Show External Links</button>
-                                            </>
-                                            :
-                                            ''
-                                        }
-                                        <button className="btn btn-outline-danger" disabled
-                                            onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
-                                        <button className="btn btn-outline-primary"
-                                            onClick={() => this.orderReport(row._id)}>View Report Form</button>
+                                        <div className="admin_moreinfo text-end">
+                                            {this.state.role === 'admin' ?
+                                                <>
+                                                    <button className="btn btn_light" style={{ borderWidth: '1px' }}
+                                                        onClick={() => this.changeStatus(row)}>Change Status</button>
+                                                    <button className="btn btn_light" style={{ borderWidth: '1px' }}
+                                                        onClick={() => this.showLinks(row._id)}>Show External Links</button>
+                                                </>
+                                                :
+                                                ''
+                                            }
+                                            <button className="btn btnedit" disabled
+                                                onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
+                                            <button className="btn btnedit"
+                                                onClick={() => this.orderReport(row._id)}>View Report Form</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={11} className="comments_indent">
+                                        <h5>More Information</h5>
+                                        <div className="more_info_wrap">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td>
+                                                        <p>
+                                                            Price Chart: <strong>A1</strong><br />
+                                                            User Phone: <strong>+1234567890</strong><br />
+                                                            User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
+                                                        </p>
+                                                    </td>
+                                                    <td className="info_manual">Set Manually</td>
+                                                    <td className="info_price"><strong>Final Price:</strong><br />
+                                                        Price :<br />
+                                                        Aging Discount :<br />
+                                                        Extra<br />
+                                                    </td>
+                                                    <td className="info_unit"><strong>CAD 90</strong><br />
+                                                        CAD 100<br />
+                                                        CAD 10 (10%)<br />
+                                                        CAD 20
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -387,7 +421,7 @@ class CreditReports extends Component {
                         </Table>
 
                     </td>
-                </tr>
+                </tr >
             </>)
     }
 
