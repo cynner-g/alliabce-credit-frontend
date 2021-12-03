@@ -306,7 +306,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         <>
             <Header />
             <TabButton id={data?._id || 0} url={`/companies/${qstr.userid}` || ''} />
-            <div className="seaarch">
+            <div className="search">
                 <div className="row">
                     <div className="col">
 

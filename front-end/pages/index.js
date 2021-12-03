@@ -65,10 +65,9 @@ export default function Login(props) {
   }
 
   return (
-    <div className=" vertical-center">
+    <div >
       <div className="container">
         {/* <Lang /> */}
-
         <form onSubmit={(e) => userLogin(e)}>
           <div className="row">
             <div className="col-7">

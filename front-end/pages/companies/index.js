@@ -5,7 +5,7 @@ import Pagination from "../../components/datatable/pagination"
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import { useState } from "react"
-
+import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
 
 
 const Companies = ({ data, page, totalPage }) => {
@@ -18,7 +18,8 @@ const Companies = ({ data, page, totalPage }) => {
     const router = useRouter()
     const limit = 3
     const lastPage = Math.ceil(totalPage / limit)
-    const fetchData = async () => {
+
+    const fetchData = async (value) => {
         const token = Cookies.get('token');
         if (!token) {
             return {
@@ -28,8 +29,8 @@ const Companies = ({ data, page, totalPage }) => {
                 },
             }
         }
-
-        const req = await fetch('${process.env.API_URL}/company/list-companies', {
+        if (value == null) value = search; //make sure searching with most current text
+        const req = await fetch(`${process.env.API_URL}/company/list-companies`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -37,7 +38,7 @@ const Companies = ({ data, page, totalPage }) => {
             body: JSON.stringify({
                 "language": 'en',
                 "api_token": token,
-                "search": search,
+                "search": value,
                 "sort_by": sort_by,
                 "is_desc": is_desc
             })
@@ -51,21 +52,26 @@ const Companies = ({ data, page, totalPage }) => {
     return (
         <>
             <Header />
+            <Container>
+                <div className="search">
+                    <Row>
 
-            <div className="seaarch">
-                <div className="row">
-                    <div className="col">
-                        <input type="text" className="form-control" id="companysearch" onChange={(e) => {
-                            setSearch(e.target.value);
-                            fetchData();
+                        <Col sm={3}>
+                            <label htmlFor="companysearch" className="form-label">Search</label>
+                            <input type="text" className="form-control" placeholder="Search" id="companysearch"
+                                onChange={async (e) => {
+                                    setSearch(e.target.value);
+                                    fetchData(e.target.value);
                         }
                         } placeholder="Search" />
-                        <label htmlFor="companysearch" className="form-label"></label>
-                    </div>
-                    <div className="col text-end">
-                        <Link href="/companies/add-company"><a className="btn btn-primary">Add Company</a></Link>
-                    </div>
-                </div>
+
+                        </Col>
+                        <Col sm={7}></Col>
+                        <Col sm={2}>
+                            <Link href="/companies/add-company"><a className="btn btn-primary addbtn">Add Company</a></Link>
+                        </Col>
+
+                    </Row>
             </div>
             <div className="listing">
                 <table id="example" className="table table-striped">
@@ -146,6 +152,7 @@ const Companies = ({ data, page, totalPage }) => {
                 </table>
                 {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
             </div>
+            </Container>
         </>
     )
 }

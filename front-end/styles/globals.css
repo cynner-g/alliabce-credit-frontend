@@ -212,15 +212,15 @@ input[type=text] {
   background: #ddd;
 }
 
-.seaarch {
+.search {
   margin-bottom: 15px;
 }
 
-.seaarch input[type=text] {
+.search input[type=text] {
   max-width: 507px;
 }
 
-.seaarch label {
+.search label {
   display: none;
 }
 
@@ -249,6 +249,7 @@ input[type=text] {
   background: #406DCD;
   color: #FFF;
   font-size: 14px;
+  width: 12em;
 }
 
 .resetPassBtn {
@@ -663,7 +664,8 @@ p small {
 .comments_items:last-child {
   border-bottom: 0;
 }
-.header_wrap{
+
+.header_wrap {
   position: relative;
 }
 

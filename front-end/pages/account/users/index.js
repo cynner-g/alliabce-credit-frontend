@@ -254,7 +254,7 @@ const Users = ({ data, listUsers }) => {
                     <div className="col">
                         <div className="sidebarwrap_inner">
                             <TabButtonUser id={data?._id} />
-                            <div className="seaarch inner_search">
+                            <div className="search inner_search">
                                 <div className="row">
                                     <div className="col-4">
                                         <input type="text" className="form-control" id="companysearch" placeholder="Search" />

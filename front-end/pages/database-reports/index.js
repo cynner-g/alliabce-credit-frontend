@@ -17,8 +17,8 @@ const DatabaseReports = function () {
     });
     const [filters, setFilters] = useState({
         Text: "",
-        StartDate: '',
-        EndDate: '',
+        StartDate: null,
+        EndDate: null,
         Type: ""
     })
 
@@ -64,14 +64,14 @@ const DatabaseReports = function () {
             ...filters,
             Text: text
         }))
-        let newData = await rowData.filter(row => {
-            //search these 4 columns
-            return (
-                (row?.subject_name?.toLowerCase().indexOf(text) >= 0) ||
-                (row?.company_name?.toLowerCase().indexOf(text) >= 0) ||
-                (row?.user_name?.toLowerCase().indexOf(text) >= 0) ||
-                (row?.reference_id?.toLowerCase().indexOf(text) >= 0))
-        })
+        // let newData = await rowData.filter(row => {
+        //     //search these 4 columns
+        //     return (
+        //         (row?.subject_name?.toLowerCase().indexOf(text) >= 0) ||
+        //         (row?.company_name?.toLowerCase().indexOf(text) >= 0) ||
+        //         (row?.user_name?.toLowerCase().indexOf(text) >= 0) ||
+        //         (row?.reference_id?.toLowerCase().indexOf(text) >= 0))
+        // })
 
         setData((prevData) => ({
             ...prevData,
@@ -224,26 +224,25 @@ const DatabaseReports = function () {
         <>
             <Header />
             <Container>
-                <div className="seaarch">
-                    <Row >
+                <div className="search">
 
-                        <div className={`col-4 ${styles.filterCol}`}>
-                            <input className="form-control" type='text' id="companysearch" onChange={(e) => filterText(e)} />
+
+                    <Row>
+
+                        <Col sm={3}>
                             <label htmlFor="companysearch" className="form-label">Search</label>
-                        </div>
-                        <Col className={`text-end ${styles.filterCol}`}>
+                            <input className="form-control" type='text' placeholder="Search" id="companysearch" onChange={(e) => filterText(e)} />
+
+                        </Col>
+
+                        <Col sm={3} className='filterCol text-end'>
                             <div className="status">
-                                <div className={styles.selectDiv}>
-                                    <Select onChange={(e) => filterStatus(e)}
-                                        options={reportTypes}
-                                        isMulti
-                                    />
-                                    <label className="form-label">Status</label>
-                                </div>
+
                             </div>
-                            {/* </Col>
-                    <Col className={styles.filterCol} > */}
+                        </Col>
+                        <Col sm={4}>
                             <div className="select_date">
+                                <label htmlFor="Status" className="form-label">Filter By Date</label>
                                 <DatePicker
                                     selectsRange={true}
                                     className={styles.bordered}
@@ -254,15 +253,14 @@ const DatabaseReports = function () {
                                         filterDates(update);
                                     }}
                                 />
+
                             </div>
-
-                            <button className="btn addbtn" onClick={searchNewReport}>Search New Report</button>
-
                         </Col>
-                        {/* <Col className={styles.filterCol + ' ' + styles.textRight}>
-                        
-                    </Col> */}
-                    </Row >
+                        <Col sm={2} className='text-right' >
+                            <button className="btn addbtn" onClick={searchNewReport}>Search New Report</button>
+                        </Col>
+                    </Row>
+
                 </div>
                 <Row>
                     <Col>

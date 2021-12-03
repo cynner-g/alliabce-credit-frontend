@@ -636,26 +636,32 @@ class CreditReports extends Component {
                     </Modal>
 
                     <Header />
-
                     <Container>
-                        <div className="seaarch">
+                        <div className="search">
                             <Row>
 
-                                <div className="col-4"><input type='text' className="form-control" id="companysearch" placeholder="Search" onChange={(e) => this.filterText(e)} />
-                                    <label htmlFor="companysearch" className="form-label"></label>
-                                </div>
+                                <Col sm={3}>
+                                    <label htmlFor="companysearch" className="form-label">Search</label>
+                                    <input type='text' className="form-control" id="companysearch" placeholder="Search" onChange={(e) => this.filterText(e)} />
+                                </Col>
 
-                                <Col className='filterCol text-end'>
+                                <Col sm={3} className='filterCol text-start'>
                                     <div className="status">
+                                        <label htmlFor="Status" className="form-label">Status</label>
+
                                         <Select className="form-select role" onChange={(e) => this.filterStatus(e)}
                                             onClick={(e) => this.filterStatus(e)}
                                             options={options}
                                             isMulti
                                             className="multiSelect"
                                         />
-                                        <label htmlFor="Status" className="form-label">Status</label>
+
                                     </div>
+                                </Col>
+
+                                <Col sm={4}>
                                     <div className="select_date">
+                                        <label htmlFor="Status" className="form-label">Filter By Date</label>
                                         <div className='filterCol'
                                             onClick={e => this.setState({ showDates: true })}>
                                             <DatePicker
@@ -668,11 +674,14 @@ class CreditReports extends Component {
                                                 isClearable={true}
                                                 calendarContainer={this.rangeContainer}
                                             />
-                                            <label htmlFor="Status" className="form-label">Filter By Date</label>
+
                                         </div>
                                     </div>
+                                </Col>
+                                <Col sm={2}>
                                     <button className="btn addbtn" onClick={this.orderReport}>Order New Report</button>
                                 </Col>
+
                             </Row>
                         </div>
                         <div className="listing">
