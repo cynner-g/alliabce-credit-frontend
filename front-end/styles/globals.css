@@ -512,11 +512,13 @@ input[type=text] {
 
 .listing .table> :not(:first-child) {
   border-top: 0px solid currentColor;
+
 }
 
 .table> :not(:last-child)> :last-child>* {
   border-bottom-color: #F2F2F2;
 }
+
 
 .role {
   display: inline-block;

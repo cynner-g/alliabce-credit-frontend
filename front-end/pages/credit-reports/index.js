@@ -685,7 +685,7 @@ class CreditReports extends Component {
                             </Row>
                         </div>
                         <div className="listing">
-                            <Table>
+                            <table>
                                 <thead>
                                     <tr>
                                         <th>Ref. Id</th>
@@ -703,7 +703,7 @@ class CreditReports extends Component {
                                         return this.tblRow(row, index);
                                     })}
                                 </tbody>
-                            </Table>
+                            </table>
                         </div>
                     </Container>
 

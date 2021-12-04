@@ -812,7 +812,7 @@ class DynamicTable extends Component {
             // console.log('data: ', this.props.data)
             // console.log('columns: ', this.props.columns)
             return (
-                <div className='DataBox' ref='popupRef'>
+                <div className='DataBox' ref={this.popupRef}>
                     <div className="dataTable_Title">{this.props.title || ''}</div>
                     <Table celled striped={striped}
                         selectable={selectable} sortable
