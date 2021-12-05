@@ -79,7 +79,7 @@ const Groups = ({ data, page, totalPage }) => {
     }
 
 
-    const removeGroup = async (groupId) => {
+    const removeGroup = async (group_id) => {
 
         if (!token) {
             return {
@@ -97,15 +97,67 @@ const Groups = ({ data, page, totalPage }) => {
             },
             body: JSON.stringify({
                 "api_token": token,
-                "group_id": groupId,
-
+                "group_id": group_id,
             })
-
         });
-        const newData = await req.json();
-        return setData(newData);
+        fetchData();
     };
 
+    const deactivateGroup = async (item) => {
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+
+        let body = {
+            "api_token": token,
+            "group_id": item._id,
+            "is_active": !item.is_active
+        }
+
+        console.log(body);
+
+        const req = await fetch(`${process.env.API_URL}/group/activate-deactive-group`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        });
+        fetchData();
+    }
+
+    const addGroup = async () => {
+
+        let group = newGroupName;
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false,
+                },
+            }
+        }
+
+        const req = await fetch(`${process.env.API_URL}/group/create-group`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "api_token": token,
+                "group_name": group
+            })
+        });
+
+        fetchData();
+        setNewGroupName(null);
+        showAddingGroup(false);
+    }
 
     return (
         <>
@@ -130,8 +182,8 @@ const Groups = ({ data, page, totalPage }) => {
                     <button className="btn btn-outline-primary" onClick={() => showAddingGroup(false)}>
                         Cancel
                     </button>
-                    <button className="btn btn-primary" onClick={() => { fetchData(); showAddingGroup(false) }}>
-                        Update Status
+                    <button className="btn btn-primary" onClick={addGroup}>
+                        Add Group
                     </button>
                 </Modal.Footer>
             </Modal>
@@ -156,9 +208,11 @@ const Groups = ({ data, page, totalPage }) => {
                         <Col sm={2}>
                             <a className="btn btn-primary addbtn" onClick={() => showAddingGroup(true)}>Add Group</a>
                         </Col>
-
                     </Row>
                 </div>
+
+
+
                 <div className="listing">
                     <table id="example" className="table table-striped">
                         <thead>
@@ -221,14 +275,14 @@ const Groups = ({ data, page, totalPage }) => {
 
                                 <tr key={item._id}>
                                     {/* {post.title} */}
-                                    <td>{item?.group_name}</td>
-                                    <td>{item?.date_created}</td>
-                                    <td>{item?.no_companies}</td>
+                                    < td > {item?.name}</td>
+                                    <td>{item?.create_date} {item?.create_time}</td>
+                                    <td>{item?.company_count}</td>
                                     <td>
                                         <>
-                                            <Link href={`/groups/${item._id}`}><a className="btn viewmore">Show Companies</a></Link> &nbsp;
-                                            <button className="btn viewmore" onClick={(e) => deactivateGroup(item._id)}>Deactivate</button>
-                                            <button className="btn viewmore" onClick={(e) => removeGroup(item._id)}>Delete Group</button>
+                                            <Link href={`/groups/${item?._id}`}><a className="btn viewmore">Show Companies</a></Link> &nbsp;
+                                            <button className="btn viewmore" onClick={(e) => deactivateGroup(item)}>{item?.is_active ? 'Deactivate' : 'Activate'}</button>
+                                            <button className="btn viewmore" onClick={(e) => removeGroup(item?._id)}>Delete Group</button>
                                         </>
                                     </td>
                                 </tr>
@@ -242,27 +296,81 @@ const Groups = ({ data, page, totalPage }) => {
     )
 }
 
+// /**
+//  *
+//  *
+//  * @export
+//  * @param {*} { query: { page = 1, data = null, totalPage = 10 } }
+//  * @return {*} 
+//  */
+// export async function getServerSideProps({ query: { page = 1, data = null, totalPage = 10 } }) {
+//     const start = +page === 1 ? 0 : (+page + 1)
+//     /** 
+//      * limit, start, search item
+//      */
+//     return {
+//         props: {
+//             data: data,
+//             page: page,
+//             totalPage
+//         }
+//     }
+
+// }
+
+
 /**
  *
  *
  * @export
- * @param {*} { query: { page = 1, data = null, totalPage = 10 } }
- * @return {*} 
- */
-export async function getServerSideProps({ query: { page = 1, data = null, totalPage = 10 } }) {
-    const start = +page === 1 ? 0 : (+page + 1)
+    * @param {*} { query: { page = 1, data = null, totalPage = 10 } }
+ * @return { *}
+    */
+// export async function getServerSideProps({ query: { page = 1, data = null, totalPage = 10 } }) {
+export async function getServerSideProps(ctx) {
+    // const start = +page === 1 ? 0 : (+page + 1)
+
+    // const { locale, locales, defaultLocale, asPath } = useRouter();
+    const { token } = parseCookies(ctx)
+    if (!token) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        }
+    }
+    const res = await fetch(`${process.env.API_URL}/group/list`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+
+    })
+    const groups = await res.json()
+    // console.log(groups)
+    if (!groups) {
+        return {
+            notFound: true,
+        }
+    }
     /** 
      * limit, start, search item
      */
     return {
         props: {
-            data: data,
-            page: page,
-            totalPage
+            data: groups,
+            page: 1,
+            totalPage: 1
         }
     }
 
 }
+
 
 export default Groups
 

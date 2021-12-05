@@ -1,0 +1,186 @@
+******************************************************************************************************
+******************************************************************************************************
+******************************************************************************************************
+
+
+report/order-details
+{    body.order_id = rptId;
+     body.api_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYWI1NWYwMTE4NGI3MTcxOTQxMmQ5ZCIsImVtYWlsX2lkIjoiYWRtaW5AamtsYWJzLmNhIiwiY3JlYXRlX2RhdGUiOiIyMDIxLTEyLTA0VDE2OjA1OjEwLjU0NVoiLCJpYXQiOjE2Mzg2MzM5MTB9.WHLgdUaGPvs9_Z7OU4FEuHyuCo0vQUlFQN2mST2-wK4';
+}
+
+    returns:
+    api_token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYWI1NWYwMTE4NGI3MTcxOTQxMmQ5ZCIsImVtYWlsX2lkIjoiYWRtaW5AamtsYWJzLmNhIiwiY3JlYXRlX2RhdGUiOiIyMDIxLTEyLTA0VDE2OjA1OjEwLjU0NVoiLCJpYXQiOjE2Mzg2MzM5MTB9.WHLgdUaGPvs9_Z7OU4FEuHyuCo0vQUlFQN2mST2-wK4
+company_id:61ab54c7507db452ec379804
+region:Rest of canada
+is_quick_report:false
+ordered_report[0]:Incorporate
+ordered_report[1]:Bank
+ordered_report[2]:Legal
+ordered_report[3]:Suppliers
+general_details[legal_name]:JK Webdesign
+general_details[dba_name]:test name
+general_details[civic_number]:4564
+general_details[street_name]:Street 001
+general_details[suite]:Suite Name
+general_details[city]:City Name
+general_details[state]:State Name
+general_details[postal_code]:100001
+general_details[email_id]:test@mailinator.com
+general_details[phone_number]:(123) 567 8765
+incorporate[quebec_enterprise_number]:1234567890
+incorporate[business_owner_name]:Test User
+incorporate[enterprise_tps]:test
+incorporate[enterprise_tvq]:test
+banks[0][bank_name]:Sample Bank
+banks[0][bank_phone_number]:123
+banks[0][account_number]:123
+banks[0][transit_number]:123
+banks[0][civic_number]:4564
+banks[0][street_name]:Street 001
+banks[0][suite]:Suite Name
+banks[0][city]:City Name
+banks[0][state]:State Name
+banks[0][postal_code]:100001
+banks[0][bank_unique_number]:123
+banks[0][bank_manager_name]:123
+banks[0][bank_manager_email_id]:test@gmail.com
+banks[0][bank_manager_phone_number]:123
+suppliers[0][business_name]:Test Business Name
+suppliers[0][civic_number]:4564
+suppliers[0][street_name]:Street 001
+suppliers[0][suite]:Suite Name
+suppliers[0][city]:City Name
+suppliers[0][state]:State Name
+suppliers[0][postal_code]:100001
+suppliers[0][business_phone_number]:(121) 121 1212
+suppliers[0][personal_phone_number]:(121) 121 1212
+
+
+{
+    “status_code”: 200,
+    “data”: {
+        “_id”: “61ab92dc799c28f4185b143e”,
+        “general_details”: {
+            “legal_name”: “JK Webdesign”,
+            “dba_name”: “test name”,
+            “address”: {
+                “civic_number”: “4564",
+                “street_name”: “Street 001",
+                “suite”: “Suite Name”,
+                “city”: “City Name”,
+                “state”: “State Name”,
+                “postal_code”: “100001"
+            },
+            “email_id”: “test@mailinator.com”,
+            “phone_number”: {
+                “country_code”: “+1”,
+                “phone_number”: “(123) 567 8765”
+            }
+        },
+        “incorporate_details”: {
+            “quebec_enterprise_number”: “1234567890",
+            “business_owner_name”: “Test User”,
+            “enterprise_tps”: “test”,
+            “enterprise_tvq”: “test”
+        },
+        “banks”: [
+            {
+                “bank_name”: “Sample Bank”,
+                “bank_phone_number”: “123”,
+                “account_number”: “123”,
+                “transit_number”: “123”,
+                “bank_address”: {
+                    “civic_number”: “4564",
+                    “street_name”: “Street 001",
+                    “suite”: “Suite Name”,
+                    “city”: “City Name”,
+                    “state”: “State Name”,
+                    “postal_code”: “100001"
+                },
+                “bank_unique_number”: “123",
+                “bank_manager_name”: “123",
+                “bank_manager_email_id”: “test@gmail.com”,
+                “bank_manager_phone_number”: “123",
+                “_id”: “61ab92dc799c28f4185b143f”
+            }
+        ],
+        “suppliers”: [
+            {
+                “business_name”: “Test Business Name”,
+                “suppliers_address”: {
+                    “civic_number”: “4564",
+                    “street_name”: “Street 001",
+                    “suite”: “Suite Name”,
+                    “city”: “City Name”,
+                    “state”: “State Name”,
+                    “postal_code”: “100001"
+                },
+                “business_phone_number”: “(121) 121 1212”,
+                “personal_phone_number”: “(121) 121 1212”,
+                “_id”: “61ab92dc799c28f4185b1440"
+            }
+        ],
+        “is_editable”: false
+    }
+}
+
+******************************************************************************************************
+******************************************************************************************************
+******************************************************************************************************
+
+group/list
+{
+  api_token: ‘eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYWI1NWYwMTE4NGI3MTcxOTQxMmQ5ZCIsImVtYWlsX2lkIjoiYWRtaW5AamtsYWJzLmNhIiwiY3JlYXRlX2RhdGUiOiIyMDIxLTEyLTA0VDEyOjA5OjQ3LjMyNVoiLCJpYXQiOjE2Mzg2MTk3ODd9.k6xQ66O_9QOs9nH1SxFETOl2_n9ktbbdDHO4cXwedH8’,
+  sort_by: ‘company_count or name or company_count’,
+  search: ‘’,
+  is_desc: true or false,
+  skip: 0,
+  limit: 15
+}
+group/create-group
+{
+  api_token: ‘eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYWI1NWYwMTE4NGI3MTcxOTQxMmQ5ZCIsImVtYWlsX2lkIjoiYWRtaW5AamtsYWJzLmNhIiwiY3JlYXRlX2RhdGUiOiIyMDIxLTEyLTA0VDEyOjA5OjQ3LjMyNVoiLCJpYXQiOjE2Mzg2MTk3ODd9.k6xQ66O_9QOs9nH1SxFETOl2_n9ktbbdDHO4cXwedH8’,
+  group_name: ‘Test group name’
+}
+group/remove-group
+{
+  api_token: ‘eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYWI1NWYwMTE4NGI3MTcxOTQxMmQ5ZCIsImVtYWlsX2lkIjoiYWRtaW5AamtsYWJzLmNhIiwiY3JlYXRlX2RhdGUiOiIyMDIxLTEyLTA0VDEyOjA5OjQ3LjMyNVoiLCJpYXQiOjE2Mzg2MTk3ODd9.k6xQ66O_9QOs9nH1SxFETOl2_n9ktbbdDHO4cXwedH8’,
+  group_id: ‘617b07332210ef2dd011af5d’
+}
+
+
+group/activate-deactive-group
+{
+    ‘api_token’: ‘’,
+    ‘group_id’: ‘’,
+    ‘is_active’: true or false,
+}
+group/remove-group-company
+{
+    ‘api_token’: ‘’,
+    ‘group_id’: ‘’,
+    ‘company_id’: ‘’,
+}
+group/group-companies
+{
+    ‘api_token’: ‘’,
+    ‘group_id’: ‘’,
+    ‘language’: ‘’,
+    ‘search’: ‘’,
+    ‘sort_by’: ‘create_date or sub_companies or company_name’,
+    ‘is_desc’: true or false,
+    ‘skip’: 0,
+    ‘limit’: 15,
+}
+******************************************************************************************************
+******************************************************************************************************
+******************************************************************************************************
+
+
+reports/upload-legal-report
+{
+    legal_file: req.files?.legal_file?.[0]?.path,
+    report_type: "report type"
+    region: "region",
+    language: "Language ("EN")
+}

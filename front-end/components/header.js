@@ -67,6 +67,20 @@ const Header = () => {
                                             </Link>
                                         </li>
 
+
+                                        <li className={router.pathname == "/legal-watchlist" ? "active" : ""}>
+                                            <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
+                                                <a className="nav-link">Legal Watchlist (Dev)</a>
+                                            </Link>
+                                        </li>
+
+
+                                        <li className={router.pathname == "/aging" ? "active" : ""}>
+                                            <Link activeClassName={router.pathname === "/aging"} href="/aging">
+                                                <a className="nav-link">Aging (Dev)</a>
+                                            </Link>
+                                        </li>
+
                                     </>
                                     :
                                     <>

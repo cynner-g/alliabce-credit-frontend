@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faDownload, faClock, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { differenceInDays, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
 import DatePicker, { CalendarContainer } from 'react-datepicker'
 import Header from "../../components/header"
@@ -55,13 +53,12 @@ class CreditReports extends Component {
         }
 
         let body = {
-            'api_token': this.state.token,
             'search': this.state.searchFilter,
             'status_filter': this.state.filterStatusData,
             'dateRange': dates
         }
 
-        order_list(body).then(async (data) => {
+        order_list(body, this.state.token).then(async (data) => {
             this.setState({ origReportList: data, filteredReportList: data })
         })
     }
@@ -312,7 +309,7 @@ class CreditReports extends Component {
                 <tr className="collapse" key={index + "_2"}>
                     <td colSpan={11} className="comments_indent">
 
-                        <Table style={{ width: '100%' }} >
+                        <Table style={{ width: '100%' }} striped >
                             <tbody>
                                 <tr>
                                     <td colSpan={1}>
@@ -636,7 +633,7 @@ class CreditReports extends Component {
                     </Modal>
 
                     <Header />
-                    <Container>
+                    <Container fluid>
                         <div className="search">
                             <Row>
 
@@ -646,7 +643,7 @@ class CreditReports extends Component {
                                 </Col>
 
                                 <Col sm={3} className='filterCol text-start'>
-                                    <div className="status">
+                                    <div className="status" style={{ width: '75%' }}>
                                         <label htmlFor="Status" className="form-label">Status</label>
 
                                         <Select className="form-select role" onChange={(e) => this.filterStatus(e)}
@@ -654,6 +651,7 @@ class CreditReports extends Component {
                                             options={options}
                                             isMulti
                                             className="multiSelect"
+                                            style={{ width: '250px' }}
                                         />
 
                                     </div>
@@ -665,6 +663,7 @@ class CreditReports extends Component {
                                         <div className='filterCol'
                                             onClick={e => this.setState({ showDates: true })}>
                                             <DatePicker
+
                                                 selectsRange={true}
                                                 startDate={this.state.startFilter}
                                                 endDate={this.state.endFilter}
