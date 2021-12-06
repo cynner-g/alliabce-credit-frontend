@@ -267,11 +267,11 @@ class CreditReports extends Component {
             item.icon = item.icon == 'faCaretDown' ? 'faCaretUp' : 'faCaretDown'
         }
 
-        let refId = row.reference_id;
-        let order_date = row.order_date;
-        let order_time = row.order_time;
-        let subject_name = row.subject_name;
-        let user_name = row.user_name;
+        let refId = row?.reference_id;
+        let order_date = row?.order_date;
+        let order_time = row?.order_time;
+        let subject_name = row?.subject_name;
+        let user_name = row?.user_name;
         let company_name = row.company_name;
         let status = this.getStatusCss(row.status_code)
         let reportCodes = getCodes(row.reports);
@@ -394,8 +394,8 @@ class CreditReports extends Component {
                                             <div className="comments_item_wrap">
                                                 <div className="comments_items">
                                                     <h6>System</h6>
-                                                    <p>{row.comments.system.comment}
-                                                        <small>{this.getDate(row.comments.system.create_date)}</small>
+                                                    <p>{row?.comments?.system?.comment}
+                                                        <small>{this.getDate(row?.comments?.system?.create_date)}</small>
                                                     </p>
                                                 </div>
                                                 <div className="comments_items">
