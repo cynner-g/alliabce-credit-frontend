@@ -19,7 +19,7 @@ const TabButton = ({ id, url }) => {
                 <Link href={{
                     pathname: `/legal-watchlist`,
                     query: {
-                        cid: id, // should be `title` not `id`
+                        cid: id
                     },
                 }} >
 
