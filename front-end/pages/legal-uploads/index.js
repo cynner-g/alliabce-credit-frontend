@@ -24,7 +24,7 @@ const LegalUploads = ({ page, totalPage }) => {
         switch (type) {
             case 'Uploaded': return 'success'; break;
             case 'Uploading': return 'info'; break;
-            case 'Error': return 'secondary'; break;
+            case 'Error': return 'error'; break;
         }
     }
 
@@ -221,7 +221,9 @@ const LegalUploads = ({ page, totalPage }) => {
                 </tbody>
             </table>
             <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
-            <DynamicTable data={pageData} columns={columns} />
+            <div className="listing">
+                <DynamicTable data={pageData} columns={columns} />
+            </div>
         </>
     )
 }

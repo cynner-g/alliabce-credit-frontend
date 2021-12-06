@@ -225,6 +225,28 @@ input[type=text] {
 }
 
 /*Buttons*/
+.btn1 {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
 
 .viewmore {
   background: #E6EEFF;
@@ -284,6 +306,21 @@ input[type=text] {
   color: #CF5A5A;
 }
 
+.btndelete {
+  background: #FFE6E6;
+  /* border: 1px solid #CF5A5A; */
+  color: #CF5A5A;
+  padding: 1px 11px;
+}
+
+.legal_upload {
+  font-size: 16px;
+  padding: 12px 32px 12px 64px;
+  color: #FFF;
+  background: #517BCC url(/icons/Upload.svg) 10px 4px no-repeat;
+  background-size: 20px;
+}
+
 .inactivebtn {
   background: #CF5A5A;
   font-family: Roboto;
@@ -306,6 +343,7 @@ input[type=text] {
 .new,
 .processing,
 .completed,
+.upload,
 .need_action {
   font-size: 14px;
 }
@@ -324,6 +362,7 @@ input[type=text] {
   color: #C4C4C4;
 }
 
+.upload,
 .new,
 .processing,
 .completed,
@@ -374,6 +413,23 @@ input[type=text] {
   /* background: #E6FFEB; */
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
   padding: 2px 34px 2px 10px;
+}
+
+.upload {
+  color: #FFF;
+  background: #50C262;
+}
+
+.upload.success {
+  background: #50C262;
+}
+
+.upload.error {
+  background: #FF0000;
+}
+
+.upload.info {
+  background: #FFAA04;
 }
 
 .new {
