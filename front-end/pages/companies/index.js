@@ -77,7 +77,7 @@ const Companies = ({ data, page, totalPage }) => {
                 <table id="example" className="table table-striped">
                     <thead>
                         <tr>
-                            <th><div onClick={(e) => {
+                            <th className="sorted"><div onClick={(e) => {
                                 const srchval1 = 'id'
                                 if (sort_by != srchval1) {
                                     setDesc(true);
@@ -91,8 +91,8 @@ const Companies = ({ data, page, totalPage }) => {
                                 }
                                 fetchData();
                             }
-                            }>Ref. Id</div></th>
-                            <th><div onClick={(e) => {
+                            }><span>Ref. Id</span></div></th>
+                            <th className="sorted"><div onClick={(e) => {
                                 // reference_id
                                 const srchval2 = 'company_name'
                                 if (sort_by != srchval2) {
@@ -107,8 +107,8 @@ const Companies = ({ data, page, totalPage }) => {
                                 }
                                 fetchData();
                             }
-                            }>Company Name</div></th>
-                            <th><div onClick={(e) => {
+                            }><span>Company Name</span></div></th>
+                            <th className="sorted"><div onClick={(e) => {
                                 // reference_id
                                 const srchval3 = 'date_added'
                                 if (sort_by != srchval3) {
@@ -123,7 +123,7 @@ const Companies = ({ data, page, totalPage }) => {
                                 }
                                 fetchData();
                             }
-                            }>Date added</div></th>
+                            }><span>Date added</span></div></th>
                             <th><div>Group</div></th>
                             <th><div>No. of Sub-company</div></th>
                             <th><div>Actions</div></th>

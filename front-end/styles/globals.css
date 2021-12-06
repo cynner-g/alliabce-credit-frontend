@@ -530,14 +530,14 @@ input[type=text] {
 
 .cemail,
 .cphone,
-.caddress{
+.caddress {
   padding-left: 25px;
   position: relative;
 }
 
 .cemail::before,
 .cphone::before,
-.caddress::before{
+.caddress::before {
   content: "";
   position: absolute;
   left: 0;
@@ -547,13 +547,15 @@ input[type=text] {
 }
 
 
-.cemail::before{
+.cemail::before {
   background: url(/icons/Mail.svg) no-repeat;
 }
-.cphone::before{
+
+.cphone::before {
   background: url(/icons/Phone.svg) no-repeat;
 }
-.caddress::before{
+
+.caddress::before {
   background: url(/icons/Location.svg) no-repeat;
 }
 
@@ -654,14 +656,16 @@ input[type=text] {
 .table> :not(:last-child)> :last-child>* {
   border-bottom-color: #F2F2F2;
 }
-.table-striped > tbody > tr:nth-of-type(odd) > * {
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
   --bs-table-accent-bg: rgb(255 255 255 / 5%);
   color: #323232;
 }
 
-.buttongroups_wrap{
+.buttongroups_wrap {
   width: 619px;
 }
+
 .buttongroups>div {
   margin-right: 10px;
   float: left;
@@ -762,7 +766,12 @@ input[type=text] {
 .info_manual {
   width: 100px;
   color: #517BCC !important;
+  width: 120px;
+  vertical-align: top;
+}
 
+textarea {
+  border: 1px solid #517BCC;
 }
 
 .info_price {
