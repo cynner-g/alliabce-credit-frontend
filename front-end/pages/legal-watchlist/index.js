@@ -41,33 +41,29 @@ const LegalWatchlist = () => {
         }
     })
 
-
-
-
-
     const resetNewCompany = () => {
         setNewCompany({
-                name: "",
-                refNum: "",
-                provinces: {
-                    ON: false,
-                    QC: false,
-                    NS: false,
-                    NB: false,
-                    MB: false,
-                    BC: false,
-                    PE: false,
-                    SK: false,
-                    AB: false,
-                    NL: false,
-                    NT: false,
-                    YT: false,
-                    NU: false
-                }
+            name: "",
+            refNum: "",
+            provinces: {
+                ON: false,
+                QC: false,
+                NS: false,
+                NB: false,
+                MB: false,
+                BC: false,
+                PE: false,
+                SK: false,
+                AB: false,
+                NL: false,
+                NT: false,
+                YT: false,
+                NU: false
+            }
         })
     }
 
-    componentDidMount() {
+    useEffect(() => { //componentDidMount
         //get watchList from API
         let wl = [
             {
@@ -113,10 +109,12 @@ const LegalWatchlist = () => {
             row.remove = 'Remove'
         })
 
-        this.setState({ tmpWatched: wl })
-    }
+        setTmpWatched(wl);
+    }, [])
 
-    getColData = () => {
+
+
+    const getColData = () => {
         const colData = [
             {
                 colName: "_id",
@@ -181,26 +179,26 @@ const LegalWatchlist = () => {
 
     }
 
-    getWatchlistData = () => {
-        let data = this.state.tmpWatched;
-        let currentData = data.filter(row => row.watchlist == this.state.currentWatchlist)
-        // this.setState({ displayedList: currentData });
+    const getWatchlistData = () => {
+        let data = state.tmpWatched;
+        let currentData = data.filter(row => row.watchlist == state.currentWatchlist)
+        // (setDisplayedList(currentData);
         return data ? data : []; //make sure at least an array is returned
     }
 
-    watchlistAdded = () => {
-        let wl = this.state.watchLists;
-        wl.push(this.state.wlName)
-        this.setState({ wlName: null, watchLists: wl, showCreate: false });
-        if (wl.length === 0) this.setState({ currentWatchlist: 0 });
+    const watchlistAdded = () => {
+        let wl = state.watchLists;
+        wl.push(state.wlName)
+        (setWlName(null);
+        if (wl.length === 0) (setCurrentWatchlist(0);
     }
 
-    companyAdded = () => {
-        this.setState({ addCompany: false });
-        let company = this.state.newCompany;
+    const companyAdded = () => {
+        (setAddCompany(false);
+        let company = state.newCompany;
         console.log("New Company: ", company)
-        company.watchList = this.state.currentWatchlist;
-        let data = this.state.data;
+        company.watchList = state.currentWatchlist;
+        let data = state.data;
         let provinces = [];
 
         for (let province in company.provinces) {
@@ -214,14 +212,14 @@ const LegalWatchlist = () => {
         company.dateAdded = new Date();
         company.provinceArray = provinces.join();
         data.push(company);
-        this.setState({ data: data });
+        (setData(data);
     }
 
-    headData = () => {
+    const headData = () => {
         let options = [];
 
-        if (this.state.watchLists) {
-            this.state.watchLists.forEach((row, index) => {
+        if (state.watchLists) {
+            state.watchLists.forEach((row, index) => {
                 options.push({ value: index, label: row });
             })
         }
@@ -231,7 +229,7 @@ const LegalWatchlist = () => {
                     <div style={{ width: '200px' }}>
                         <Select options={options} value={
                             options.filter(option => option.value === 0)
-                        } onChange={(e) => this.setState({ currentWatchlist: e })} />
+                        } onChange={(e) => (setCurrentWatchlist(e)>
                     </div>
                 </Col>
                 <Col sm={3}><button disabled>Create New Watchlist</button></Col>
@@ -240,12 +238,12 @@ const LegalWatchlist = () => {
         )
     }
 
-    createWatchList = () => {
+    const createWatchList = () => {
         return (
             <>
                 <Row>
                     <Col sm={{ span: 6, offset: 3 }} className={styles.centered}>
-                        <button className='btn btn-primary' onClick={() => this.setState({ showCreate: true })}>Create New Watchlist</button>
+                        <button className='btn btn-primary' onClick={() => (setShowCreate(true)>
                         <br /><br />
                         There are no watchlists to show.  Click <span className={styles.bolder}>"Create New Watchlist" <br /></span>
                         button to add a new watchlist
@@ -255,37 +253,37 @@ const LegalWatchlist = () => {
         )
     }
 
-    showCompany = () => {
-        this.setState({ addCompany: true });
+    const showCompany = () => {
+        (setAddCompany(true);
     }
 
-    buildCompanyButtons = () => {
-        if (!this.state.emailList) {
+    const buildCompanyButtons = () => {
+        if (!state.emailList) {
             return (<>
-                <button className='btn btn-primary' id='btnCompanies' onClick={() => this.setState({ addCompany: true })}>Add Company</button>
-                <button className='btn btn-primary' id='btnEmails' onClick={() => this.setState({ emailList: true })}>Email List</button>
+                <button className='btn btn-primary' id='btnCompanies' onClick={() => (setAddCompany(true)>
+                <button className='btn btn-primary' id='btnEmails' onClick={() => (setEmailList(true)>
                 <br /><br />
             </>)
         }
         else {
             return (
-                <button className='btn btn-primary' onClick={() => this.setState({ emailList: false })}>Company List</button>
+                <button className='btn btn-primary' onClick={() => (setEmailList(false)>
             )
         }
     }
 
 
-    addCompanies = () => {
+    const addCompanies = () => {
         let ret = (
             <>
                 <Container>
                     <Row>
-                        {this.headData()}
+                        {headData()}
                         <br />
                     </Row>
                     <Row>
                         <Col>
-                            {this.buildCompanyButtons()}
+                            {buildCompanyButtons()}
                         </Col>
                         <Col></Col>
                         <Col></Col>
@@ -302,15 +300,15 @@ const LegalWatchlist = () => {
         return ret;
     }
 
-    showCompanies = (list) => {
+    const showCompanies = (list) => {
         return (<>
             <Container>
                 <Row>
-                    {this.headData()}
+                    {headData()}
                 </Row>
                 <Row>
                     <Col>
-                        {this.buildCompanyButtons()}
+                        {buildCompanyButtons()}
                     </Col>
                     <Col></Col>
                     <Col></Col>
@@ -352,48 +350,50 @@ const LegalWatchlist = () => {
             </Container>
         </>)
     }
-    updateNewEmail = (e) => {
-        this.setState({ tmpEmail: e.target.value })
+
+    const updateNewEmail = (e) => {
+        (setTmpEmail(e))
     }
-    saveNewEmail = () => {
-        let emails = this.state.emails;
-        let tmpEmail = this.state.tmpEmail
+
+    const saveNewEmail = () => {
+        let emails = state.emails;
+        let tmpEmail = state.tmpEmail
         if (emails?.findIndex(email =>
             email?.email == tmpEmail &&
-            email?.watchlist == this.state.currentWatchlist) == -1) {
+            email?.watchlist == state.currentWatchlist) == -1) {
 
-            emails.push({ email: tmpEmail, watchlist: this.state.currentWatchlist, dateAdded: new Date() });
-            this.setState({ emails: emails, tmpEmail: null });
+            emails.push({ email: tmpEmail, watchlist: state.currentWatchlist, dateAdded: new Date() });
+            (setEmails(emails);
         }
     }
-    removeEmail = (email) => {
-        let emails = this.state.emails
+    const removeEmail = (email) => {
+        let emails = state.emails
         for (let i = emails.length - 1; i >= 0; i--) {
             let eml = emails[i];
-            if (eml.email == email && eml.watchList == this.state.currentWatchlist) {
+            if (eml.email == email && eml.watchList == state.currentWatchlist) {
                 emails.splice(i, 1);
-                this.setState({ emails: emails });
+                (setEmails(emails);
                 return; //only 1 to remove
             }
         }
     }
 
-    showEmailList = (list) => {
+    const showEmailList = (list) => {
         return (
             <Container>
                 <Row>
-                    {this.headData()}
+                    {headData()}
                 </Row>
                 <Row>
                     <Col>
-                        {this.buildCompanyButtons()}
+                        {buildCompanyButtons()}
                     </Col>
                 </Row>
 
                 <Row>
                     <Col>
-                        <input type='text' placeholder='Enter Business Email' onChange={(e) => this.updateNewEmail(e)} />
-                        <button className='btn btn-primary' id='btnCompanies' onClick={() => this.saveNewEmail()}>Add Email</button>
+                        <input type='text' placeholder='Enter Business Email' onChange={(e) => updateNewEmail(e)} />
+                        <button className='btn btn-primary' id='btnCompanies' onClick={() => saveNewEmail()}>Add Email</button>
                         <br /><br />
                     </Col>
                     <Col></Col>
@@ -409,7 +409,7 @@ const LegalWatchlist = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.emails.filter(item => item.watchlist == this.state.currentWatchlist).map(row => {
+                            {state.emails.filter(item => item.watchlist == state.currentWatchlist).map(row => {
                                 return (
                                     <tr>
                                         <td>{row.email}</td>
@@ -420,7 +420,7 @@ const LegalWatchlist = () => {
 
                                         <td>
                                             {/* <button className={styles.tblButton + ' btn btn-primary'}>View More</button> */}
-                                            <button className={styles.tblButton + ' btn btn-warning'} onClick={() => this.removeEmail(row.email)}>Remove</button>
+                                            <button className={styles.tblButton + ' btn btn-warning'} onClick={() => removeEmail(row.email)}>Remove</button>
                                         </td>
                                     </tr>
                                 )
@@ -432,26 +432,26 @@ const LegalWatchlist = () => {
         )
     }
 
-    mainPage = () => {
+    const mainPage = () => {
         let flag = -1;
-        let data = this.state.watchLists;
+        let data = state.watchLists;
         let list = [];
         console.log("DATA: ", data)
-        if (this.state.emailList == true) {
+        if (state.emailList == true) {
 
             flag = 3;
         }
         else if (!data || data.length === 0) {
             //check to see if we have any watchlists
-            let lists = this.state.watchLists;
+            let lists = state.watchLists;
             if (!lists || lists.length === 0) {
                 //show create watchlist
                 flag = 0;
             }
         }
         else {
-            list = this.state.data.filter(row =>
-                row.watchlist == this.state.currentWatchList
+            list = state.data.filter(row =>
+                row.watchlist == state.currentWatchList
             )
             if (list.length == 0) {
                 //show no companies in list
@@ -466,10 +466,10 @@ const LegalWatchlist = () => {
         let ret;
 
         switch (flag) {
-            case 0: ret = this.createWatchList(); break;
-            case 1: ret = this.addCompanies(); break;
-            case 2: ret = this.showCompanies(list); break;
-            case 3: ret = this.showEmailList(); break;
+            case 0: ret = createWatchList(); break;
+            case 1: ret = addCompanies(); break;
+            case 2: ret = showCompanies(list); break;
+            case 3: ret = showEmailList(); break;
             default: console.log("ERROR");
         }
         // console.log(ret)
@@ -477,15 +477,15 @@ const LegalWatchlist = () => {
         return ret;
     }
 
-    showDetails = () => { }
-    loadBulk = () => { }
+    const showDetails = () => { }
+    const loadBulk = () => { }
 
-    updateWLName = (target => {
-        this.setState({ wlName: target.value })
+    const updateWLName = (target => {
+        (setWlName(target))
     })
 
-    addCompanyData = (target, type, data) => {
-        let currentCompany = this.state.newCompany || {}
+    const addCompanyData = (target, type, data) => {
+        let currentCompany = state.newCompany || {}
         switch (type) {
             case 0: //company name
                 currentCompany.name = target.value; break;
@@ -498,26 +498,13 @@ const LegalWatchlist = () => {
             default: break;
         }
         console.log(currentCompany)
-        this.setState({ newCompany: currentCompany });
+        (setNewCompany(currentCompany);
     }
 
 
-    // handleSwitch = () => {
-    //     let ret;
-    //     switch (this.state.currentPage) {
-    //         case COMPANIES: ret = this.createWatchlist(); break;
 
-    //     }
-    //     return ret;
-    //     /*
-    //          case DETAILS: ret = this.showDetails(); break;
-    //         case BULK: ret = this.loadBulk(); break;
-    //         case LISTS: ret = this.showWatchlists();
-    //         default: ret = this.createView(); break;
-    //         */
-    // }
 
-    getProvinces = () => {
+    const getProvinces = () => {
         let prov = [
             { name: "All", abbr: "ALL" },
             { name: "Ontario", abbr: "ON" },
@@ -534,66 +521,64 @@ const LegalWatchlist = () => {
         return prov;
     }
 
-    render() {
-        return (
-            <>
-                <Modal
-                    show={this.state.addCompany}
-                    onHide={() => this.setState({ addCompany: false })}
-                    backdrop="static">
-                    <Modal.Header closeButton>
-                        <Modal.Title>Add Company to watchlist {this.state.watchLists[this.state.currentWatchList]}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Watchlist Name<br />
-                        <input type='text' onChange={(e) => this.addCompanyData(e.target, 0)} />
-                        <table style={{ width: '80%' }}>
-                            <tbody>
-                                {this.getProvinces().map((prov, index) => {
-                                    return (
-                                        <tr><td><label for={'prov_' + index}> {prov.name} - {prov.abbr}</label></td><td><input id={'prov_' + index} type='checkbox' onChange={(e) => this.addCompanyData(e.target, 1, prov.abbr)} />
-                                        </td></tr>)
-                                })}
-                            </tbody>
-                        </table>
-                        Ref. No<br />
-                        <input type='text' onChange={(e) => this.addCompanyData(e.target, 2)} />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button className="btn btn-outline-primary" onClick={() => this.setState({ addCompany: false })}>
-                            Cancel
-                        </button>
-                        <button className="btn btn-primary" onClick={this.companyAdded}>
-                            Add Company
-                        </button>
-                    </Modal.Footer>
-                </Modal>
 
-                <Modal
-                    show={this.state.showCreate}
-                    onHide={() => this.setState({ showCreate: false })}
-                    backdrop="static">
-                    <Modal.Header closeButton>
-                        <Modal.Title>Create New Watchlist</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Watchlist Name<br />
-                        <input type='text' onChange={(e) => this.updateWLName(e.target)} />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button className="btn btn-outline-primary" onClick={() => this.setState({ showCreate: false })}>
-                            Cancel
-                        </button>
-                        <button className="btn btn-primary" onClick={this.watchlistAdded}>
-                            Add Watchlist
-                        </button>
-                    </Modal.Footer>
-                </Modal>
-                <Header />
-                {this.mainPage()}
-            </>)
-    }
+    return (
+        <>
+            <Modal
+                show={addCompany}
+                onHide={() => (setAddCompany(false)}
+                backdrop="static">
+                <Modal.Header closeButton>
+                    <Modal.Title>Add Company to watchlist {state.watchLists[state.currentWatchList]}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Watchlist Name<br />
+                    <input type='text' onChange={(e) => addCompanyData(e.target, 0)} />
+                    <table style={{ width: '80%' }}>
+                        <tbody>
+                            {getProvinces().map((prov, index) => {
+                                return (
+                                    <tr><td><label for={'prov_' + index}> {prov.name} - {prov.abbr}</label></td><td><input id={'prov_' + index} type='checkbox' onChange={(e) => addCompanyData(e.target, 1, prov.abbr)} />
+                                    </td></tr>)
+                            })}
+                        </tbody>
+                    </table>
+                    Ref. No<br />
+                    <input type='text' onChange={(e) => addCompanyData(e.target, 2)} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className="btn btn-outline-primary" onClick={() => (setAddCompany(false)>
+                        Cancel
+                    </button>
+                    <button className="btn btn-primary" onClick={companyAdded}>
+                        Add Company
+                    </button>
+                </Modal.Footer>
+            </Modal>
 
+            <Modal
+                show={state.showCreate}
+                onHide={() => (setShowCreate(false)}
+                backdrop="static">
+                <Modal.Header closeButton>
+                    <Modal.Title>Create New Watchlist</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Watchlist Name<br />
+                    <input type='text' onChange={(e) => updateWLName(e.target)} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className="btn btn-outline-primary" onClick={() => (setShowCreate(false)}>
+                        Cancel
+                    </button>
+                    <button className="btn btn-primary" onClick={watchlistAdded}>
+                        Add Watchlist
+                    </button>
+                </Modal.Footer>
+            </Modal>
+            <Header />
+            {mainPage()}
+        </>)
 }
 
 /**
@@ -638,16 +623,23 @@ export async function getServerSideProps(ctx) {
             notFound: true,
         }
     }
-    const resCompanies = await fetch(`${process.env.API_URL}/company/list-companies`, {
+
+    let body = {
+        "language": 'en',
+        "api_token": token,
+    }
+
+    let qstr = router.query;
+    let cid = qstr.cid;
+
+    if (cid) body.company_id = cid;
+
+    const resCompanies = await fetch(`${process.env.API_URL}/company/list-watchlist`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-        })
-
+        body: JSON.stringify(body)
     })
     const resCompaniesData = await resCompanies.json()
     /** 
@@ -655,14 +647,9 @@ export async function getServerSideProps(ctx) {
      */
     return {
         props: {
-            data: users,
-            page: 1,
-            totalPage: 1,
-            query,
-            companiesData: resCompaniesData?.data
+            data: resCompaniesData?.data
         }
     }
-
 }
 
 
