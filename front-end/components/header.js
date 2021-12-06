@@ -68,18 +68,18 @@ const Header = () => {
                                         </li>
 
 
-                                        <li className={router.pathname == "/legal-watchlist" ? "active" : ""}>
+                                        {/* <li className={router.pathname == "/legal-watchlist" ? "active" : ""}>
                                             <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
-                                                <a className="nav-link">Legal Watchlist (Dev)</a>
+                                                <a className="nav-link">WL (D)</a>
                                             </Link>
                                         </li>
 
 
                                         <li className={router.pathname == "/aging" ? "active" : ""}>
                                             <Link activeClassName={router.pathname === "/aging"} href="/aging">
-                                                <a className="nav-link">Aging (Dev)</a>
+                                                <a className="nav-link">Age (Dv)</a>
                                             </Link>
-                                        </li>
+                                        </li> */}
 
                                     </>
                                     :
@@ -135,9 +135,15 @@ const Header = () => {
                                     {user ?
                                         <>
                                             {role == 'admin' ? (
-                                                <li><a className="dropdown-item" href="/account/admin">My Account</a></li>
+                                                <li>
+                                                    <Link activeClassName={router.pathname === "/account/admin"} href="/account/admin">
+                                                        <a className="dropdown-item" href="/account/admin">My Account</a>
+                                                    </Link>
+                                                </li>
                                             ) : (
+                                                    <Link activeClassName={router.pathname === "/account"} href="/account">
                                                 <li><a className="dropdown-item" href="/account">My Account</a></li>
+                                                    </Link>
                                             )}
 
 

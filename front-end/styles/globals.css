@@ -569,7 +569,7 @@ input[type=text] {
   right: 0;
   width: 5px;
   height: 5px;
-  
+
   background-size: 5px !important;
 }
 
@@ -582,10 +582,12 @@ input[type=text] {
   background: url(/icons/sort-d.svg) no-repeat;
   top: 14px;
 }
+
 .listing th.sorted.descending span:before {
   background: url(/icons/sort-u.svg) no-repeat;
   top: 10px;
 }
+
 .listing th.sorted.descending span::after {
   display: none;
 }
@@ -595,12 +597,14 @@ input[type=text] {
   background: url(/icons/sort-d.svg) no-repeat;
   top: 10px;
 }
-.listing th.sorted.ascending span:before{
+
+.listing th.sorted.ascending span:before {
   display: none;
-} 
+}
+
 /*   */
 
- .listing td {
+.listing td {
   color: #323232;
   font-size: 16px;
   background: #FFF;
@@ -622,7 +626,13 @@ input[type=text] {
 .table> :not(:last-child)> :last-child>* {
   border-bottom-color: #F2F2F2;
 }
-
+.buttongroups_wrap{
+  width: 619px;
+}
+.buttongroups>div {
+  margin-right: 10px;
+  float: left;
+}
 
 .role {
   display: inline-block;
@@ -792,7 +802,7 @@ td.comments_indent {
 }
 
 .post_status_wrap {
-  width: 110px;
+  width: 120px;
 }
 
 .post_add_wrap {

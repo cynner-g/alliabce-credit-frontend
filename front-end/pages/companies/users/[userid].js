@@ -81,24 +81,46 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             }
         }
 
+        // let body = {
 
-        const req = await fetch('${process.env.API_URL}/user/list-user', {
+        // }
+
+        // "language": 'en',
+        // "api_token": token,
+        // "company_id": qstr.userid,
+        // "filter_user_role": filter_user_role,
+        // "filter_company": filter_company,
+        // "sort_by": sort_by,
+        // "is_desc": is_desc
+
+        // console.log(body);
+        // const req = await fetch('${process.env.API_URL}/user/list-user', {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(body)
+
+        // });
+
+        let body = {
+            "language": 'en',
+            "api_token": token,
+            "company_id": qstr.userid,
+            "sort_by": sort_by,
+            "is_desc": is_desc
+        }
+
+        const resCompanies = await fetch(`${process.env.API_URL}/user/list-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "company_id": qstr.userid,
-                "filter_user_role": filter_user_role,
-                "filter_company": filter_company,
-                "sort_by": sort_by,
-                "is_desc": is_desc
-            })
+            body: JSON.stringify(body)
 
-        });
-        const newData = await req.json();
+        })
+
+        const newData = await resCompanies.json();
         console.log(newData);
         return setUserList(newData);
     };
@@ -122,23 +144,26 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
+
+        let body = {
+            "full_name": fullNname,
+            "email_id": emailID,
+            "country_code": "+1",
+            "phone_number": phone_number,
+            "company_access": ischecked,
+            "user_role": user_role,
+            "is_verified": (role?.toLowerCase().indexOf('admin') >= 0),
+            "api_token": token
+        }
+
+        console.log(body);
         const resUser = await fetch(`${process.env.API_URL}/user/create-user`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             //automatically verified if user is in an admin role
-            body: JSON.stringify({
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "company_access": ischecked,
-                "user_role": user_role,
-                "is_verified": role?.toLowerCase().indexOf('admin') >= 0,
-                "api_token": token
-            })
-
+            body: JSON.stringify(body)
         })
         const res2User = await resUser.json();
         console.log(res2User);
