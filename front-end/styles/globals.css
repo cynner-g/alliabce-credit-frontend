@@ -528,6 +528,34 @@ input[type=text] {
   margin-bottom: 16px;
 }
 
+.cemail,
+.cphone,
+.caddress{
+  padding-left: 25px;
+  position: relative;
+}
+
+.cemail::before,
+.cphone::before,
+.caddress::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+}
+
+
+.cemail::before{
+  background: url(/icons/Mail.svg) no-repeat;
+}
+.cphone::before{
+  background: url(/icons/Phone.svg) no-repeat;
+}
+.caddress::before{
+  background: url(/icons/Location.svg) no-repeat;
+}
 
 
 /* company form*/
