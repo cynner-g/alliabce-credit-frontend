@@ -196,7 +196,7 @@ const LegalUploads = ({ page, totalPage }) => {
     return (
         <>
             <Header />
-            Legal Uploads
+            <button className="legal_upload">Legal Uploads</button>
 
             {/* <table id="example" className="table table-striped">
                 <thead>
