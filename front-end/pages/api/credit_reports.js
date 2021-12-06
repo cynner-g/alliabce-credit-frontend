@@ -175,3 +175,70 @@ export const create_link_token = (rptData => {
 
 })
 
+export const add_comment = ((comment, token) => {
+    if (!comment) return;
+    let body = { ...comment, api_token: token }
+    init.method = "POST"
+    init.body = JSON.stringify(body);
+
+    var myReq = new Request(`${process.env.API_URL}/report/comment-order`, init);
+    console.log('fetching');
+    let ret = fetch(myReq)
+        .then((response) => {
+            console.log("Response: ", response)
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error("Error " + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, (error) => {
+            var err = new Error(error.message);
+            throw err;
+        })
+        .then((response) => { return response.json() })
+        .then((data) => {
+            return data?.data
+
+        })
+        .catch((err) => {
+
+        })
+    return ret;
+});
+
+export const update_status = ((status, token) => {
+    if (!status) return;
+    let body = { ...status, api_token: token }
+    init.method = "POST"
+    init.body = JSON.stringify(body);
+
+    var myReq = new Request(`${process.env.API_URL}/report/update-status`, init);
+    console.log('fetching');
+    let ret = fetch(myReq)
+        .then((response) => {
+            console.log("Response: ", response)
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error("Error " + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, (error) => {
+            var err = new Error(error.message);
+            throw err;
+        })
+        .then((response) => { return response.json() })
+        .then((data) => {
+            return data?.data
+
+        })
+        .catch((err) => {
+
+        })
+    return ret;
+});

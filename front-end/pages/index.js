@@ -64,6 +64,7 @@ export default function Login(props) {
     }
   }
 
+  try {
   return (
     <div >
       <div className="container">
@@ -101,5 +102,9 @@ export default function Login(props) {
         </form>
       </div>
     </div >
-  )
+    )
+  }
+  catch (ex) {
+    return JSON.stringify(ex)
+  }
 }
