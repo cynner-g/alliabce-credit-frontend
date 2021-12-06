@@ -85,7 +85,7 @@ class DynamicTable extends Component {
             insertTow = (
                 <Table.Row>
                     <Table.HeaderCell
-                        // style={{ border: this.props.border }}
+                    // style={{ border: this.props.border }}
                     >
                         <Button id='insert'
                             onClick={(e) => { this.getRowData(e, null, "INSERT") }}
@@ -560,7 +560,7 @@ class DynamicTable extends Component {
             let headerRow = this.props.columns.map((column, index) => {
                 if (column.visible === undefined || column.visible) {
                     // let style = { border: 'none' };
-                    let style = {  };
+                    let style = {};
 
                     if (column.width) {
                         style.width = column.width;
@@ -575,12 +575,13 @@ class DynamicTable extends Component {
                     return (
                         <Table.HeaderCell
                             // className={cl}
+                            className="sorted"
                             key={index}
                             sorted={this.state.sortKey === column.colName ? this.state.sortDirection : null}
                             onClick={() => this.sortJson(column.colName)}
                             style={style}
                         >
-                            {column.displayName.toUpperCase()}
+                            <span>{column.displayName.toUpperCase()}</span>
                         </Table.HeaderCell>
                     )
                 }

@@ -317,8 +317,12 @@ input[type=text] {
   font-size: 16px;
   padding: 12px 32px 12px 64px;
   color: #FFF;
-  background: #517BCC url(/icons/Upload.svg) 10px 4px no-repeat;
+  background: #517BCC url(/icons/upload-white.svg) 16px 12px no-repeat;
   background-size: 20px;
+}
+
+.bottom_gap {
+  margin-bottom: 24px;
 }
 
 .inactivebtn {
@@ -552,7 +556,51 @@ input[type=text] {
   font-weight: 500;
 }
 
-.listing td {
+.listing th span {
+  display: inline-block;
+  position: relative;
+  padding: 0 10px 0 0;
+}
+
+.listing th.sorted span:before,
+.listing th.sorted span:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 5px;
+  height: 5px;
+  
+  background-size: 5px !important;
+}
+
+.listing th.sorted span:before {
+  background: url(/icons/sort-u.svg) no-repeat;
+  top: 8px;
+}
+
+.listing th.sorted span:after {
+  background: url(/icons/sort-d.svg) no-repeat;
+  top: 14px;
+}
+.listing th.sorted.descending span:before {
+  background: url(/icons/sort-u.svg) no-repeat;
+  top: 10px;
+}
+.listing th.sorted.descending span::after {
+  display: none;
+}
+
+
+.listing th.sorted.ascending span:after {
+  background: url(/icons/sort-d.svg) no-repeat;
+  top: 10px;
+}
+.listing th.sorted.ascending span:before{
+  display: none;
+} 
+/*   */
+
+ .listing td {
   color: #323232;
   font-size: 16px;
   background: #FFF;
