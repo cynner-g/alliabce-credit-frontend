@@ -10,44 +10,43 @@ const COMPANIES = 1;
 const EMAILS = 2;
 const BULK = 3;
 
-class LegalWatchlist extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            watchedCompanies: [],
-            watchLists: [],
-            tmpWatched: [],
-            emails: [],
-            currentPage: COMPANIES,
-            currentWatchlist: null,
-            showCreate: false,
-            showAdd: false,
-            data: [],
-            newCompany: {
-                name: "",
-                refNum: "",
-                provinces: {
-                    ON: false,
-                    QC: false,
-                    NS: false,
-                    NB: false,
-                    MB: false,
-                    BC: false,
-                    PE: false,
-                    SK: false,
-                    AB: false,
-                    NL: false,
-                    NT: false,
-                    YT: false,
-                    NU: false
-                }
-            }
+const LegalWatchlist = () => {
+    const qstr = router.query;
+    const [watchedCompanies, setWatchedCompanies] = useState([]);
+    const [watchLists, setWatchLists] = useState([]);
+    const [tmpWatched, setTmpWatched] = useState([]);
+    const [emails, setEmails] = useState([]);
+    const [currentPage, setCurrentPage] = useState(COMPANIES);
+    const [currentWatchlist, setCurrentWatchlist] = useState(null);
+    const [showCreate, setShowCreate] = useState(false);
+    const [showAdd, setShowAdd] = useState(false);
+    const [data, setData] = useState([]);
+    const [newCompany, setNewCompany] = useState({
+        name: "",
+        refNum: "",
+        provinces: {
+            ON: false,
+            QC: false,
+            NS: false,
+            NB: false,
+            MB: false,
+            BC: false,
+            PE: false,
+            SK: false,
+            AB: false,
+            NL: false,
+            NT: false,
+            YT: false,
+            NU: false
         }
-    }
+    })
 
-    resetNewCompany = () => {
-        this.setState({
-            newCompany: {
+
+
+
+
+    const resetNewCompany = () => {
+        setNewCompany({
                 name: "",
                 refNum: "",
                 provinces: {
@@ -65,9 +64,9 @@ class LegalWatchlist extends Component {
                     YT: false,
                     NU: false
                 }
-            }
         })
     }
+
     componentDidMount() {
         //get watchList from API
         let wl = [
@@ -596,6 +595,78 @@ class LegalWatchlist extends Component {
     }
 
 }
+
+/**
+ *
+ *
+ * @export
+ * @param {*} { query: { page = 1, data = null, totalPage = 10 } }
+ * @return {*} 
+ */
+// export async function getServerSideProps({ query: { page = 1, data = null, totalPage = 10 } }) {
+export async function getServerSideProps(ctx) {
+    // const start = +page === 1 ? 0 : (+page + 1)
+
+    // const { locale, locales, defaultLocale, asPath } = useRouter();
+    const { token } = parseCookies(ctx)
+    const query = ctx.query;
+
+    if (!token) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            },
+        }
+    }
+    const res = await fetch(`${process.env.API_URL}/user/list-user`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+            "company_id": query.userid
+        })
+
+    })
+    const users = await res.json()
+    // console.log(users)
+    if (!users) {
+        return {
+            notFound: true,
+        }
+    }
+    const resCompanies = await fetch(`${process.env.API_URL}/company/list-companies`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+        })
+
+    })
+    const resCompaniesData = await resCompanies.json()
+    /** 
+     * limit, start, search item
+     */
+    return {
+        props: {
+            data: users,
+            page: 1,
+            totalPage: 1,
+            query,
+            companiesData: resCompaniesData?.data
+        }
+    }
+
+}
+
+
+
 export default LegalWatchlist;
 
 
