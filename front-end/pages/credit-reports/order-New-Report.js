@@ -34,11 +34,10 @@ class OrderNewReport extends Component {
 
     componentDidMount() {
         this.setState({ columns: this.getColumns() });
-            // if (Router?.router?.query?.rptId?.length > 0) {
-            //     let rptId = Router.router.query.rptId;
-        if (true) {
-            let rptId = '61953d9b3be1c7cf53d141b5'
-            order_details(rptId).then(async (data) => {
+        if (Router?.router?.query?.rptId?.length > 0) {
+            let rptId = Router.router.query.rptId;
+            let token = Cookies.get('token')
+            order_details(rptId, token).then(async (data) => {
 
                 let columns = this.state.columns;
                 let banks = {}
@@ -48,7 +47,18 @@ class OrderNewReport extends Component {
                 data.banks.forEach((bank, index) => {
                     for (const key in bank) {
                         if (bank.hasOwnProperty(key)) {
-                            banks[`${key}_${index}`] = bank[key];
+                            //watch out for "Address" field
+                            if (key === 'bank_address') {
+                                banks.bank_address = {};
+                                for (const add in bank[key]) {
+                                    if (bank[key].hasOwnProperty(add)) {
+                                        banks[key][`${add}_${index}`] = bank[key][add];
+                                    }
+                                }
+                            }
+                            else {
+                                banks[`${key}_${index}`] = bank[key];
+                            }
                         }
                     }
                 })
@@ -60,7 +70,6 @@ class OrderNewReport extends Component {
                 })
 
                 let bankCols = columns.filter(row => {
-
                     return row?.params?.model?.toLowerCase().split('.')[0] == 'banks'
                 })
 
@@ -100,7 +109,17 @@ class OrderNewReport extends Component {
                 data.suppliers.forEach((supplier, index) => {
                     for (const key in supplier) {
                         if (supplier.hasOwnProperty(key)) {
-                            suppliers[`${key}_${index}`] = supplier[key];
+                            if (key === 'suppliers_address') {
+                                suppliers.suppliers_address = {};
+                                for (const add in supplier[key]) {
+                                    if (supplier[key].hasOwnProperty(add)) {
+                                        suppliers[key][`${add}_${index}`] = supplier[key][add];
+                                    }
+                                }
+                            }
+                            else {
+                                suppliers[`${key}_${index}`] = supplier[key];
+                            }
                         }
                     }
                 })
@@ -144,9 +163,14 @@ class OrderNewReport extends Component {
                         let model = column.params.model;
                         let layers = model.split('.');
                         let d = JSON.parse(JSON.stringify(data));
-                        layers.forEach(layer => {
-                            d = d[layer]
-                        })
+                        try {
+                            layers.forEach(layer => {
+                                d = d[layer]
+                            })
+                        }
+                        catch (ex) {
+                            console.log(ex);
+                        }
                         if (column.params.fName == "TextRow")
                             column.value = d;
                     }
@@ -282,14 +306,36 @@ class OrderNewReport extends Component {
                 },
 
                 {
-                    'title': "Address",
+                    'title': "Civic Number",
                     'params': {
-                        'model': "general_details.address.address_line",
+                        'model': "general_details.address.civic_number",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
                         'defaultVal': null,
                         colNum: 0
+                    }
+                },
+                {
+                    'title': "Street",
+                    'params': {
+                        'model': "general_details.address.street_name",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 1
+                    }
+                },
+                {
+                    'title': "Suite",
+                    'params': {
+                        'model': "general_details.address.suite",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
                     }
                 },
 
@@ -318,7 +364,7 @@ class OrderNewReport extends Component {
                 {
                     'title': "Zip",
                     'params': {
-                        'model': "general_details.address.zip",
+                        'model': "general_details.address.“postal_code",
                         'required': false,
                         'fName': "TextRow",
                         'editable': true,
@@ -445,10 +491,10 @@ class OrderNewReport extends Component {
                     }
                 },
                 {
-                    'title': "Bank Address",
+                    'title': "Civic Number",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address",
+                        'model': "banks.bank_address.civic_number",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -456,6 +502,68 @@ class OrderNewReport extends Component {
                         colNum: 0
                     }
                 },
+                {
+                    'title': "Street",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.bank_address.street_name",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 1
+                    }
+                },
+                {
+                    'title': "Suite",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.bank_address.suite",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
+
+                {
+                    'title': "City",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.bank_address.city",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 0
+                    }
+                },
+                {
+                    'title': "Province",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.bank_address.state",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
+                {
+                    'title': "Postal Code",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.bank_address.postal_code",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
+
                 {
                     'title': "Bank Unique Number",
                     'dupNum': 0,
@@ -535,16 +643,79 @@ class OrderNewReport extends Component {
                     }, 'dupNum': 0,
                 },
                 {
-                    'title': "Complete Supplier Address",
+                    'title': "Civic Number",
+                    'dupNum': 0,
                     'params': {
-                        'model': "suppliers.address",
+                        'model': "suppliers.suppliers_address.civic_number",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 0
+                    }
+                },
+                {
+                    'title': "Street",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "suppliers.suppliers_address.street_name",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
                         'defaultVal': null,
                         colNum: 1
-                    }, 'dupNum': 0,
+                    }
                 },
+                {
+                    'title': "Suite",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "suppliers.suppliers_address.suite",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
+
+                {
+                    'title': "City",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "suppliers.suppliers_address.city",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 0
+                    }
+                },
+                {
+                    'title': "Province",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "suppliers.suppliers_address.state",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
+                {
+                    'title': "Postal Code",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "suppliers.suppliers_address.postal_code",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
+
                 {
                     'title': "Business Phone Number (supplier)",
                     'params': {
@@ -589,19 +760,20 @@ class OrderNewReport extends Component {
     //Button Functions
     submit = (data) => { //submit from the form component
         data = this.unflatten(data);
-
+        let api = Cookies.get('token')
         if (this.state.isEdit) { //if we are editing page
             this.setState({ storedEdit: data, showEditSubmit: true });
-            resubmit_report(data).then((data) => {
+            resubmit_report(data, api).then((data) => {
                 console.log(data)
             });
         }
-
-        //upload data to server here - Resubmit_report(data)
-        order_report(data).then((data) => {
-            console.log(data)
-        });
-        this.setState({ step: 3 })
+        else {
+            //upload data to server here - Resubmit_report(data)
+            order_report(data, api).then((data) => {
+                console.log(data)
+            });
+            this.setState({ step: 3 })
+        }
     }
 
     unflatten = (obj = {}) => {
@@ -1073,7 +1245,7 @@ class OrderNewReport extends Component {
                                                 width={251}
                                             />
                                             <div className={styles.doneMessage}>
-                                                You have successfully ordered the report, you can now see this report on your “Credit Reports” Panel.
+                                                You have successfully ordered the report, you can now see this report on your “Credit Reports Panel.
                                                 <br /><br />
                                                 <Container>
                                                     <Row >
@@ -1138,7 +1310,7 @@ class OrderNewReport extends Component {
                                                 width={251}
                                             />
                                             <div className={styles.doneMessage}>
-                                                You have successfully ordered a Quick Report, Report form will be filled soon by us till then it will be in <strong>pending</strong> state, you can now see this report on your “Credit Reports” Panel.
+                                                You have successfully ordered a Quick Report, Report form will be filled soon by us till then it will be in <strong>pending</strong> state, you can now see this report on your “Credit Reports Panel.
                                                 <br /><br />
                                                 <Container>
                                                     <Row >

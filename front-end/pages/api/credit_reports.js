@@ -6,15 +6,11 @@ const init = {
     method: 'POST'
 }
 
-export const order_list = (body) => {
+export const order_list = (body, token) => {
 
-    const init = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body)
-    }
+    body.api_token = token;
+    init.body = JSON.stringify({ ...body, api_token: token })
+
     // var myReq = new Request(`${process.env.API_URL}/report/list-order`, init);
     console.log('fetching');
     const ret = fetch(`${process.env.API_URL}/report/list-order`, init)
@@ -42,17 +38,9 @@ export const order_list = (body) => {
     return ret;
 }
 
-export const cancel_order = (rptId) => {
+export const cancel_order = (rptId, token) => {
     if (!rptId) return;
-    let body;
-    try {
-        body = JSON.parse(init.body);
-    }
-    catch (ex) {
-        body = init.body;
-    }
-
-    body.order_id = rptId;
+    let body = { order_id: rptId, api_token: token }
     init.method = "POST"
     init.body = JSON.stringify(body);
 
@@ -84,19 +72,13 @@ export const cancel_order = (rptId) => {
     return ret;
 }
 
-export const order_details = (rptId) => {
+export const order_details = (rptId, token) => {
     if (!rptId) return;
-    let body;
-    try {
-        body = JSON.parse(init.body);
-    }
-    catch (ex) {
-        body = init.body;
-    }
+    let body = { "order_id": rptId, "api_token": token };
 
-    body.order_id = rptId;
     init.method = "POST"
     init.body = JSON.stringify(body);
+
 
     var myReq = new Request(`${process.env.API_URL}/report/order-details`, init);
     let ret = fetch(myReq)
@@ -124,9 +106,9 @@ export const order_details = (rptId) => {
 
 }
 
-export const resubmit_report = (rptData => {
+export const resubmit_report = ((rptData, token) => {
     init.method = "POST"
-    init.body = { ...init.body, ...rptData }
+    init.body = { ...rptData, api_token: token }
     init.body = JSON.stringify(init.body);
 
     var myReq = new Request(`${process.env.API_URL}/report/`, init); //order-report
@@ -156,10 +138,11 @@ export const resubmit_report = (rptData => {
     return ret;
 })
 
-export const order_report = (rptData => {
+export const order_report = ((rptData, api) => {
     init.method = "POST"
-    init.body = { ...init.body, ...rptData }
-    init.body = JSON.stringify(init.body);
+    let body = rptData;
+    body.api_token = api;
+    init.body = JSON.stringify(body);
 
     var myReq = new Request(`${process.env.API_URL}/report/order-report`, init);
     console.log('fetching');

@@ -1,0 +1,16 @@
+.centered {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: #ADADAD;
+    font-size: 20px;
+    line-height: 30px;
+    font-weight: 500;
+    margin-top: 8%;
+    width: 640px;
+}
+
+.bolder {
+    font-weight: 500;
+    color: #ABABAB;
+}
