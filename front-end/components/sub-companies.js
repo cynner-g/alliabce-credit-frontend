@@ -17,8 +17,6 @@ const SubCompanies = function ({ id, subCompanies }) {
                             <div className="cwebsite data_block"><a href={item?.website} target="_blank">{item?.website}</a></div>
                         </div>
                         <div className="clearB"></div>
-                        <div>{item.email_id}</div>
-
                         <div className="cemail data_block"><a href={`mailto:${item?.email_id}`} target="_blank">{item?.email_id}</a></div>
                         <div className="cphone data_block">{item?.phone_number?.country_code} - {item?.phone_number?.phone_number}</div>
                         <div className="caddress data_block">

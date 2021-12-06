@@ -231,25 +231,28 @@ class CreditReports extends Component {
                     <td>{user_name}<br /><span className="small10">{company_name}</span></td>
 
                     <td><div className={`status${status.status_code}`}>{status.badge}</div></td>
-                    <td><div className={`status${row.reports.incorporate.status_code}`}>
-                        {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div></td>
-                    <td><div className={`status${row.reports.bank.status_code}`}>
-                        {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div></td>
-                    <td><div className={`status${row.reports.legal.status_code}`}>
-                        {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div></td>
-                    <td>
-                        <div className={`suppliers status${row.reports.suppliers.status_code}`}>
-                            {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
-                    </td>
-                    <td>
-                        <button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button>
-                    </td>
-                    <td>
-                        <button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} />
+
+
+                    <td className="buttongroups_wrap">
+                        <div className="buttongroups">
+                            <div className={`status${row.reports.incorporate.status_code}`}>
+                                {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div>
+                            <div className={`status${row.reports.bank.status_code}`}>
+                                {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div>
+
+                            <div className={`status${row.reports.legal.status_code}`}>
+                                {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div>
+
+                            <div className={`suppliers status${row.reports.suppliers.status_code}`}>
+                                {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
+
+                            <div><button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button></div>
+                            <div><button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
+                        </div>
                     </td>
                 </tr>
                 <tr className="collapse" key={index + "_2"}>
-                    <td colSpan={11} className="comments_indent">
+                    <td colSpan={6} className="comments_indent">
                         <Table style={{ width: '100%' }} striped >
                             <tbody>
                                 <tr>
@@ -285,26 +288,26 @@ class CreditReports extends Component {
                                         <div className="more_info_wrap">
                                             <table width="100%">
                                                 <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>
-                                                            Price Chart: <strong>A1</strong><br />
-                                                            User Phone: <strong>+1234567890</strong><br />
-                                                            User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
-                                                        </p>
-                                                    </td>
-                                                    <td className="info_manual">Set Manually</td>
-                                                    <td className="info_price"><strong>Final Price:</strong><br />
-                                                        Price :<br />
-                                                        Aging Discount :<br />
-                                                        Extra<br />
-                                                    </td>
-                                                    <td className="info_unit"><strong>CAD 90</strong><br />
-                                                        CAD 100<br />
-                                                        CAD 10 (10%)<br />
-                                                        CAD 20
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p>
+                                                                Price Chart: <strong>A1</strong><br />
+                                                                User Phone: <strong>+1234567890</strong><br />
+                                                                User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
+                                                            </p>
+                                                        </td>
+                                                        <td className="info_manual">Set Manually</td>
+                                                        <td className="info_price"><strong>Final Price:</strong><br />
+                                                            Price :<br />
+                                                            Aging Discount :<br />
+                                                            Extra<br />
+                                                        </td>
+                                                        <td className="info_unit"><strong>CAD 90</strong><br />
+                                                            CAD 100<br />
+                                                            CAD 10 (10%)<br />
+                                                            CAD 20
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -317,21 +320,21 @@ class CreditReports extends Component {
                                             {this.state.role === 'admin' ?
                                                 <table width="100%">
                                                     <tbody>
-                                                    <tr>
-                                                        <td>
+                                                        <tr>
+                                                            <td>
                                                                 <input type='text' className="form-control" onChange={(e) => this.setState({ newComment: e.target.value })}
-                                                                placeholder='Write a comment here' />
-                                                        </td>
-                                                        <td className="post_status_wrap">
-                                                            <select className="form-select" onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
-                                                                <option value='private'>Private</option>
-                                                                <option value='public'>Public</option>
-                                                            </select>
-                                                        </td>
-                                                        <td className="post_add_wrap">
+                                                                    placeholder='Write a comment here' />
+                                                            </td>
+                                                            <td className="post_status_wrap">
+                                                                <select className="form-select" onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
+                                                                    <option value='private'>Private</option>
+                                                                    <option value='public'>Public</option>
+                                                                </select>
+                                                            </td>
+                                                            <td className="post_add_wrap">
                                                                 <button className="btn btn-primary" onClick={(e) => this.setNewComment(e, row)}>Post</button>
-                                                        </td>
-                                                    </tr>
+                                                            </td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                                 : ''
@@ -544,65 +547,76 @@ class CreditReports extends Component {
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body>
-                            <table style={{ width: '80%' }}>
-                                <tbody>
 
-                                    <tr>
-                                        <td><input type='checkbox'
-                                            onClick={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
-                                            onChange={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
-                                            checked={this.state.rowStatus?.status == PROCESSING} /></td>
-                                        <td>Processing</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type='checkbox'
-                                            onClick={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
-                                            onChange={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
-                                            checked={this.state.rowStatus?.status == NEEDACTION} /></td>
-                                        <td>Need Action</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type='checkbox'
-                                            onClick={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
-                                            onChange={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
-                                            checked={this.state.rowStatus?.status == ERROR} /></td>
-                                        <td>Error</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type='checkbox'
-                                            onClick={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
-                                            onChange={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
-                                            checked={this.state.rowStatus?.status == PENDING} /></td>
-                                        <td>Pending</td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type='checkbox'
-                                            onClick={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
-                                            onChange={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
-                                            checked={this.state.rowStatus?.status == COMPLETED} /></td>
-                                        <td>Completed</td>
-                                    </tr>
-                                    <tr><td colSpan={2}>
-                                        {this.rowStatus?.status ? this.getStatusCss(this.rowStatus?.status).badge : ''}</td></tr>
-                                    <tr><td colSpan={2}>
-                                        <textarea
-                                            cols={50}
-                                            rows={5}
-                                            onChange={(e) => this.setStatus(this.state.rowStatus?.row, e.target.value, 1)}>
-                                        </textarea>
-                                    </td></tr>
-                                </tbody>
-                            </table>
-                        </Modal.Body>
+                            <div class="form-check">
+                                <input type='checkbox' className="form-check-input" id="processing"
+                                    onClick={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
+                                    onChange={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
+                                    checked={this.state.rowStatus?.status == PROCESSING} />
+
+                                <label class="form-check-label" for="processing">Processing</label>
+                            </div>
+                            <div class="form-check">
+
+                                <input type='checkbox' className="form-check-input" id="needaction"
+                                    onClick={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
+                                    onChange={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
+                                    checked={this.state.rowStatus?.status == NEEDACTION} />
+
+                                <label class="form-check-label" for="needaction">Need Action</label>
+                            </div>
+                            <div class="form-check">
+
+                                <input type='checkbox' className="form-check-input" id="error"
+                                    onClick={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
+                                    onChange={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
+                                    checked={this.state.rowStatus?.status == ERROR} />
+
+
+                                <label class="form-check-label" for="error">Error</label>
+                            </div>
+                            <div class="form-check">
+                                <input type='checkbox' className="form-check-input"
+                                    onClick={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
+                                    onChange={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
+                                    checked={this.state.rowStatus?.status == PENDING} />
+
+
+                                <label class="form-check-label" for="flexCheckDefault">Pending</label>
+                            </div>
+                            <div class="form-check">
+                                <input type='checkbox' className="form-check-input"
+                                    onClick={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
+                                    onChange={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
+                                    checked={this.state.rowStatus?.status == COMPLETED} />
+
+
+                                <label class="form-check-label" for="flexCheckDefault">Completed</label>
+                            </div>
+                            {this.rowStatus?.status ? this.getStatusCss(this.rowStatus?.status).badge : ''}
+
+
+                            <div className="mt-3">
+                                <textarea className="form-control"
+                                    cols={50}
+                                    rows={4}
+                                    onChange={(e) => this.setStatus(this.state.rowStatus?.row, e.target.value, 1)}>
+                                </textarea>
+                            </div>
+
+
+                        </Modal.Body >
                         <Modal.Footer>
-                            <button className="btn btn-outline-primary" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
-                                Cancel
-                            </button>
-                            <button className="btn btn-primary" onClick={() => this.setStatus(null, null, 2)}>
-                                Update Status
-                            </button>
+                            <div>
+                                <button className="btn btn-outline-primary" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
+                                    Cancel
+                                </button>
+                                <button className="btn btn-primary" onClick={() => this.setStatus(null, null, 2)}>
+                                    Update Status
+                                </button>
+                            </div>
                         </Modal.Footer>
-                    </Modal>
+                    </Modal >
 
                     <Header />
                     <Container fluid>
@@ -656,17 +670,17 @@ class CreditReports extends Component {
                             </Row>
                         </div>
                         <div className="listing">
-                            <table>
+                            <table width="100%">
                                 <thead>
                                     <tr>
-                                        <th>Ref. Id</th>
-                                        <th>Order date</th>
-                                        <th>Subject Name</th>
-                                        <th>User Name</th>
-                                        <th>Status</th>
-                                        <th colSpan={4}>Reports Status</th>
-                                        <th></th>
-                                        <th></th>
+                                        <th className="sorted"><span>Ref. Id</span></th>
+                                        <th className="sorted"><span>Order date</span></th>
+                                        <th className="sorted"><span>Subject Name</span></th>
+                                        <th className="sorted"><span>User Name</span></th>
+                                        <th className="sorted"><span>Status</span></th>
+                                        <th>Reports Status</th>
+                                        {/* <th></th>
+                                        <th></th> */}
                                     </tr>
                                 </thead>
                                 <tbody>

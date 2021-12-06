@@ -85,7 +85,7 @@ class DynamicTable extends Component {
             insertTow = (
                 <Table.Row>
                     <Table.HeaderCell
-                        style={{ border: this.props.border }}
+                    // style={{ border: this.props.border }}
                     >
                         <Button id='insert'
                             onClick={(e) => { this.getRowData(e, null, "INSERT") }}
@@ -122,7 +122,7 @@ class DynamicTable extends Component {
                                     if (column.addable) {
                                         if (!ret) ret = (
                                             <Table.HeaderCell
-                                                style={{ border: this.props.border }}
+                                                // style={{ border: this.props.border }}
                                                 key={keyName}
                                                 name={keyName}
                                                 tabstop='false'
@@ -161,7 +161,7 @@ class DynamicTable extends Component {
                             }
                             if (!ret) ret = (
                                 <Table.HeaderCell
-                                    style={{ border: this.props.border }}
+                                    // style={{ border: this.props.border }}
                                     key={keyName}
                                     name={keyName}
                                     tabstop='false'
@@ -340,7 +340,7 @@ class DynamicTable extends Component {
                                         tabstop='true'
                                         onClick={(e) => column.onClick(e, column.colName, row)}
                                     >
-                                        <button>{column.buttonText}</button>
+                                        <button className="btn btndelete">{column.buttonText}</button>
                                     </Table.Cell>
                                 )
                             }
@@ -356,7 +356,7 @@ class DynamicTable extends Component {
                                         name={column.colName.replace(' ', '_')}
                                         tabstop='false'
                                     >
-                                        <Badge bg={bgColor}>{text}</Badge>
+                                        <span className={`btn1 upload ${bgColor}`}>{text}</span>
                                     </Table.Cell>
                                 )
                             }
@@ -559,7 +559,8 @@ class DynamicTable extends Component {
 
             let headerRow = this.props.columns.map((column, index) => {
                 if (column.visible === undefined || column.visible) {
-                    let style = { border: 'none' };
+                    // let style = { border: 'none' };
+                    let style = {};
 
                     if (column.width) {
                         style.width = column.width;
@@ -568,17 +569,19 @@ class DynamicTable extends Component {
                     }
 
                     if (this.props.border) style.border = this.props.border;
-                    let cl = "dataTable_Header";
+                    // let cl = "dataTable_Header";
+                    let cl = "";
                     if (this.state.sortKey === column.colName) cl += " sortHeader";
                     return (
                         <Table.HeaderCell
-                            className={cl}
+                            // className={cl}
+                            className="sorted"
                             key={index}
                             sorted={this.state.sortKey === column.colName ? this.state.sortDirection : null}
                             onClick={() => this.sortJson(column.colName)}
                             style={style}
                         >
-                            {column.displayName.toUpperCase()}
+                            <span>{column.displayName.toUpperCase()}</span>
                         </Table.HeaderCell>
                     )
                 }

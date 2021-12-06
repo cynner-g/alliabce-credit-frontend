@@ -29,7 +29,7 @@ const Header = () => {
         <div className="header_wrap">
             <header>
                 <div className="row">
-                    <div className="col-9">
+                    <div className="col-10">
                         <Nav className="navbar">
                             <Logo />
                             <ul className=" me-auto mb-2 mb-lg-0">

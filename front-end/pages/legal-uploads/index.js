@@ -2,7 +2,7 @@ import React, { userState, useEffect, useState } from 'react'
 import Header from "../../components/header"
 import { useRouter } from "next/router"
 // import Pagination from "../../components/datatable/pagination"
-import { Modal } from 'react-bootstrap';
+import { Col, Modal, Row } from 'react-bootstrap';
 import DynamicTable from '../../components/DynamicTable';
 
 const UPLOADING = 1;
@@ -36,7 +36,7 @@ const LegalUploads = ({ page, totalPage }) => {
         switch (type) {
             case 'Uploaded': return 'success'; break;
             case 'Uploading': return 'info'; break;
-            case 'Error': return 'secondary'; break;
+            case 'Error': return 'error'; break;
         }
     }
 
@@ -272,7 +272,7 @@ const LegalUploads = ({ page, totalPage }) => {
                     </Row>
                     <Row>
                         <Col>
-                            <label for='customFile' className='btn btn-primary'>Select Legal File</label><span>{legalFile.name}</span>
+                            <label for='customFile' className='btn btn-primary'>Select Legal File</label><span>{legalFile?.name}</span>
                             <input type="file" className="form-control" style={{ visibility: 'hidden' }} id="customFile" onChange={e => this.uploadFile(e)} />
                         </Col>
                     </Row>
@@ -289,8 +289,9 @@ const LegalUploads = ({ page, totalPage }) => {
 
 
             <Header />
-            Legal Uploads
-
+            <div className="bottom_gap">
+                <button className="btn legal_upload">Legal Uploads</button>
+            </div>
 
             {/* <table id="example" className="table table-striped">
                 <thead>
@@ -315,7 +316,9 @@ const LegalUploads = ({ page, totalPage }) => {
                 </tbody>
             </table>
             <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
-            <DynamicTable data={pageData} columns={columns} />
+            <div className="listing">
+                <DynamicTable data={pageData} columns={columns} />
+            </div>
         </>
     )
 }

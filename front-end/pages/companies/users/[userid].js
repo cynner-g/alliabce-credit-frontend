@@ -349,7 +349,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 <table id="example" className="table table-striped">
                     <thead>
                         <tr>
-                            <th><div onClick={(e) => {
+                            <th className="sorted"><div onClick={(e) => {
                                 const srchval1 = 'full_name'
                                 if (sort_by != srchval1) {
                                     setDesc(true);
@@ -363,8 +363,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 }
                                 fetchData();
                             }
-                            }>User Name</div></th>
-                            <th><div onClick={(e) => {
+                            }><span>User Name</span></div></th>
+                            <th className="sorted"><div onClick={(e) => {
                                 const srchval2 = 'date_added'
                                 if (sort_by != srchval2) {
                                     setDesc(true);
@@ -378,8 +378,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 }
                                 fetchData();
                             }
-                            }>Date Added</div></th>
-                            <th><div onClick={(e) => {
+                            }><span>Date Added</span></div></th>
+                            <th className="sorted"><div onClick={(e) => {
                                 const srchval3 = 'email_id'
                                 if (sort_by != srchval3) {
                                     setDesc(true);
@@ -393,8 +393,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 }
                                 fetchData();
                             }
-                            }>Email</div></th>
-                            <th><div onClick={(e) => {
+                            }><span>Email</span></div></th>
+                            <th className="sorted"><div onClick={(e) => {
                                 const srchval4 = 'user_role'
                                 if (sort_by != srchval4) {
                                     setDesc(true);
@@ -408,8 +408,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 }
                                 fetchData();
                             }
-                            }>Role</div></th>
-                            <th><div onClick={(e) => {
+                            }><span>Role</span></div></th>
+                            <th className="sorted"><div onClick={(e) => {
                                 const srchval5 = 'company_access'
                                 if (sort_by != srchval5) {
                                     setDesc(true);
@@ -423,7 +423,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 }
                                 fetchData();
                             }
-                            }>Company Access</div></th>
+                            }><span>Company Access</span></div></th>
                             <th><div style={{ width: '310px' }}>Actions</div></th>
                         </tr>
                     </thead>

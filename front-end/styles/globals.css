@@ -225,6 +225,28 @@ input[type=text] {
 }
 
 /*Buttons*/
+.btn1 {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
 
 .viewmore {
   background: #E6EEFF;
@@ -284,6 +306,25 @@ input[type=text] {
   color: #CF5A5A;
 }
 
+.btndelete {
+  background: #FFE6E6;
+  /* border: 1px solid #CF5A5A; */
+  color: #CF5A5A;
+  padding: 1px 11px;
+}
+
+.legal_upload {
+  font-size: 16px;
+  padding: 12px 32px 12px 64px;
+  color: #FFF;
+  background: #517BCC url(/icons/upload-white.svg) 16px 12px no-repeat;
+  background-size: 20px;
+}
+
+.bottom_gap {
+  margin-bottom: 24px;
+}
+
 .inactivebtn {
   background: #CF5A5A;
   font-family: Roboto;
@@ -306,6 +347,7 @@ input[type=text] {
 .new,
 .processing,
 .completed,
+.upload,
 .need_action {
   font-size: 14px;
 }
@@ -324,6 +366,7 @@ input[type=text] {
   color: #C4C4C4;
 }
 
+.upload,
 .new,
 .processing,
 .completed,
@@ -374,6 +417,23 @@ input[type=text] {
   /* background: #E6FFEB; */
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
   padding: 2px 34px 2px 10px;
+}
+
+.upload {
+  color: #FFF;
+  background: #50C262;
+}
+
+.upload.success {
+  background: #50C262;
+}
+
+.upload.error {
+  background: #FF0000;
+}
+
+.upload.info {
+  background: #FFAA04;
 }
 
 .new {
@@ -468,6 +528,36 @@ input[type=text] {
   margin-bottom: 16px;
 }
 
+.cemail,
+.cphone,
+.caddress {
+  padding-left: 25px;
+  position: relative;
+}
+
+.cemail::before,
+.cphone::before,
+.caddress::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 15px;
+  height: 15px;
+}
+
+
+.cemail::before {
+  background: url(/icons/Mail.svg) no-repeat;
+}
+
+.cphone::before {
+  background: url(/icons/Phone.svg) no-repeat;
+}
+
+.caddress::before {
+  background: url(/icons/Location.svg) no-repeat;
+}
 
 
 /* company form*/
@@ -496,6 +586,54 @@ input[type=text] {
   font-weight: 500;
 }
 
+.listing th span {
+  display: inline-block;
+  position: relative;
+  padding: 0 10px 0 0;
+}
+
+.listing th.sorted span:before,
+.listing th.sorted span:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 5px;
+  height: 5px;
+
+  background-size: 5px !important;
+}
+
+.listing th.sorted span:before {
+  background: url(/icons/sort-u.svg) no-repeat;
+  top: 8px;
+}
+
+.listing th.sorted span:after {
+  background: url(/icons/sort-d.svg) no-repeat;
+  top: 14px;
+}
+
+.listing th.sorted.descending span:before {
+  background: url(/icons/sort-u.svg) no-repeat;
+  top: 10px;
+}
+
+.listing th.sorted.descending span::after {
+  display: none;
+}
+
+
+.listing th.sorted.ascending span:after {
+  background: url(/icons/sort-d.svg) no-repeat;
+  top: 10px;
+}
+
+.listing th.sorted.ascending span:before {
+  display: none;
+}
+
+/*   */
+
 .listing td {
   color: #323232;
   font-size: 16px;
@@ -519,6 +657,19 @@ input[type=text] {
   border-bottom-color: #F2F2F2;
 }
 
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+  --bs-table-accent-bg: rgb(255 255 255 / 5%);
+  color: #323232;
+}
+
+.buttongroups_wrap {
+  width: 619px;
+}
+
+.buttongroups>div {
+  margin-right: 10px;
+  float: left;
+}
 
 .role {
   display: inline-block;
@@ -615,7 +766,12 @@ input[type=text] {
 .info_manual {
   width: 100px;
   color: #517BCC !important;
+  width: 120px;
+  vertical-align: top;
+}
 
+textarea {
+  border: 1px solid #517BCC;
 }
 
 .info_price {
