@@ -13,8 +13,18 @@ const TabButton = ({ id, url }) => {
                     },
                 }}
                     as={`/companies/users/${id}`}
-                ><a className="nav-link">user</a></Link></li>
-            <li className="nav-item" className={router.pathname == "/companies/legal-watchlist" ? "active" : ""}><Link href="/companies/legal-watchlist"><a className="nav-link">Legal Watchlist</a></Link></li>
+                ><a className="nav-link">user</a>
+                </Link></li>
+            <li className="nav-item" className={router.pathname == "/legal-watchlist" ? "active" : ""}>
+                <Link href={{
+                    pathname: `/legal-watchlist`,
+                    query: {
+                        cid: id, // should be `title` not `id`
+                    },
+                }} >
+
+                    <a className="nav-link">Legal Watchlist</a>
+                </Link></li >
             <li className="nav-item" className={router.pathname == "/companies/aging" ? "active" : ""}><Link href="/companies/aging"><a className="nav-link">Aging</a></Link></li>
         </ul>
     )
