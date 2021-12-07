@@ -161,9 +161,25 @@ const LegalWatchlist = (props) => {
 
     }
 
-    const removeCompany = async () => {
+    const removeCompany = async (id) => {
         //TODO:  Set api
+        let body = {
+            "api_token": token,
+            watchlist_id: currentWatchlistID,
+            company_id: id
+        }
 
+        console.log(body);
+
+        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/remove-company-from-watchlist`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        })
+
+        getWatchlistCompanies();
     }
 
 

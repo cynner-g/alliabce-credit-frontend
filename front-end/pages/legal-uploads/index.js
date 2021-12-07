@@ -1,6 +1,7 @@
 import React, { userState, useEffect, useState } from 'react'
 import Header from "../../components/header"
 import { useRouter } from "next/router"
+import { parseCookies } from "nookies";
 // import Pagination from "../../components/datatable/pagination"
 import { Col, Modal, Row } from 'react-bootstrap';
 import DynamicTable from '../../components/DynamicTable';
@@ -9,12 +10,12 @@ const UPLOADING = 1;
 const UPLOADED = 2;
 const ERROR = 3;
 
-const LegalUploads = ({ page, totalPage }) => {
+const LegalUploads = (props) => {
     const router = useRouter()
-    const limit = 3
-    const lastPage = Math.ceil(totalPage / limit)
+    // const limit = 3
+    // const lastPage = Math.ceil(totalPage / limit)
 
-    let [pageData, setPageData] = useState();
+    const [pageData, setPageData] = useState(props?.data?.data);
     const [legalFile, setLegalFile] = useState(null);
     const [type, setType] = useState(null);
     const [region, setRegion] = useState(null);
@@ -23,12 +24,40 @@ const LegalUploads = ({ page, totalPage }) => {
 
     const [upload, showUpload] = useState(false)
 
-    const fetchData = () => {
+    const fetchData = async () => {
         //code to load data fresh from API
+        const res = await fetch(`${process.env.API_URL}/report/list-legal-upload`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "api_token": token
+            })
+
+        })
+        const resData = await res.json()
     }
 
-    const deleteClick = (event, row) => {
+    const deleteClick = async (event, columnName, row) => {
         //code to send delete request to API
+        let uploadID = row._id;
+        let token = Cookies.get('token');
+
+        let body = {
+            api_token: token,
+            legal_upload_id: uploadID
+        }
+
+        const res = await fetch(`${process.env.API_URL}/report/list-legal-upload`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        })
+
+        fetch_data();
     }
 
     const getBadgeCss = (type) => {
@@ -41,14 +70,14 @@ const LegalUploads = ({ page, totalPage }) => {
     }
 
     const columns = [{
-        colName: "refId",
+        colName: "reference_id",
         displayName: "File Ref. Id",
         editable: false,
         visible: true,
         addable: false,
     },
     {
-        colName: "fileType",
+        colName: "legal_report_type",
         displayName: "File Type",
         editable: false,
         required: false,
@@ -77,8 +106,8 @@ const LegalUploads = ({ page, totalPage }) => {
         defaultVal: null
     },
     {
-        colName: "uploadTime",
-        displayName: "Upload Time",
+        colName: "upload_date",
+        displayName: "Upload Date",
         type: 'date',
         timeSize: 9,
         timeLocation: 'below',
@@ -89,7 +118,7 @@ const LegalUploads = ({ page, totalPage }) => {
         defaultVal: null
     },
     {
-        colName: "comparedToWatchlist",
+        colName: "compare_date",
         displayName: "Compared to Watchlist",
         editable: false,
         required: false,
@@ -101,7 +130,7 @@ const LegalUploads = ({ page, totalPage }) => {
         defaultVal: null
     },
     {
-        colName: "sisCount",
+        colName: "sis_count",
         displayName: "SIS Count",
         editable: false,
         required: false,
@@ -109,7 +138,7 @@ const LegalUploads = ({ page, totalPage }) => {
         addable: false,
         defaultVal: null
     }, {
-        colName: "clrCount",
+        colName: "clr_count",
         displayName: "CLR Count",
         editable: false,
         required: false,
@@ -117,7 +146,7 @@ const LegalUploads = ({ page, totalPage }) => {
         addable: false,
         defaultVal: null
     }, {
-        colName: "bankruptcyCount",
+        colName: "bkr_count",
         displayName: "Bankruptcy Count",
         editable: false,
         required: false,
@@ -125,7 +154,7 @@ const LegalUploads = ({ page, totalPage }) => {
         addable: false,
         defaultVal: null
     }, {
-        colName: "hypotechCount",
+        colName: "jlr_count",
         displayName: "Hypotech Count",
         editable: false,
         required: false,
@@ -152,7 +181,7 @@ const LegalUploads = ({ page, totalPage }) => {
         setLegalFile(e.target.files[0])
     }
 
-    const startUpload = () => {
+    const startUpload = async () => {
         let token = cookies.g
         const formData = new FormData();
         formData.append('report_type', type);
@@ -163,13 +192,13 @@ const LegalUploads = ({ page, totalPage }) => {
         let body = formData
 
 
-        // const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/report/upload-legal-report`, {
-        //     method: "POST",
-        //     headers: {
-        //         contentType: false,
-        //     },
-        //     body: formData
-        // })
+        const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/report/upload-legal-report`, {
+            method: "POST",
+            headers: {
+                contentType: false,
+            },
+            body: formData
+        })
 
         fetchData();
 
@@ -177,57 +206,57 @@ const LegalUploads = ({ page, totalPage }) => {
 
 
     useEffect(() => {
-        let data = [
-            {
-                refId: 'L123',
-                fileType: 'Commercial Law Record',
-                language: 'French',
-                status: 'Uploaded',
-                uploadTime: '09/23/2021 11:35 AM',
-                comparedToWatchlist: '09/23/2021 11:35 AM',
-                sisCount: "0",
-                clrCount: 56,
-                bankruptcyCount: "0",
-                hypotechCount: "0"
-            },
-            {
-                refId: 'L122',
-                fileType: 'Bankruptcy',
-                language: 'English',
-                status: 'Uploaded',
-                uploadTime: '07/09/2021 11:35 AM',
-                comparedToWatchlist: '08/09/2021 11:35 AM',
-                sisCount: "0",
-                clrCount: "0",
-                bankruptcyCount: 21,
-                hypotechCount: "0"
-            },
-            {
-                refId: 'L121',
-                fileType: 'Hyptotech',
-                language: 'English',
-                status: 'Uploaded',
-                uploadTime: '07/09/2021 11:35 AM',
-                comparedToWatchlist: '07/09/2021 11:35 AM',
-                sisCount: "0",
-                clrCount: "0",
-                bankruptcyCount: "0",
-                hypotechCount: 10
-            },
-            {
-                refId: 'L121',
-                fileType: 'Special Information Sheet',
-                language: 'Both',
-                status: 'Uploaded',
-                uploadTime: '07/09/2021 11:35 AM',
-                comparedToWatchlist: '08/09/2021 11:35 AM',
-                sisCount: 10,
-                clrCount: "0",
-                bankruptcyCount: "0",
-                hypotechCount: "0"
-            },
-        ]
-        setPageData(data);
+        // let data = [
+        //     {
+        //         refId: 'L123',
+        //         fileType: 'Commercial Law Record',
+        //         language: 'French',
+        //         status: 'Uploaded',
+        //         uploadTime: '09/23/2021 11:35 AM',
+        //         comparedToWatchlist: '09/23/2021 11:35 AM',
+        //         sisCount: "0",
+        //         clrCount: 56,
+        //         bankruptcyCount: "0",
+        //         hypotechCount: "0"
+        //     },
+        //     {
+        //         refId: 'L122',
+        //         fileType: 'Bankruptcy',
+        //         language: 'English',
+        //         status: 'Uploaded',
+        //         uploadTime: '07/09/2021 11:35 AM',
+        //         comparedToWatchlist: '08/09/2021 11:35 AM',
+        //         sisCount: "0",
+        //         clrCount: "0",
+        //         bankruptcyCount: 21,
+        //         hypotechCount: "0"
+        //     },
+        //     {
+        //         refId: 'L121',
+        //         fileType: 'Hyptotech',
+        //         language: 'English',
+        //         status: 'Uploaded',
+        //         uploadTime: '07/09/2021 11:35 AM',
+        //         comparedToWatchlist: '07/09/2021 11:35 AM',
+        //         sisCount: "0",
+        //         clrCount: "0",
+        //         bankruptcyCount: "0",
+        //         hypotechCount: 10
+        //     },
+        //     {
+        //         refId: 'L121',
+        //         fileType: 'Special Information Sheet',
+        //         language: 'Both',
+        //         status: 'Uploaded',
+        //         uploadTime: '07/09/2021 11:35 AM',
+        //         comparedToWatchlist: '08/09/2021 11:35 AM',
+        //         sisCount: 10,
+        //         clrCount: "0",
+        //         bankruptcyCount: "0",
+        //         hypotechCount: "0"
+        //     },
+        // ]
+        // setPageData(data);
     }, [])
 
     return (
@@ -330,16 +359,27 @@ const LegalUploads = ({ page, totalPage }) => {
  * @param {*} { query: { page = 1, data = null, totalPage = 10 } }
  * @return {*} 
  */
-export async function getServerSideProps({ query: { page = 1, data = null, totalPage = 10 } }) {
-    const start = +page === 1 ? 0 : (+page + 1)
+export async function getServerSideProps(ctx) {
+    const { token } = parseCookies(ctx)
+    const res = await fetch(`${process.env.API_URL}/report/list-legal-upload`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "api_token": token,
+        })
+
+    })
+    const resData = await res.json()
+
+
     /** 
      * limit, start, search item
      */
     return {
         props: {
-            data: data,
-            page: page,
-            totalPage
+            data: resData
         }
     }
 

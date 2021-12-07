@@ -5,7 +5,7 @@ import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker'
 import Cookies from "js-cookie"
 
-const Aging = function () {
+const Aging = function (props) {
     let [data, setData] = useState();
     let [showUpload, setShowUpload] = useState(false);
     let [uploaded, setUploaded] = useState();
@@ -13,6 +13,8 @@ const Aging = function () {
     let [displayError, setDisplayError] = useState('none');
 
     const [upToDateDate, setUpToDateDate] = useState(new Date());
+
+
     useEffect(() => {
         //get aging data
         setData({
@@ -64,16 +66,34 @@ const Aging = function () {
         }
     ]
 
-    const uploadFile = () => {
-        let date = upToDateDate;
-        let file = uploaded;
+    const uploadFile = async () => {
+        const date = upToDateDate;
+        const file = uploaded;
         const token = Cookies.get('token');
-        const uid = Cookies.get('userid');
+        const companyID = router.query.cid;
+        const dt = new Date(date);
 
+        let formData = new FormData();
+        formData.append("api_token", token);
+        formData.append("company_id", companyID);
+        formData.append("aging_file", uploaded);
+        formData.append("month", dt.getMonth());
+        formData.append("yeah", dt.getYear())
+
+        const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
+            method: "POST",
+            headers: {
+                contentType: false,
+            },
+            body: formData
+        })
+
+        if (res.status !== 200) {
         //TODO:  Enable API Call HERE
         //if(response.status!==200){
-        setErrorMsg("TEST ERROR") //response.message....
-        setDisplayError('inline-block')
+            setErrorMsg(res.statusText); //response.message....
+            setDisplayError('inline-block');
+        }
     }
 
 
