@@ -29,7 +29,7 @@ body {
 }
 
 .breadcrumb ul li {
-  display: inline-block;
+  /* display: inline-block; */
   float: left;
   padding: 8px 16px;
 }
@@ -1025,4 +1025,9 @@ td.comments_indent {
 .cr-time {
   margin-top: -4px;
   font-size: 12px;
+}
+
+.comment-header {
+  display: inline-block;
+  margin-right: 8px;
 }

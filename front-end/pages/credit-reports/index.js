@@ -1,4 +1,10 @@
-import { differenceInDays, format, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
+
+
+import {
+    differenceInDays, format, formatRelative,
+    subDays, parseISO, add, getMonth, getYear,
+    lastDayOfMonth, lastDayOfYear, startOfDay, endOfDay
+} from 'date-fns'
 
 import Header from "../../components/header"
 import Router from "next/router"
@@ -9,7 +15,7 @@ import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
 import { order_list, cancel_order, add_comment, update_status } from "../api/credit_reports";
 import React, { Component } from 'react';
 // import Select from 'react-select';
-import DatePicker, { CalendarContainer } from 'react-datepicker'
+// import DatePicker, { CalendarContainer } from 'react-datepicker'
 import { TagPicker, DateRangePicker } from 'rsuite'
 import "react-datepicker/dist/react-datepicker.css";
 import 'rsuite/dist/rsuite.min.css';
@@ -67,15 +73,7 @@ class CreditReports extends Component {
         })
     }
 
-    // setVisible = (page = 0) => {
-    //     let start = this.state.pageSize * page
-    //     let end = page + this.state.pageSize;
-    //     if (start < 0) start = 0;
-    //     let fList = this.state.filteredReportList;
-    //     if (!fList) fList = this.state.origReportList;
-    //     let visible = fList.slice(start, end);
-    //     this.setState({ filteredReportList: visible })
-    // }
+
 
     showDropdownRow = (e, item) => {
         let rotation = [...this.state.rotation];
@@ -91,6 +89,9 @@ class CreditReports extends Component {
     };
 
     filterDates = async (update) => {
+        if (update == null) {
+            update = [null, null] //make sure the array is updated correctly
+        }
         this.setState({ startFilter: update[0], endFilter: update[1] });
         let newData = this.state.origReportList;
         if (update[0] != null) {
@@ -114,25 +115,15 @@ class CreditReports extends Component {
     }
 
     filterStatus = async (e) => {
+        if (e?.includes('All') || !e) e = [];
         await this.setState({ filterStatusData: e });
         this.get_data();
-        // let text = e;
-        // let newData = this.state.origReportList;
-        // if (e?.length > 0) {
-        //     newData = await newData.filter(row => {
-        //         let ret = false;
-        //         text.forEach(t => {
-        //             if (+row.status_code == +t.value) ret = true;
-        //         })
-        //         return ret;
-        //     });
-        // }
-        // await this.setState({ filteredReportList: newData })
     }
 
     showLinks = () => {
 
     }
+
     //returns markup and text for report Status 
     //according to the passed in status code
     //primarily used from tblRow() but also called
@@ -141,7 +132,7 @@ class CreditReports extends Component {
         code = +code; //ensure it's a number, not a string
         let css, text = "", icon = "", badge = <></>, badgeBG = "", className = '';
         switch (code) {
-            case -1: text = ""
+            case -1: text = ""; break;
             case PENDING:
                 text = "Pending";
                 className = "or_pending";
@@ -364,9 +355,22 @@ class CreditReports extends Component {
                                                     if (!comment.is_private || this.state.role === 'admin') {
                                                         return (
                                                             <div className='comments_items' key={idx}>
-                                                                <h6>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
-                                                                {comment.comment} {this.getStatusCss(comment.status).badge}<br />
-                                                                <small>{this.getDate(comment.create_date)}</small>
+                                                                <Row>
+                                                                    <Col>
+                                                                        <h6 className='comment-header'>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
+
+                                                                        {this.getStatusCss(comment.status_code).badge}
+                                                                    </Col>
+                                                                </Row><Row>
+                                                                    <Col>
+                                                                        {comment.comment}
+                                                                    </Col>
+                                                                </Row>
+                                                                <Row>
+                                                                    <Col>
+                                                                        <small>{this.getDate(comment.create_date)}</small>
+                                                                    </Col>
+                                                                </Row>
                                                             </div>
                                                         )
                                                     }
@@ -398,21 +402,11 @@ class CreditReports extends Component {
         let status = this.state.rowStatus;
 
         if (type == 0) { //checkbox
-            let info = this.getStatusCss(value);
             status.row = row;
             status.status = value;
-            // row.status_code = value;
-            // row.status = info.text;
-            // row.badge = info.badge;
-            // this.setState({ statusChangeRow: row });
             this.setState({ rowStatus: status });
         }
         else if (type == 1) {//textarea
-            // let info = this.getStatusCss(row.comments.custom.comment.status_code);
-            // row.comments.custom.status_code = row.status_code;
-            // row.comments.custom.status = row.status;
-            // row.comments.custom.comment = value;
-            // this.setState({ statusChangeRow: row });
             status.row = row;
             status.statusText = value;
             this.setState({ rowStatus: status });
@@ -483,65 +477,74 @@ class CreditReports extends Component {
         let startDate, endDate;
         let today = new Date();
         let month, year;
+        let label = '';
         switch (rangeNum) {
-
             case 0: //today
                 startDate = today;
                 endDate = today;
+                label = 'Today'
                 break;
             case 1: //yesterday
                 startDate = add(today, { days: -1 });
                 endDate = add(today, { days: -1 })
+                label = 'Yesteray'
                 break;
             case 2://last 7 days
                 startDate = add(today, { days: -7 })
                 endDate = add(today, { days: -1 })
+                label = 'Last 7 Days'
                 break;
             case 3: //last 30 days
                 startDate = add(today, { days: -30 })
                 endDate = add(today, { days: -1 })
+                label = 'Last 30 Days'
                 break;
             case 4://this month
                 month = getMonth(today);
                 year = getYear(today);
                 startDate = new Date(year, month, 1)
                 endDate = lastDayOfMonth(today);
+                label = 'This Month'
                 break;
             case 5://this year
                 month = getMonth(today);
                 year = getYear(today);
                 startDate = new Date(year, 0, 1)
                 endDate = lastDayOfYear(today);
+                label = 'This Year'
                 break;
         }
 
+
+
         //send calculated values to default "date change" function of DatePicker component
-        this.filterDates([startDate, endDate]);
-        this.setState({ dateRange: rangeNum })
+        // this.filterDates([startDate, endDate]);
+        // this.setState({ dateRange: rangeNum })
+        return { label: label, value: [new Date(startDate), new Date(endDate)] }
 
     }
 
-    rangeContainer = ({ className, children }) => {
-        //div sill call setDates to calculate and display date range
-        //backround 'dateRange' variable will also be set to change color
-        return (
+    // rangeContainer = ({ className, children }) => {
+    //     //div sill call setDates to calculate and display date range
+    //     //backround 'dateRange' variable will also be set to change color
+    //     return (
 
-            <CalendarContainer className={className}>
-                <Row>
-                    <Col>
-                        <div onClick={() => this.setDates(0)} className={this.state.dateRange == 0 ? "bg-primary" : "bg-white"} >Today</div>
-                        <div onClick={() => this.setDates(1)} className={this.state.dateRange == 1 ? "bg-primary" : "bg-white"} >Yesterday</div>
-                        <div onClick={() => this.setDates(2)} className={this.state.dateRange == 2 ? "bg-primary" : "bg-white"} >Last 7 Days</div>
-                        <div onClick={() => this.setDates(3)} className={this.state.dateRange == 3 ? "bg-primary" : "bg-white"} >Last 30 Days</div>
-                        <div onClick={() => this.setDates(4)} className={this.state.dateRange == 4 ? "bg-primary" : "bg-white"} >This Month</div>
-                        <div onClick={() => this.setDates(5)} className={this.state.dateRange == 5 ? "bg-primary" : "bg-white"} >This Year</div>
-                    </Col><Col>
-                        <div style={{ position: "relative" }}>{children}</div>
-                    </Col>
-                </Row>
-            </CalendarContainer>
-        );
-    };
+    //         <CalendarContainer className={className}>
+    //             <Row>
+    //                 <Col>
+    //                     <div onClick={() => this.setDates(0)} className={this.state.dateRange == 0 ? "bg-primary" : "bg-white"} >Today</div>
+    //                     <div onClick={() => this.setDates(1)} className={this.state.dateRange == 1 ? "bg-primary" : "bg-white"} >Yesterday</div>
+    //                     <div onClick={() => this.setDates(2)} className={this.state.dateRange == 2 ? "bg-primary" : "bg-white"} >Last 7 Days</div>
+    //                     <div onClick={() => this.setDates(3)} className={this.state.dateRange == 3 ? "bg-primary" : "bg-white"} >Last 30 Days</div>
+    //                     <div onClick={() => this.setDates(4)} className={this.state.dateRange == 4 ? "bg-primary" : "bg-white"} >This Month</div>
+    //                     <div onClick={() => this.setDates(5)} className={this.state.dateRange == 5 ? "bg-primary" : "bg-white"} >This Year</div>
+    //                 </Col><Col>
+    //                     <div style={{ position: "relative" }}>{children}</div>
+    //                 </Col>
+    //             </Row>
+    //         </CalendarContainer>
+    //     );
+    // };
 
     render() {
         if (this.state.reportList === null) {
@@ -554,13 +557,23 @@ class CreditReports extends Component {
             )
         }
         else {
-            let options = [
+            const options = [
                 { value: "All", label: "All" },
+                { value: "New", label: "New" },
                 { value: "Processing", label: "Processing" },
                 { value: "Pending", label: "Pending" },
-                { value: "NeedsAction", label: "Needs Action" },
+                { value: "Need Action", label: "Needs Action" },
                 { value: "Completed", label: "Completed" },
             ]
+
+            const dateSegments = [
+                this.setDates(0),
+                this.setDates(1),
+                this.setDates(2),
+                this.setDates(3),
+                this.setDates(4),
+                this.setDates(5),
+            ];
             return (
                 <>
                     <Modal
@@ -634,9 +647,14 @@ class CreditReports extends Component {
                                 <button className="btn btnedit m-3" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
                                     Cancel
                                 </button>
-                                <button className="btn btn-primary" onClick={() => this.setStatus(null, null, 2)}>
+
+                                <button className="btn btn-primary"
+                                    onClick={() => this.setStatus(null, null, 2)}
+                                    disabled={this.state.rowStatus?.statusText === ''}
+                                >
                                     Update Status
                                 </button>
+
                             </div>
                         </Modal.Footer>
                     </Modal >
@@ -655,19 +673,15 @@ class CreditReports extends Component {
                                     <div className="status" style={{ width: '75%' }}>
                                         {/* <label htmlFor="Status" className="form-label">Status</label> */}
 
-                                        <TagPicker data={[
-                                            { value: "All", label: "All" },
-                                            { value: "New", label: "New" },
-                                            { value: "Processing", label: "Processing" },
-                                            { value: "Pending", label: "Pending" },
-                                            { value: "NeedsAction", label: "Needs Action" },
-                                            { value: "Completed", label: "Completed" },
-                                        ]
-                                        } placeholder='Filter Status'
+                                        <TagPicker data={options} placeholder='Filter Status'
+                                            onChange={(e) => this.filterStatus(e)}
+                                            style={{ width: '250px' }}
+                                            onChange={(e) => this.filterStatus(e)}
                                             style={{ width: '250px' }}
                                         />
 
-                                        {/* <Select className="form-select role" onChange={(e) => this.filterStatus(e)}
+                                        {/* <Select className="form-select role"
+
 
                                             options={options}
                                             isMulti
@@ -683,6 +697,14 @@ class CreditReports extends Component {
                                         <label htmlFor="Status" className="form-label">Filter By Date</label>
                                         <div className='filterCol'
                                             onClick={e => this.setState({ showDates: true })}>
+                                            <DateRangePicker showOneCalendar
+                                                ranges={dateSegments}
+                                                onOk={(update) => { this.filterDates(update) }}
+                                                onClean={() => { this.filterDates(null) }}
+                                                onChange={(update) => { this.filterDates(update) }}
+                                            />
+
+                                            {/*
                                             <DatePicker
 
                                                 selectsRange={true}
@@ -693,7 +715,7 @@ class CreditReports extends Component {
                                                 }}
                                                 isClearable={true}
                                                 calendarContainer={this.rangeContainer}
-                                            />
+                                            /> */}
 
                                         </div>
                                     </div>
