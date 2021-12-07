@@ -61,22 +61,27 @@
 }
 
 .imageCase {
-    background-image: url("/images/rectangle.png");
+    /* background-image: url("/images/rectangle.png");
     width: 200px;
     height: 200px;
     border: solid 2px blue;
     padding: 40px;
     text-align: center;
-    margin: auto;
+    margin: auto; */
+    border: 2px solid #517BCC;
+    position: relative;
+    background: #e6eeff;
 }
 
 .imageCaseHidden {
-    border: solid 2px transparent;
+    /* border: solid 2px transparent;
     width: 200px;
     height: 200px;
     padding: 40px;
     text-align: center;
-    margin: auto;
+    margin: auto; */
+    border: 2px solid #FFF;
+    position: relative;
 }
 
 .rdoSpan {

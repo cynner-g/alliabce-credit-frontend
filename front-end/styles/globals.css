@@ -774,6 +774,10 @@ textarea {
   border: 1px solid #517BCC;
 }
 
+.modal-footer.flexstart {
+  justify-content: flex-start;
+}
+
 .info_price {
   width: 150px;
   color: #3B4A68 !important;
@@ -917,4 +921,59 @@ td.comments_indent {
   border-radius: 4px;
   padding: 10px;
   width: 100%;
+}
+
+/*Order new reports*/
+.order_reportwrap {
+  border-top: #F2F2F2;
+}
+
+.order_report_right {
+  padding-top: 15px;
+  padding-bottom: 50px;
+}
+
+.order_report_left {
+  background: #FAFAFA;
+}
+
+.report_steps {
+
+  padding: 100px 0 0px 80px;
+}
+
+.report_steps>div {
+  padding-bottom: 100px;
+}
+
+.select_report {
+  margin-bottom: 20px;
+  height: 245px;
+}
+
+.select_report>div {
+  float: left;
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+  position: relative;
+  background: #EFEFEF;
+}
+
+.select_report figure {
+  text-align: center;
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.select_report caption {
+  position: absolute;
+  bottom: -50px;
+  text-align: center;
+  width: 100%;
+  font-size: 18px;
+  color: #517BCC;
 }
