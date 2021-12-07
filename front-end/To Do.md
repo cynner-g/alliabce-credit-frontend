@@ -23,9 +23,9 @@ https://www.getpostman.com/collections/a18c1a1b7c3816fe22f4
 
 
 [Credit Report]
-We have to validate why “we have the wrong success report for bank/legal/supplier” and they are suppose to be pending and Incorporate suppose to be “DONE”
+We have to validate why “we have the wrong success report for bank/legal/supplier” and they are suppose to be pending and Incorporate suppose to be “DONE” **DONE**
 
-COLOR for status not correct
+COLOR for status not correct **DONE**
 
 Ref ID. *we should have AC ID, not the _id (the alliance id report) - ****Done?****
 Filter doesn’t work? (Select status)

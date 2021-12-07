@@ -141,48 +141,46 @@ class CreditReports extends Component {
             case -1: text = ""
             case PENDING:
                 text = "Pending";
-                className = "pending";
+                className = "or_pending";
                 badge = <span className="pending">Pending</span>;
                 badgeBG = "info";
                 break;
             case PROCESSING:
                 badge = <span className="btn processing">Processing</span>;
                 badgeBG = "processing";
-                className = "processing"
+                className = "or_processing"
                 text = "Processing"
 
                 break;
             case NEEDACTION:
                 text = "Needs Action";
-
-                className = "need_action";
+                className = "or_need_action";
                 badge = <span className="btn need_action">Needs Action</span>;
                 badgeBG = "danger";
                 break;
             case ERROR:
                 text = "Error";
-
-                className = "error"
+                className = "or_error"
                 badge = <span className="btn error">Error</span>;
                 badgeBG = "secondary";
                 break;
             case COMPLETED:
                 text = "Completed"
                 badge = <span className="btn completed">Completed</span>;
-                className = "success"
+                className = "or_success"
 
                 badgeBG = 'success';
                 break;
             case CANCELLED:
                 text = "Cancelled";
-                className = "status-cancelled"
+                className = "or_cancelled"
                 badge = <span className="btn canceled">Cancelled</span>;
                 badgeBG = 'dark';
                 break;
             default: break;
 
         }
-        return { css: className, text, badge, badgeBG };
+        return { className: className, text, badge, badgeBG };
     }
 
     buildDateTime = (dt) => {
@@ -243,26 +241,25 @@ class CreditReports extends Component {
                     <td><div>{this.buildDateTime(order_date)}</div></td>
                     <td>{subject_name}</td>
                     <td>{user_name}<br /><span className="small10">{company_name}</span></td>
-                    <td><div className={`status${status.status_code} status-badge`}>{status.badge}</div></td>
+                    <td><div className={`status${status.status_code} order-status`}>{status.badge}</div></td>
 
                     <td className="buttongroups_wrap">
                         <div className="buttongroups">
                             <div className={`status${row.reports.incorporate.status_code}`}>
                                 {(row.reports.incorporate.status_code == -1) ? '' :
-                                    <span className={`btn incorporate ${reportCodes.incorporate.className}`} >Incorporate</span>}
+                                    <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`} >Incorporate</span>}
                             </div>
                             <div className={`status${row.reports.bank.status_code}`}>
                                 {(row.reports.bank.status_code == -1) ? '' :
-                                    <span className={`btn bank_download ${reportCodes.bank.className}`} >Bank</span>}
+                                    <span className={`btn report-status bank_download ${reportCodes.bank.className}`} >Bank</span>}
                             </div>
-
                             <div className={`status${row.reports.legal.status_code}`}>
                                 {(row.reports.legal.status_code == -1) ? '' :
-                                    <span className={`btn legal ${reportCodes.legal.className}`} >Legal</span>}
+                                    <span className={`btn report-status legal ${reportCodes.legal.className}`} >Legal</span>}
                             </div>
                             <div className={`suppliers status${row.reports.suppliers.status_code}`}>
                                 {(row.reports.suppliers.status_code == -1) ? '' :
-                                    <span className={`btn supplier ${reportCodes.suppliers.className}`} >Suppliers</span>}
+                                    <span className={`btn report-status supplier ${reportCodes.suppliers.className}`} >Suppliers</span>}
                             </div>
                             <div><button className="btn download" disabled={isDisabled}>Download All</button></div>
                             <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>

@@ -352,13 +352,42 @@ input[type=text] {
   font-size: 14px;
 }
 
-.incorporate.success {
+
+
+.incorporate.warning {}
+
+
+.or_processing {
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
   color: #388F46;
 }
 
-.incorporate.warning {}
+.or_success {
+  background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+  color: #388F46;
+}
 
+.or_error {
+  background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+  color: #388F46;
+}
+
+.or_pending {
+  background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+  color: #388F46;
+}
+
+.or_cancelled {
+  background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+  color: #388F46;
+}
+
+.or_new {
+  background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+  color: #388F46;
+}
+
+/*-----*/
 
 .download {
 
@@ -385,47 +414,51 @@ input[type=text] {
 }
 
 .incorporate {
-  color: #CC9326;
+  /* color: #CC9326; */
   /* background: #FFFAF0; */
-  background: #FFFAF0 url(/icons/report-processing.svg) 95% 4px no-repeat;
+  /* background: #FFFAF0 url(/icons/report-processing.svg) 95% 4px no-repeat; */
   padding: 2px 34px 2px 10px;
 }
 
-.incorporate_download {
+/* .incorporate_download {
   color: #388F46;
   background: #E6FFEB;
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
   padding: 2px 34px 2px 10px;
-}
+} */
 
 .bank {}
 
 .bank_warning {
   color: #CF5A5A;
   background: #FFE6E6 url(/icons/download-report-green.svg) 95% 4px no-repeat;
-  padding: 2px 34px 2px 10px;
 }
 
 .bank_download {
   color: #388F46;
   /* background: #E6FFEB; */
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
-  padding: 2px 34px 2px 10px;
 }
 
 .legal {
   color: #388F46;
   /* background: #E6FFEB; */
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
-  padding: 2px 34px 2px 10px;
 }
 
 .supplier {
   color: #388F46;
   /* background: #E6FFEB; */
   background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+}
+
+
+.report-status {
+  height: 24px;
   padding: 2px 34px 2px 10px;
 }
+
+.order-status {}
 
 .upload {
   color: #FFF;
@@ -989,29 +1022,7 @@ td.comments_indent {
   color: #517BCC;
 }
 
-
 .cr-time {
   margin-top: -4px;
   font-size: 12px;
 }
-
-.status-badge {
-  height: 24px;
-}
-
-.status-pending {
-  height: 24px;
-  background-color: gray;
-}
-
-.status-processing {
-  height: 60px;
-}
-
-.status-needsAction {}
-
-.status-error {}
-
-.status-success {}
-
-.status-cancelled {}
