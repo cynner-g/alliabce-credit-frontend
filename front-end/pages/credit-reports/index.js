@@ -1,5 +1,5 @@
 import { differenceInDays, format, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
-import DatePicker, { CalendarContainer } from 'react-datepicker'
+
 import Header from "../../components/header"
 import Router from "next/router"
 import Cookies from "js-cookie"
@@ -8,8 +8,11 @@ import { Loading } from "../../components/LoadingComponent"
 import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
 import { order_list, cancel_order, add_comment, update_status } from "../api/credit_reports";
 import React, { Component } from 'react';
-import Select from 'react-select';
+// import Select from 'react-select';
+import DatePicker, { CalendarContainer } from 'react-datepicker'
+import { TagPicker, DateRangePicker } from 'rsuite'
 import "react-datepicker/dist/react-datepicker.css";
+import 'rsuite/dist/rsuite.min.css';
 import "./index.module.css"
 
 //Simple enums
@@ -650,15 +653,27 @@ class CreditReports extends Component {
 
                                 <Col sm={3} className='filterCol text-start'>
                                     <div className="status" style={{ width: '75%' }}>
-                                        <label htmlFor="Status" className="form-label">Status</label>
+                                        {/* <label htmlFor="Status" className="form-label">Status</label> */}
 
-                                        <Select className="form-select role" onChange={(e) => this.filterStatus(e)}
-                                            onClick={(e) => this.filterStatus(e)}
+                                        <TagPicker data={[
+                                            { value: "All", label: "All" },
+                                            { value: "New", label: "New" },
+                                            { value: "Processing", label: "Processing" },
+                                            { value: "Pending", label: "Pending" },
+                                            { value: "NeedsAction", label: "Needs Action" },
+                                            { value: "Completed", label: "Completed" },
+                                        ]
+                                        } placeholder='Filter Status'
+                                            style={{ width: '250px' }}
+                                        />
+
+                                        {/* <Select className="form-select role" onChange={(e) => this.filterStatus(e)}
+
                                             options={options}
                                             isMulti
                                             className="multiSelect"
                                             style={{ width: '250px' }}
-                                        />
+                                        /> */}
 
                                     </div>
                                 </Col>
