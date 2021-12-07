@@ -28,27 +28,31 @@ We have to validate why “we have the wrong success report for bank/legal/suppl
 COLOR for status not correct **DONE**
 
 Ref ID. *we should have AC ID, not the _id (the alliance id report) - ****Done?****
-Filter doesn’t work? (Select status)
-Changing component for the “Date picker”
+Filter doesn’t work? (Select status) **Done**
+Changing component for the “Date picker” **Done**
 Ordering is not working + we are not supposed to be able to order a report from an ADMIN (only from user or user manager) and from “simulate user” **TO validate the logic business
+
 Can’t download anything **
-Naming of the status are WRONG ** need action status become : Warning??
+Naming of the status are WRONG ** need action status become : Warning?? **Done?**
 
 [Credit report - Dropdown**]
 From admin side we’re not suppose to see the Request Cancellation button..  ****DONE *****
 If we change status “Message” should not only write the comment but add the status and say theirs a change in the status + comment (rewriting the logic of the change status and comments section)
-We cant just change status, if we dont post any comment it doesnt do anything…
-Pricing doesn’t work
+We cant just change status, if we dont post any comment it doesnt do anything… **Done**
+
+Pricing doesn’t work 
 
 Status&Comment :
 When we add a comment (we dont know if its private or public) need to show it somwhere or icon
 After posting the comment (the comment stay in the text box) should be erased..  ***Done***
 Status should be in a “box” which we can scroll so its not taking all the page, add max-height with scrolling ***Done***
 
+****************CANNOT DO*********************
 [Credit report Button : dropdown]
 Show external link doesnt work
 view credit application doesn’t work
 Set Manually pricing doesnt work
+
 
 [Credit report (VIEW form)]
 “add bank” and add supplier should not be there in the view mode
@@ -63,10 +67,13 @@ Missing “Legal Section” in step2 (we need to add province selection, to make
 We might use the field “State” and make it as a select province from the list..
 **What happens if we send multiple bank for “plaid automation” we will need to send same number of plaid link? So they could pull 2 banks or more.. if necessary?
 We will need to refine the “FORM” in a better view logic way for all data with some logic depending on what we have clicked roughly
+
+
 Database Report:
 Not completed at all?
 Search page ?
 API MISSING ?
+
 Companies:
 [Add company]
 refine the form (naming)
@@ -156,7 +163,7 @@ Forgot password doesn’t work
 
 
 
-Components to use from React Suite:
+<!-- Components to use from React Suite:
 [Credit Reports]
 1. "TagPicker" - For selecting status for filtering - https://rsuitejs.com/components/tag-picker/
 2. "DateRangePicker" - Calendee with predefined days - https://rsuitejs.com/components/date-range-picker/#show-one-calendar
@@ -166,4 +173,4 @@ Multi-select by tag and support new options
 rsuitejs.com
 rsuitejs.com
 DateRangePicker
-Used to quickly select a date range
+Used to quickly select a date range -->
