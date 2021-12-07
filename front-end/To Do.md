@@ -25,7 +25,7 @@ https://www.getpostman.com/collections/a18c1a1b7c3816fe22f4
 [Credit Report]
 We have to validate why “we have the wrong success report for bank/legal/supplier” and they are suppose to be pending and Incorporate suppose to be “DONE”
 COLOR for status not correct
-Ref ID. *we should have AC ID, not the _id (the alliance id report)
+Ref ID. *we should have AC ID, not the _id (the alliance id report) - ****Done?****
 Filter doesn’t work? (Select status)
 Changing component for the “Date picker”
 Ordering is not working + we are not supposed to be able to order a report from an ADMIN (only from user or user manager) and from “simulate user” **TO validate the logic business
@@ -33,14 +33,15 @@ Can’t download anything **
 Naming of the status are WRONG ** need action status become : Warning??
 
 [Credit report - Dropdown**]
-From admin side we’re not suppose to see the Request Cancellation button..
+From admin side we’re not suppose to see the Request Cancellation button..  ****DONE *****
 If we change status “Message” should not only write the comment but add the status and say theirs a change in the status + comment (rewriting the logic of the change status and comments section)
 We cant just change status, if we dont post any comment it doesnt do anything…
 Pricing doesn’t work
+
 Status&Comment :
 When we add a comment (we dont know if its private or public) need to show it somwhere or icon
-After posting the comment (the comment stay in the text box) should be erased..
-Status should be in a “box” which we can scroll so its not taking all the page, add max-height with scrolling
+After posting the comment (the comment stay in the text box) should be erased..  ***Done***
+Status should be in a “box” which we can scroll so its not taking all the page, add max-height with scrolling ***Done***
 
 [Credit report Button : dropdown]
 Show external link doesnt work

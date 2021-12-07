@@ -227,145 +227,150 @@ class CreditReports extends Component {
 
         return (
             <>
-                <tr key={index}>
-                    <td>{refId}</td>
-                    <td>{order_date}<br /><span className="small10">{order_time}</span></td>
-                    <td>{subject_name}</td>
-                    <td>{user_name}<br /><span className="small10">{company_name}</span></td>
+                <td style={{ width: '100%' }}><table style={{ width: '100%' }}>
+                    <tbody style={{ width: '100%' }}>
+                        <tr >
+                            <td>{refId}</td>
+                            <td>{order_date}<br /><span className="small10">{order_time}</span></td>
+                            <td>{subject_name}</td>
+                            <td>{user_name}<br /><span className="small10">{company_name}</span></td>
+                            <td><div className={`status${status.status_code}`}>{status.badge}</div></td>
 
-                    <td><div className={`status${status.status_code}`}>{status.badge}</div></td>
+                            <td className="buttongroups_wrap">
+                                <div className="buttongroups">
+                                    <div className={`status${row.reports.incorporate.status_code}`}>
+                                        {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div>
+                                    <div className={`status${row.reports.bank.status_code}`}>
+                                        {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div>
 
+                                    <div className={`status${row.reports.legal.status_code}`}>
+                                        {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div>
 
-                    <td className="buttongroups_wrap">
-                        <div className="buttongroups">
-                            <div className={`status${row.reports.incorporate.status_code}`}>
-                                {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div>
-                            <div className={`status${row.reports.bank.status_code}`}>
-                                {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div>
+                                    <div className={`suppliers status${row.reports.suppliers.status_code}`}>
+                                        {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
 
-                            <div className={`status${row.reports.legal.status_code}`}>
-                                {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div>
+                                    <div><button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button></div>
+                                    <div><button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr className="collapse" key={index + "_2"}>
+                            <td colSpan={6} className="comments_indent">
+                                <Table style={{ width: '100%' }} striped >
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan={1}>
+                                                {this.state.role === 'admin' ? '' :
+                                                    <button className="btn btnremove"
+                                                        onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
+                                                }
+                                            </td>
+                                            <td colSpan={1}>
 
-                            <div className={`suppliers status${row.reports.suppliers.status_code}`}>
-                                {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
-
-                            <div><button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button></div>
-                            <div><button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr className="collapse" key={index + "_2"}>
-                    <td colSpan={6} className="comments_indent">
-                        <Table style={{ width: '100%' }} striped >
-                            <tbody>
-                                <tr>
-                                    <td colSpan={1}>
-                                        <button className="btn btnremove"
-                                            onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
-                                    </td>
-                                    <td colSpan={1}>
-
-                                    </td>
-                                    <td colSpan={1}>
-                                        <div className="admin_moreinfo text-end">
-                                            {this.state.role === 'admin' ?
-                                                <>
-                                                    <button className="btn btn_light" style={{ borderWidth: '1px' }}
-                                                        onClick={() => this.changeStatus(row)}>Change Status</button>
-                                                    <button className="btn btn_light" style={{ borderWidth: '1px' }}
-                                                        onClick={() => this.showLinks(row._id)}>Show External Links</button>
-                                                </>
-                                                :
-                                                ''
-                                            }
-                                            <button className="btn btnedit" disabled
-                                                onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
-                                            <button className="btn btnedit"
-                                                onClick={() => this.orderReport(row._id)}>View Report Form</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={11} className="comments_indent">
-                                        <h5>More Information</h5>
-                                        <div className="more_info_wrap">
-                                            <table width="100%">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <p>
-                                                                Price Chart: <strong>A1</strong><br />
-                                                                User Phone: <strong>+1234567890</strong><br />
-                                                                User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
-                                                            </p>
-                                                        </td>
-                                                        <td className="info_manual">Set Manually</td>
-                                                        <td className="info_price"><strong>Final Price:</strong><br />
-                                                            Price :<br />
-                                                            Aging Discount :<br />
-                                                            Extra<br />
-                                                        </td>
-                                                        <td className="info_unit"><strong>CAD 90</strong><br />
-                                                            CAD 100<br />
-                                                            CAD 10 (10%)<br />
-                                                            CAD 20
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={11} className="comments_indent">
-                                        <h5>Status & Comments</h5>
-                                        <div className="comments_wrapper">
-                                            {this.state.role === 'admin' ?
-                                                <table width="100%">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <input type='text' className="form-control" onChange={(e) => this.setState({ newComment: e.target.value })}
-                                                                    placeholder='Write a comment here' />
-                                                            </td>
-                                                            <td className="post_status_wrap">
-                                                                <select className="form-select" onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
-                                                                    <option value='private'>Private</option>
-                                                                    <option value='public'>Public</option>
-                                                                </select>
-                                                            </td>
-                                                            <td className="post_add_wrap">
-                                                                <button className="btn btn-primary" onClick={(e) => this.setNewComment(e, row)}>Post</button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                : ''
-                                            }
-                                            <div className="comments_item_wrap">
-                                                {row.comments?.map((comment, idx) => {
-                                                    if (!comment.is_private || this.state.role === 'admin') {
-                                                        return (
-                                                            <div className='comments_items' key={idx}>
-                                                                <h6>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
-                                                                {comment.comment} {this.getStatusCss(comment.status).badge}<br />
-                                                                <small>{this.getDate(comment.create_date)}</small>
-                                                            </div>
-                                                        )
+                                            </td>
+                                            <td colSpan={1}>
+                                                <div className="admin_moreinfo text-end">
+                                                    {this.state.role === 'admin' ?
+                                                        <>
+                                                            <button className="btn btn_light" style={{ borderWidth: '1px' }}
+                                                                onClick={() => this.changeStatus(row)}>Change Status</button>
+                                                            <button className="btn btn_light" style={{ borderWidth: '1px' }}
+                                                                onClick={() => this.showLinks(row._id)}>Show External Links</button>
+                                                        </>
+                                                        :
+                                                        ''
                                                     }
-                                                    else return '';
-                                                })}
+                                                    <button className="btn btnedit" disabled
+                                                        onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
+                                                    <button className="btn btnedit"
+                                                        onClick={() => this.orderReport(row._id)}>View Report Form</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={11} className="comments_indent">
+                                                <h5>More Information</h5>
+                                                <div className="more_info_wrap">
+                                                    <table width="100%">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <p>
+                                                                        Price Chart: <strong>A1</strong><br />
+                                                                        User Phone: <strong>+1234567890</strong><br />
+                                                                        User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
+                                                                    </p>
+                                                                </td>
+                                                                <td className="info_manual">Set Manually</td>
+                                                                <td className="info_price"><strong>Final Price:</strong><br />
+                                                                    Price :<br />
+                                                                    Aging Discount :<br />
+                                                                    Extra<br />
+                                                                </td>
+                                                                <td className="info_unit"><strong>CAD 90</strong><br />
+                                                                    CAD 100<br />
+                                                                    CAD 10 (10%)<br />
+                                                                    CAD 20
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={11} className="comments_indent">
+                                                <h5>Status & Comments</h5>
+                                                <div className="comments_wrapper">
+                                                    {this.state.role === 'admin' ?
+                                                        <table width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input type='text' className="form-control" value={this.state.newComment} onChange={(e) => this.setState({ newComment: e.target.value })}
+                                                                            placeholder='Write a comment here' />
+                                                                    </td>
+                                                                    <td className="post_status_wrap">
+                                                                        <select className="form-select" value={this.state.newCommentVisibility} onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
+                                                                            <option value='private'>Private</option>
+                                                                            <option value='public'>Public</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td className="post_add_wrap">
+                                                                        <button className="btn btn-primary" onClick={(e) => this.setNewComment(e, row)}>Post</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        : ''
+                                                    }
+                                                    <div className="comments_item_wrap">
+                                                        {row.comments?.map((comment, idx) => {
+                                                            if (!comment.is_private || this.state.role === 'admin') {
+                                                                return (
+                                                                    <div className='comments_items' key={idx}>
+                                                                        <h6>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
+                                                                        {comment.comment} {this.getStatusCss(comment.status).badge}<br />
+                                                                        <small>{this.getDate(comment.create_date)}</small>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            else return null;
+                                                        })}
 
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
 
-                            </tbody>
-                        </Table>
+                                    </tbody>
+                                </Table>
 
-                    </td>
-                </tr >
+                            </td>
+                        </tr >
+                    </tbody>
+                </table>
+                </td>
             </>)
     }
 
@@ -427,7 +432,7 @@ class CreditReports extends Component {
 
         await add_comment(comment, token);
         this.get_data();
-        e.target.value = '';
+        this.setState({ newComment: '', newCommentVisibility: 'private' })
     }
 
     getDate = (dt) => {
@@ -551,24 +556,24 @@ class CreditReports extends Component {
                         </Modal.Header>
                         <Modal.Body>
 
-                            <div class="form-check">
+                            <div className="form-check">
                                 <input type='checkbox' className="form-check-input" id="processing"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
                                     checked={this.state.rowStatus?.status == PROCESSING} />
 
-                                <label class="form-check-label" for="processing">Processing</label>
+                                <label className="form-check-label" htmlFor="processing">Processing</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
 
                                 <input type='checkbox' className="form-check-input" id="needaction"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
                                     checked={this.state.rowStatus?.status == NEEDACTION} />
 
-                                <label class="form-check-label" for="needaction">Need Action</label>
+                                <label className="form-check-label" htmlFor="needaction">Need Action</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
 
                                 <input type='checkbox' className="form-check-input" id="error"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
@@ -576,25 +581,25 @@ class CreditReports extends Component {
                                     checked={this.state.rowStatus?.status == ERROR} />
 
 
-                                <label class="form-check-label" for="error">Error</label>
+                                <label className="form-check-label" htmlFor="error">Error</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
                                 <input type='checkbox' className="form-check-input"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
                                     checked={this.state.rowStatus?.status == PENDING} />
 
 
-                                <label class="form-check-label" for="flexCheckDefault">Pending</label>
+                                <label className="form-check-label" htmlFor="flexCheckDefault">Pending</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
                                 <input type='checkbox' className="form-check-input"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
                                     checked={this.state.rowStatus?.status == COMPLETED} />
 
 
-                                <label class="form-check-label" for="flexCheckDefault">Completed</label>
+                                <label className="form-check-label" htmlFor="flexCheckDefault">Completed</label>
                             </div>
                             {this.rowStatus?.status ? this.getStatusCss(this.rowStatus?.status).badge : ''}
 
@@ -672,8 +677,8 @@ class CreditReports extends Component {
 
                             </Row>
                         </div>
-                        <div className="listing">
-                            <table width="100%">
+                        <div className="listing" style={{ width: '100%' }}>
+                            <table width="100%" style={{ width: '100%' }}>
                                 <thead>
                                     <tr>
                                         <th className="sorted"><span>Ref. Id</span></th>
@@ -688,7 +693,11 @@ class CreditReports extends Component {
                                 </thead>
                                 <tbody>
                                     {this.state.filteredReportList?.map((row, index) => {
-                                        return this.tblRow(row, index);
+                                        return (
+                                            <tr key={index} style={{ width: '100%' }}>
+                                                {this.tblRow(row, index)}
+                                            </tr>
+                                        )
                                     })}
                                 </tbody>
                             </table>

@@ -816,6 +816,9 @@ p small {
 
 .comments_item_wrap {
   padding: 16px 16px 0;
+  height: 500px;
+  width: 100%;
+  overflow: scroll;
 }
 
 .comments_items {
