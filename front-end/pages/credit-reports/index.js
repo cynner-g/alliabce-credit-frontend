@@ -146,8 +146,8 @@ class CreditReports extends Component {
                 badgeBG = "info";
                 break;
             case PROCESSING:
-                badge = <Badge className="btn processing" bg="warning">Processing</Badge>;
-                badgeBG = "warning";
+                badge = <span className="btn processing">Processing</span>;
+                badgeBG = "processing";
                 text = "Processing";
                 icon = "faClock"
                 break;
@@ -239,7 +239,7 @@ class CreditReports extends Component {
                     <td className="buttongroups_wrap">
                         <div className="buttongroups">
                             <div className={`status${row.reports.incorporate.status_code}`}>
-                                {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div>
+                                {(row.reports.incorporate.status_code == -1) ? '' : <span className={`btn incorporate ${reportCodes.incorporate.badgeBG}`}>Incorporate</span>}</div>
                             <div className={`status${row.reports.bank.status_code}`}>
                                 {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div>
 

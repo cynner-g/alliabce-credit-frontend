@@ -352,6 +352,14 @@ input[type=text] {
   font-size: 14px;
 }
 
+.incorporate.success {
+  background: #E6FFEB url(/icons/download-report-green.svg) 95% 4px no-repeat;
+  color: #388F46;
+}
+
+.incorporate.warning {}
+
+
 .download {
 
   line-height: 21px;
