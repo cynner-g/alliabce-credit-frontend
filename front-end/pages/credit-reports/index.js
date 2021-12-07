@@ -1,4 +1,4 @@
-import { differenceInDays, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
+import { differenceInDays, format, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
 import DatePicker, { CalendarContainer } from 'react-datepicker'
 import Header from "../../components/header"
 import Router from "next/router"
@@ -136,30 +136,34 @@ class CreditReports extends Component {
     //from setStatus()
     getStatusCss = (code) => {
         code = +code; //ensure it's a number, not a string
-        let css, text = "", icon = "", badge = <></>, badgeBG = "";
+        let css, text = "", icon = "", badge = <></>, badgeBG = "", className = '';
         switch (code) {
             case -1: text = ""
             case PENDING:
                 text = "Pending";
                 icon = "faExclamationTriangle";
+                className = "status-pending",
                 badge = <Badge bg="info">Pending</Badge>;
                 badgeBG = "info";
                 break;
             case PROCESSING:
                 badge = <Badge className="btn processing" bg="warning">Processing</Badge>;
                 badgeBG = "warning";
+                className = "status-processing",
                 text = "Processing";
                 icon = "faClock"
                 break;
             case NEEDACTION:
-                text = "warning?????";
+                text = "Needs Action";
                 icon = "faExclamationTriangle";
-                badge = <Badge bg="danger">Warning</Badge>;
+                className = "status-needsAction",
+                    badge = <Badge bg="danger">Needs Action</Badge>;
                 badgeBG = "danger";
                 break;
             case ERROR:
                 text = "Error";
                 icon = "faExclamationTriangle";
+                className = "status-error",
                 badge = <Badge bg="secondary">Error</Badge>;
                 badgeBG = "secondary";
 
@@ -167,11 +171,13 @@ class CreditReports extends Component {
             case COMPLETED:
                 text = "Completed"
                 badge = <Badge className="btn completed" bg='success'>Completed</Badge>;
+                className = "status-success",
                 icon = "faDownload"
                 badgeBG = 'success';
                 break;
             case CANCELLED:
                 text = "Cancelled";
+                className = "status-cancelled",
                 badge = <Badge className="btn canceled" bg='dark'>Cancelled</Badge>;
                 badgeBG = 'dark';
                 break;
@@ -179,6 +185,13 @@ class CreditReports extends Component {
 
         }
         return { css: css, text: text, icon: icon, badge: badge, badgeBG: badgeBG };
+    }
+
+    buildDateTime = (dt) => {
+        dt = new Date(dt);
+        let day = 'MM-dd-uuuu'
+        let time = 'h:mmaa'
+        return (<><div>{format(dt, day)}</div><div className='cr-time' style={{ marginTop: '-4px', fontSize: '12px' }}>{format(dt, time)}</div></>)
     }
 
     tblRow = (row, index) => {
@@ -227,28 +240,33 @@ class CreditReports extends Component {
 
         return (
             <>
-                <td style={{ width: '100%' }}><table style={{ width: '100%' }}>
-                    <tbody style={{ width: '100%' }}>
+
                         <tr >
                             <td>{refId}</td>
-                            <td>{order_date}<br /><span className="small10">{order_time}</span></td>
+                    <td><div>{this.buildDateTime(order_date)}</div></td>
                             <td>{subject_name}</td>
                             <td>{user_name}<br /><span className="small10">{company_name}</span></td>
-                            <td><div className={`status${status.status_code}`}>{status.badge}</div></td>
+                    <td><div className={`status${status.status_code} status-badge`}>{status.badge}</div></td>
 
                             <td className="buttongroups_wrap">
                                 <div className="buttongroups">
                                     <div className={`status${row.reports.incorporate.status_code}`}>
-                                        {(row.reports.incorporate.status_code == -1) ? '' : <span className="btn incorporate" bg={reportCodes.incorporate.badgeBG}>Incorporate</span>}</div>
+                                {(row.reports.incorporate.status_code == -1) ? '' :
+                                    <span className={`btn incorporate status-badge ${reportCodes.incorporate.className}`} >Incorporate</span>}
+                            </div>
                                     <div className={`status${row.reports.bank.status_code}`}>
-                                        {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div>
+                                {(row.reports.bank.status_code == -1) ? '' :
+                                    <span className={`btn bank_download status-badge ${reportCodes.bank.className}`} >Bank</span>}
+                            </div>
 
                                     <div className={`status${row.reports.legal.status_code}`}>
-                                        {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div>
-
+                                {(row.reports.legal.status_code == -1) ? '' :
+                                    <span className={`btn legal status-badge ${reportCodes.legal.className}`} >Legal</span>}
+                            </div>
                                     <div className={`suppliers status${row.reports.suppliers.status_code}`}>
-                                        {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
-
+                                {(row.reports.suppliers.status_code == -1) ? '' :
+                                    <span className={`btn supplier status-badge ${reportCodes.suppliers.className}`} >Suppliers</span>}
+                            </div>
                                     <div><button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button></div>
                                     <div><button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                                 </div>
@@ -368,9 +386,7 @@ class CreditReports extends Component {
 
                             </td>
                         </tr >
-                    </tbody>
-                </table>
-                </td>
+
             </>)
     }
 
@@ -692,13 +708,7 @@ class CreditReports extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.filteredReportList?.map((row, index) => {
-                                        return (
-                                            <tr key={index} style={{ width: '100%' }}>
-                                                {this.tblRow(row, index)}
-                                            </tr>
-                                        )
-                                    })}
+                                    {this.state.filteredReportList?.map((row, index) => this.tblRow(row, index))}
                                 </tbody>
                             </table>
                         </div>

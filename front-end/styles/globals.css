@@ -980,3 +980,30 @@ td.comments_indent {
   font-size: 18px;
   color: #517BCC;
 }
+
+
+.cr-time {
+  margin-top: -4px;
+  font-size: 12px;
+}
+
+.status-badge {
+  height: 24px;
+}
+
+.status-pending {
+  height: 24px;
+  background-color: gray;
+}
+
+.status-processing {
+  height: 60px;
+}
+
+.status-needsAction {}
+
+.status-error {}
+
+.status-success {}
+
+.status-cancelled {}
