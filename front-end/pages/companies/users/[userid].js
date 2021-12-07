@@ -81,35 +81,17 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             }
         }
 
-        // let body = {
-
-        // }
-
-        // "language": 'en',
-        // "api_token": token,
-        // "company_id": qstr.userid,
-        // "filter_user_role": filter_user_role,
-        // "filter_company": filter_company,
-        // "sort_by": sort_by,
-        // "is_desc": is_desc
-
-        // console.log(body);
-        // const req = await fetch('${process.env.API_URL}/user/list-user', {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(body)
-
-        // });
-
         let body = {
+
             "language": 'en',
             "api_token": token,
             "company_id": qstr.userid,
+            "filter_user_role": filter_user_role,
+            "filter_company": filter_company,
             "sort_by": sort_by,
             "is_desc": is_desc
         }
+
 
         const resCompanies = await fetch(`${process.env.API_URL}/user/list-user`, {
             method: "POST",
@@ -145,6 +127,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             }
         }
 
+        if (!ischecked.includes(qstr.userid)) ischecked.push(qstr.userid);
         let body = {
             "full_name": fullNname,
             "email_id": emailID,

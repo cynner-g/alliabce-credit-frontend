@@ -128,11 +128,14 @@ export async function getServerSideProps(ctx) {
     /**
      * limit, start, search item
      */
-    return {
-        props: {
-            data: data?.data
+    if (data && data.status_code !== 200) {
+        return {
+            props: {
+                data: data?.data
+            }
         }
     }
+    else return { props: { data: null } };
 }
 export default CompanyDetails
 

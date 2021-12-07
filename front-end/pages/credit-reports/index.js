@@ -1,4 +1,4 @@
-import { differenceInDays, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
+import { differenceInDays, format, formatRelative, subDays, parseISO, add, getMonth, getYear, lastDayOfMonth, lastDayOfYear } from 'date-fns'
 import DatePicker, { CalendarContainer } from 'react-datepicker'
 import Header from "../../components/header"
 import Router from "next/router"
@@ -136,49 +136,60 @@ class CreditReports extends Component {
     //from setStatus()
     getStatusCss = (code) => {
         code = +code; //ensure it's a number, not a string
-        let css, text = "", icon = "", badge = <></>, badgeBG = "";
+        let css, text = "", icon = "", badge = <></>, badgeBG = "", className = '';
         switch (code) {
             case -1: text = ""
             case PENDING:
                 text = "Pending";
-                icon = "faExclamationTriangle";
-                badge = <Badge bg="info">Pending</Badge>;
+                className = "pending";
+                badge = <span className="pending">Pending</span>;
                 badgeBG = "info";
                 break;
             case PROCESSING:
                 badge = <span className="btn processing">Processing</span>;
                 badgeBG = "processing";
-                text = "Processing";
-                icon = "faClock"
+                className = "processing"
+                text = "Processing"
+
                 break;
             case NEEDACTION:
-                text = "warning?????";
-                icon = "faExclamationTriangle";
-                badge = <Badge bg="danger">Warning</Badge>;
+                text = "Needs Action";
+
+                className = "need_action";
+                badge = <span className="btn need_action">Needs Action</span>;
                 badgeBG = "danger";
                 break;
             case ERROR:
                 text = "Error";
-                icon = "faExclamationTriangle";
-                badge = <Badge bg="secondary">Error</Badge>;
-                badgeBG = "secondary";
 
+                className = "error"
+                badge = <span className="btn error">Error</span>;
+                badgeBG = "secondary";
                 break;
             case COMPLETED:
                 text = "Completed"
-                badge = <Badge className="btn completed" bg='success'>Completed</Badge>;
-                icon = "faDownload"
+                badge = <span className="btn completed">Completed</span>;
+                className = "success"
+
                 badgeBG = 'success';
                 break;
             case CANCELLED:
                 text = "Cancelled";
-                badge = <Badge className="btn canceled" bg='dark'>Cancelled</Badge>;
+                className = "status-cancelled"
+                badge = <span className="btn canceled">Cancelled</span>;
                 badgeBG = 'dark';
                 break;
             default: break;
 
         }
-        return { css: css, text: text, icon: icon, badge: badge, badgeBG: badgeBG };
+        return { css: className, text, badge, badgeBG };
+    }
+
+    buildDateTime = (dt) => {
+        dt = new Date(dt);
+        let day = 'MM-dd-uuuu'
+        let time = 'h:mmaa'
+        return (<><div>{format(dt, day)}</div><div className='cr-time' style={{ marginTop: '-4px', fontSize: '12px' }}>{format(dt, time)}</div></>)
     }
 
     tblRow = (row, index) => {
@@ -227,30 +238,34 @@ class CreditReports extends Component {
 
         return (
             <>
-                <tr key={index}>
+                <tr>
                     <td>{refId}</td>
-                    <td>{order_date}<br /><span className="small10">{order_time}</span></td>
+                    <td><div>{this.buildDateTime(order_date)}</div></td>
                     <td>{subject_name}</td>
                     <td>{user_name}<br /><span className="small10">{company_name}</span></td>
-
-                    <td><div className={`status${status.status_code}`}>{status.badge}</div></td>
-
+                    <td><div className={`status${status.status_code} status-badge`}>{status.badge}</div></td>
 
                     <td className="buttongroups_wrap">
                         <div className="buttongroups">
                             <div className={`status${row.reports.incorporate.status_code}`}>
-                                {(row.reports.incorporate.status_code == -1) ? '' : <span className={`btn incorporate ${reportCodes.incorporate.badgeBG}`}>Incorporate</span>}</div>
+                                {(row.reports.incorporate.status_code == -1) ? '' :
+                                    <span className={`btn incorporate ${reportCodes.incorporate.className}`} >Incorporate</span>}
+                            </div>
                             <div className={`status${row.reports.bank.status_code}`}>
-                                {(row.reports.bank.status_code == -1) ? '' : <span className="btn bank_download" bg={reportCodes.bank.badgeBG}>Bank</span>}</div>
+                                {(row.reports.bank.status_code == -1) ? '' :
+                                    <span className={`btn bank_download ${reportCodes.bank.className}`} >Bank</span>}
+                            </div>
 
                             <div className={`status${row.reports.legal.status_code}`}>
-                                {(row.reports.legal.status_code == -1) ? '' : <button className="btn legal" bg={reportCodes.legal.badgeBG}>Legal</button>}</div>
-
+                                {(row.reports.legal.status_code == -1) ? '' :
+                                    <span className={`btn legal ${reportCodes.legal.className}`} >Legal</span>}
+                            </div>
                             <div className={`suppliers status${row.reports.suppliers.status_code}`}>
-                                {(row.reports.suppliers.status_code == -1) ? '' : <button className="btn supplier" bg={reportCodes.suppliers.badgeBG}>Suppliers</button>}</div>
-
-                            <div><button className="btn download" style={{ border: "none" }} disabled={isDisabled}>Download All</button></div>
-                            <div><button className="downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
+                                {(row.reports.suppliers.status_code == -1) ? '' :
+                                    <span className={`btn supplier ${reportCodes.suppliers.className}`} >Suppliers</span>}
+                            </div>
+                            <div><button className="btn download" disabled={isDisabled}>Download All</button></div>
+                            <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                         </div>
                     </td>
                 </tr>
@@ -260,8 +275,10 @@ class CreditReports extends Component {
                             <tbody>
                                 <tr>
                                     <td colSpan={1}>
-                                        <button className="btn btnremove"
-                                            onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
+                                        {this.state.role === 'admin' ? '' :
+                                            <button className="btn btnremove"
+                                                onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
+                                        }
                                     </td>
                                     <td colSpan={1}>
 
@@ -325,11 +342,11 @@ class CreditReports extends Component {
                                                     <tbody>
                                                         <tr>
                                                             <td>
-                                                                <input type='text' className="form-control" onChange={(e) => this.setState({ newComment: e.target.value })}
+                                                                <input type='text' className="form-control" value={this.state.newComment} onChange={(e) => this.setState({ newComment: e.target.value })}
                                                                     placeholder='Write a comment here' />
                                                             </td>
                                                             <td className="post_status_wrap">
-                                                                <select className="form-select" onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
+                                                                <select className="form-select" value={this.state.newCommentVisibility} onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
                                                                     <option value='private'>Private</option>
                                                                     <option value='public'>Public</option>
                                                                 </select>
@@ -353,7 +370,7 @@ class CreditReports extends Component {
                                                             </div>
                                                         )
                                                     }
-                                                    else return '';
+                                                    else return null;
                                                 })}
 
                                             </div>
@@ -366,6 +383,7 @@ class CreditReports extends Component {
 
                     </td>
                 </tr >
+
             </>)
     }
 
@@ -427,7 +445,7 @@ class CreditReports extends Component {
 
         await add_comment(comment, token);
         this.get_data();
-        e.target.value = '';
+        this.setState({ newComment: '', newCommentVisibility: 'private' })
     }
 
     getDate = (dt) => {
@@ -537,9 +555,11 @@ class CreditReports extends Component {
         }
         else {
             let options = [
-                { value: "Canceled", label: "Cancelled" },
-                { value: "Completed", label: "Completed" },
+                { value: "All", label: "All" },
                 { value: "Processing", label: "Processing" },
+                { value: "Pending", label: "Pending" },
+                { value: "NeedsAction", label: "Needs Action" },
+                { value: "Completed", label: "Completed" },
             ]
             return (
                 <>
@@ -551,24 +571,24 @@ class CreditReports extends Component {
                         </Modal.Header>
                         <Modal.Body>
 
-                            <div class="form-check">
+                            <div className="form-check">
                                 <input type='checkbox' className="form-check-input" id="processing"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
                                     checked={this.state.rowStatus?.status == PROCESSING} />
 
-                                <label class="form-check-label" for="processing">Processing</label>
+                                <label className="form-check-label" htmlFor="processing">Processing</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
 
                                 <input type='checkbox' className="form-check-input" id="needaction"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
                                     checked={this.state.rowStatus?.status == NEEDACTION} />
 
-                                <label class="form-check-label" for="needaction">Need Action</label>
+                                <label className="form-check-label" htmlFor="needaction">Need Action</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
 
                                 <input type='checkbox' className="form-check-input" id="error"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
@@ -576,25 +596,25 @@ class CreditReports extends Component {
                                     checked={this.state.rowStatus?.status == ERROR} />
 
 
-                                <label class="form-check-label" for="error">Error</label>
+                                <label className="form-check-label" htmlFor="error">Error</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
                                 <input type='checkbox' className="form-check-input"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
                                     checked={this.state.rowStatus?.status == PENDING} />
 
 
-                                <label class="form-check-label" for="flexCheckDefault">Pending</label>
+                                <label className="form-check-label" htmlFor="flexCheckDefault">Pending</label>
                             </div>
-                            <div class="form-check">
+                            <div className="form-check">
                                 <input type='checkbox' className="form-check-input"
                                     onClick={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
                                     onChange={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
                                     checked={this.state.rowStatus?.status == COMPLETED} />
 
 
-                                <label class="form-check-label" for="flexCheckDefault">Completed</label>
+                                <label className="form-check-label" htmlFor="flexCheckDefault">Completed</label>
                             </div>
                             {this.rowStatus?.status ? this.getStatusCss(this.rowStatus?.status).badge : ''}
 
@@ -672,8 +692,8 @@ class CreditReports extends Component {
 
                             </Row>
                         </div>
-                        <div className="listing">
-                            <table width="100%">
+                        <div className="listing" style={{ width: '100%' }}>
+                            <table width="100%" style={{ width: '100%' }}>
                                 <thead>
                                     <tr>
                                         <th className="sorted"><span>Ref. Id</span></th>
@@ -687,9 +707,7 @@ class CreditReports extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.filteredReportList?.map((row, index) => {
-                                        return this.tblRow(row, index);
-                                    })}
+                                    {this.state.filteredReportList?.map((row, index) => this.tblRow(row, index))}
                                 </tbody>
                             </table>
                         </div>
