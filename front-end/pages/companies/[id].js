@@ -128,7 +128,7 @@ export async function getServerSideProps(ctx) {
     /**
      * limit, start, search item
      */
-    if (data && data.status_code !== 200) {
+    if (data) {
         return {
             props: {
                 data: data?.data
