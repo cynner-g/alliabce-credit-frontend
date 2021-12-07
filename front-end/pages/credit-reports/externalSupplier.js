@@ -201,7 +201,7 @@ const ExternalSupplier = () => {
 
                 </Row>
                 <Row>
-                    <Col><input type='submit'>Submit</input>
+                    <Col><button type='submit'>Submit</button>
                         <button type='button'>Reject</button>
                     </Col>
                 </Row>
