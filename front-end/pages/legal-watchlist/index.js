@@ -14,6 +14,7 @@ const LegalWatchlist = (props) => {
     let [watchlists, setWatchlists] = useState(props.data.watchlist);
     let [companyList, setCompanyList] = useState([]);
     let [currentWatchlistID, setCurrentWatchlistID] = useState(props.data.watchlist?.length > 0 ? props.data.watchlist[0]._id : null);
+    let [emailsList, setEmailsList] = useState([]);
 
     const [totalCompaniesAllowed, setTotalCompaniesAllowed] = useState(props.data.total_companies_allowed)
     const [totalCompaniesCreated, setTotalCompaniesCreated] = useState(props.data.total_companies_created)
@@ -22,6 +23,7 @@ const LegalWatchlist = (props) => {
 
     const [showCreateWatchlist, setShowCreateWatchlist] = useState(false);
     const [showAddCompany, setShowAddCompany] = useState(false);
+    const [showEmailList, setShowEmailList] = useState(false);
 
     const [newWatchlistName, setNewWatchlistName] = useState('');
     const [newCompanyName, setNewCompanyName] = useState('');
@@ -29,9 +31,9 @@ const LegalWatchlist = (props) => {
     const [newCompanyRefNum, setNewCompanyRefNum] = useState('');
 
     const [provinceList, setProvinces] = useState(props.provinces);
-    const [currentPage, setCurrentpage] = useState(0);
-    const [sort, setSort] = useState('');
-    const [is_desc, setOrderDescending] = useState(false);
+    const [currentWatchlistPage, setCurrentWatchlistpage] = useState(0);
+    const [sortWatchlist, setSortWatchlist] = useState('');
+    const [is_watchlistSort_desc, setOrderDescending] = useState(false);
     const [companyID, setCompanyID] = useState(props.companyID);
 
     const router = useRouter();
@@ -96,10 +98,10 @@ const LegalWatchlist = (props) => {
         let body = {
             "api_token": token,
             watchlist_id: currentWatchlistID,
-            skip: currentPage * pageSize,
-            limit: currentPage * pageSize + pageSize,
-            is_desc: is_desc,
-            sort_by: sort
+            skip: currentWatchlistPage * pageSize,
+            limit: currentWatchlistPage * pageSize + pageSize,
+            is_desc: is_watchlistSort_desc,
+            sort_by: sortWatchlist
         }
 
         const resCompanies = await fetch(`${process.env.API_URL}/watchlist/companies-in-watchlist`, {
@@ -110,8 +112,20 @@ const LegalWatchlist = (props) => {
             body: JSON.stringify(body)
         })
 
-        let list = await resCompanies.json();
-        setCompanyList(list.data);
+        let companiesList = await resCompanies.json();
+
+        const resEmails = await fetch(`${process.env.API_URL}/watchlist/emails-in-watchlist`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        })
+
+        let emails = await resEmails.json();
+
+        setCompanyList(companiesList.data);
+        setEmailsList(emails.data)
     }
 
     const addNewCompany = async () => {
@@ -190,6 +204,49 @@ const LegalWatchlist = (props) => {
         setNewCompanyProvinces(provinces)
     }
 
+    const showHeadButtons = () => {
+        //display watchlist dropdown, add new watchlist button, add company button, email list button
+        //if no companies for this watchlist show add companies message, else show companies.
+        //as soon as watchlist changes update company list
+        let options = [];
+
+        if (watchlists) {
+            watchlists.forEach((row, index) => {
+                options.push({ value: row._id, label: row.name });
+            })
+        }
+        let value = options[0].value;
+        if (currentWatchlistID) value = currentWatchlistID
+        return (
+            <>
+                <Row>
+                    <Col sm={12}>
+                        {parseCookies().role == "admin" ? <TabButton id={companyID || 0} url={''} /> : ''}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={3}>
+                        <div style={{ width: '200px' }}>
+                            <Select options={options} value={
+                                options.filter(option => option.value === value)
+                            } onChange={(e) => setWatchlist(e.value)} />
+                        </div>
+                    </Col>
+                    <Col sm={3}><button onClick={() => setShowCreateWatchlist(true)}>Create New Watchlist</button></Col>
+                    <Col sm={6} style={{ textAlign: 'right' }} className="mr0">Companies Added: {totalCompaniesCreated}/{totalCompaniesAllowed}</Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <button className='btn btn-primary' id='btnCompanies' onClick={() => setShowAddCompany(true)}>Add company</button>&nbsp;
+                        <button className='btn btn-primary' id='btnEmails' onClick={() => setShowEmailList(true)} >Add email</button>
+                        <br /><br />
+                    </Col>
+                    <Col></Col>
+                    <Col></Col>
+                </Row>
+            </>
+        )
+    }
 
     const showModals = () => {
         return (
@@ -299,47 +356,10 @@ const LegalWatchlist = (props) => {
     }
 
     const showWatchLists = () => {
-        //display watchlist dropdown, add new watchlist button, add company button, email list button
-        //if no companies for this watchlist show add companies message, else show companies.
-        //as soon as watchlist changes update company list
-        let options = [];
-
-        if (watchlists) {
-            watchlists.forEach((row, index) => {
-                options.push({ value: row._id, label: row.name });
-            })
-        }
-        let value = options[0].value;
-        if (currentWatchlistID) value = currentWatchlistID
-
         return (
             <>
                 <Container>
-                    <Row>
-                        <Col sm={12}>
-                            {parseCookies().role == "admin" ? <TabButton id={companyID || 0} url={''} /> : ''}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={3}>
-                            <div style={{ width: '200px' }}>
-                                <Select options={options} value={
-                                    options.filter(option => option.value === value)
-                                } onChange={(e) => setWatchlist(e.value)} />
-                            </div>
-                        </Col>
-                        <Col sm={3}><button onClick={() => setShowCreateWatchlist(true)}>Create New Watchlist</button></Col>
-                        <Col sm={6} style={{ textAlign: 'right' }} className="mr0">Companies Added: {totalCompaniesCreated}/{totalCompaniesAllowed}</Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <button className='btn btn-primary' id='btnCompanies' onClick={() => setShowAddCompany(true)}>Add company</button>&nbsp;
-                            <button className='btn btn-primary' id='btnEmails' onClick={() => setEmailList(true)} >Add email</button>
-                            <br /><br />
-                        </Col>
-                        <Col></Col>
-                        <Col></Col>
-                    </Row>
+                    {showHeadButtons()}
 
                     {
                         companyList?.length > 0 ?
@@ -380,6 +400,44 @@ const LegalWatchlist = (props) => {
             </Row>
         )
     }
+
+
+    const showEmailListPage = (list) => {
+        return (
+            <>
+                {showHeadButtons()}
+                <Row>
+                    <table>
+                        <thead>
+                            <tr><th>Email</th>
+                                <th>Date Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {emailsList.filter(item => item.watchlist == currentWatchlistID).map(row => {
+                                return (
+                                    <tr>
+                                        <td>{row.email}</td>
+                                        <td>
+                                            {new Date(row.dateAdded).toLocaleDateString()}<br />
+                                            <div style={{ marginTop: '-5px', fontSize: '9px' }}>
+                                                {new Date(row.dateAdded).toLocaleTimeString()}</div></td>
+
+                                        <td>
+                                            {/* <button className={styles.tblButton + ' btn btn-primary'}>View More</button> */}
+                                            <button className={styles.tblButton + ' btn btn-warning'} onClick={() => this.removeEmail(row.email)}>Remove</button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </Row>
+            </>
+        )
+    }
+
     return (
         <>
             {showModals()}
@@ -388,7 +446,10 @@ const LegalWatchlist = (props) => {
                 Display page.  Show watchlists OR addwatchlist message
                 Show Companies OR add company message
             */}
-            {watchlists?.length > 0 ?
+
+            {showEmailList ? showEmailListPage()
+                :
+                watchlists?.length > 0 ?
                 showWatchLists()
                 :
                 showAddWatchlist()
