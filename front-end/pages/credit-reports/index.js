@@ -127,6 +127,9 @@ class CreditReports extends Component {
         // await this.setState({ filteredReportList: newData })
     }
 
+    showLinks = () => {
+
+    }
     //returns markup and text for report Status 
     //according to the passed in status code
     //primarily used from tblRow() but also called
@@ -606,9 +609,9 @@ class CreditReports extends Component {
 
 
                         </Modal.Body >
-                        <Modal.Footer>
+                        <Modal.Footer className="flexstart">
                             <div>
-                                <button className="btn btn-outline-primary" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
+                                <button className="btn btnedit m-3" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
                                     Cancel
                                 </button>
                                 <button className="btn btn-primary" onClick={() => this.setStatus(null, null, 2)}>

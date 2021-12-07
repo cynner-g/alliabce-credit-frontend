@@ -2,6 +2,7 @@ import { FormComponent } from '../../components/FormComponent';
 import Header from "../../components/header"
 import Router from "next/router";
 import Image from 'next/image'
+import Link from 'next/link'
 import { Component } from 'react'
 import { Container, Row, Col, Modal } from 'react-bootstrap';
 import {
@@ -996,36 +997,34 @@ class OrderNewReport extends Component {
         let style = {}
         if (stepNum == this.state.step) { style = styles.stepContainer } else { style = styles.stepUndone };
         return (
-            <Col className={stepNum <= this.state.step ? styles.stepContainer : styles.stepUndone}>
+            <div className={stepNum <= this.state.step ? `${styles.stepContainer}` : `${styles.stepUndone}`}>
                 <div className={stepNum <= this.state.step ? styles.stepBullet : styles.stepUnselected}>{stepNum}</div>
                 {stepNum <= this.state.step ? <button className={styles.stepLink + " btn btn-link"} onClick={() => this.setState({ step: stepNum })} >{stepText}</button>
                     : <div className={styles.stepUnselected}>{stepText}</div>
                 }
-            </Col>
+            </div>
         )
     }
 
     buildSteps = () => {
         return (
-            <Container>
-                <Row>
-                    {this.buildStep("Select Reports", 1)}
-                </Row>
-                <Row>
-                    {this.buildStep("Fill in Details", 2)}
-                    {/* <Col className={styles.stepUndone}>
+            <div className="report_steps">
+
+                {this.buildStep("Select Reports", 1)}
+
+                {this.buildStep("Fill in Details", 2)}
+                {/* <Col className={styles.stepUndone}>
                         <div className={styles.stepUnselected}>2</div>
                         Fill in Details
                     </Col> */}
-                </Row>
-                <Row>
-                    {this.buildStep("Done", 3)}
-                    {/* <Col className={styles.stepUndone}>
+
+                {this.buildStep("Done", 3)}
+                {/* <Col className={styles.stepUndone}>
                         <div className={styles.stepUnselected}>3</div>
                         Done
                     </Col> */}
-                </Row>
-            </Container>)
+
+            </div>)
     }
 
     render() {
@@ -1064,124 +1063,127 @@ class OrderNewReport extends Component {
                         </Modal.Footer>
                     </Modal>
                     <Header />
-                    <Container>
+                    <div className="breadcrumb">
+                        <ul className=" me-auto mb-2 mb-lg-0">
+                            <li><Link href="/credit-report"><a className="nav-link">Credit Report</a></Link></li>
+                            <li>Order New Report</li>
+                        </ul>
+                    </div>
+
+                    <div className="order_reportwrap">
                         <Row>
-                            <Col sm={3} >
+                            <Col sm={3} className="order_report_left" >
                                 {this.buildSteps()}
                             </Col>
                             <Col sm={9}>
-                                <Container>
-                                    <Row>
-                                        <div className={styles.stepContainer} onChange={(e) => this.setRegion(e)}>
-                                            Select Region<br />
-                                            <div className={styles.rdoSpan}>
-                                                <input type='checkbox' name='region' value="Quebec"
-                                                    onChange={() => { }}
-                                                    checked={this.state.region == "Quebec"}
-                                                    className={styles.rdoCheck}
-                                                    id='rdoQuebec' />
-                                                <label htmlFor='rdoQuebec'>Quebec</label>
-                                            </div>
-                                            <div className={styles.rdoSpan}>
-                                                <input type='checkbox' name='region' value="Canada"
-                                                    checked={this.state.region == "Canada"}
-                                                    className={styles.rdoCheck}
-                                                    onChange={() => { }}
-                                                    id='rdoCanada' />
-                                                <label htmlFor='rdoCanada'>Canada</label>
-                                            </div>
-                                            <div className={styles.rdoSpan}>
-                                                <input type='checkbox' name='region' value="USA"
-                                                    checked={this.state.region == "USA"}
-                                                    onChange={() => { }}
-                                                    className={styles.rdoCheck}
-                                                    id='rdoUSA' />
-                                                <label htmlFor='rdoUSA'>USA</label>
-                                            </div>
+                                <div className="order_report_right">
+                                    <div className="or_search mb-3">
+                                        <label htmlFor="select_company"></label>
+                                        <input type="text" name="" value="" placeholder="try entering the company name" />
+                                    </div>
+
+                                    <div className={`mb-3 ${styles.stepContainer}`} onChange={(e) => this.setRegion(e)}>
+                                        <div>Select Region</div>
+                                        <div className={`form-check ${styles.rdoSpan}`}>
+                                            <input type='checkbox' name='region' value="Quebec"
+                                                onChange={() => { }}
+                                                checked={this.state.region == "Quebec"}
+                                                className={`form-check-input ${styles.rdoCheck}`}
+                                                id='rdoQuebec' />
+                                            <label className="form-check-label" htmlFor='rdoQuebec'>Quebec</label>
                                         </div>
-                                        <br />
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <div className={styles.stepContainer}>
-                                                Select the reports you want to order, or you can click on "Select All" to select all at once<br />
-                                                <button className="btn btn-outline-primary" onClick={this.selectAllReports}>Select All</button>
-                                            </div>
-                                        </Col>
+                                        <div className={`form-check ${styles.rdoSpan}`}>
+                                            <input type='checkbox' name='region' value="Canada" className="form-check-input"
+                                                checked={this.state.region == "Canada"}
+                                                className={`form-check-input ${styles.rdoCheck}`}
+                                                onChange={() => { }}
+                                                id='rdoCanada' />
+                                            <label className="form-check-label" htmlFor='rdoCanada'>Canada</label>
+                                        </div>
+                                        <div className={`form-check ${styles.rdoSpan}`}>
+                                            <input type='checkbox' name='region' value="USA" className="form-check-input"
+                                                checked={this.state.region == "USA"}
+                                                onChange={() => { }}
+                                                className={`form-check-input ${styles.rdoCheck}`}
+                                                id='rdoUSA' />
+                                            <label className="form-check-label" htmlFor='rdoUSA'>USA</label>
+                                        </div>
+                                    </div>
 
-                                    </Row>
-                                    <Row>
-                                        <Col sm={3}>
+                                    <div className={`mb-3 ${styles.stepContainer}`}>
+                                        Select the reports you want to order, or you can click on "Select All" to select all at once<br />
+                                        <button className="btn btn-outline-primary" onClick={this.selectAllReports}>Select All</button>
+                                    </div>
 
-                                            <div className={this.state.reports[0] ? styles.imageCase : styles.imageCaseHidden}
-                                                onClick={e => this.toggleReport(0)}>
-                                                <Image
-                                                    src='/images/Inc.png'
-                                                    height={108}
-                                                    width={108}
-                                                />
-                                                Incorporate
-                                            </div></Col>
-                                        <Col sm={3}>
-                                            <div className={this.state.reports[1] ? styles.imageCase : styles.imageCaseHidden}
-                                                onClick={e => this.toggleReport(1)}>
-                                                <Image
-                                                    src='/images/Bank.png'
-                                                    height={108}
-                                                    width={108}
-                                                />
-                                                Bank
-                                            </div>
-                                        </Col>
-                                        <Col sm={3}>
-                                            <div className={this.state.reports[2] ? styles.imageCase : styles.imageCaseHidden}
-                                                onClick={e => this.toggleReport(2)}>
-                                                <Image
-                                                    src='/images/Legal.png'
-                                                    height={108}
-                                                    width={108}
-                                                />
-                                                Legal
-                                            </div>
-                                        </Col>
-                                        <Col sm={3}>
-                                            <div className={this.state.reports[3] ? styles.imageCase : styles.imageCaseHidden}
-                                                onClick={e => this.toggleReport(3)}>
-                                                <Image
-                                                    src='/images/suppliers.png'
-                                                    height={108}
-                                                    width={108}
-                                                />
-                                                Suppliers
-                                            </div>
-                                        </Col>
+                                    <div className="select_report">
+                                        <div className={this.state.reports[0] ? styles.imageCase : styles.imageCaseHidden}
+                                            onClick={e => this.toggleReport(0)}>
+                                            <figure><Image
+                                                src='/images/Inc.png'
+                                                height={108}
+                                                width={108}
+                                            /></figure>
+                                            <caption>Incorporate</caption>
+                                        </div>
+                                        <div className={this.state.reports[1] ? styles.imageCase : styles.imageCaseHidden}
+                                            onClick={e => this.toggleReport(1)}>
+                                            <figure><Image
+                                                src='/images/Bank.png'
+                                                height={108}
+                                                width={108}
+                                            /></figure>
+                                            <caption>Bank</caption>
+                                        </div>
+                                        <div className={this.state.reports[2] ? styles.imageCase : styles.imageCaseHidden}
+                                            onClick={e => this.toggleReport(2)}>
+                                            <figure><Image
+                                                src='/images/Legal.png'
+                                                height={108}
+                                                width={108}
+                                            /></figure>
+                                            <caption>Legal</caption>
+                                        </div>
+                                        <div className={this.state.reports[3] ? styles.imageCase : styles.imageCaseHidden}
+                                            onClick={e => this.toggleReport(3)}>
+                                            <figure><Image
+                                                src='/images/suppliers.png'
+                                                height={108}
+                                                width={108}
+                                            /></figure>
+                                            <caption>Suppliers</caption>
+                                        </div>
+                                    </div>
+                                    <div className="clearB"></div>
+                                </div>
 
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <div className={styles.stepContainer}>
 
-                                                <label className="form-label" htmlFor="customFile">Upload credit application</label>
-                                                <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
-                                            </div>
-                                        </Col>
+                                <Row>
+                                    <Col>
+                                        <div className={styles.stepContainer}>
 
-                                    </Row>
-                                    <Row>
-                                        <Col sm={10}>
-                                            <div className={styles.stepContainer}>
-                                                <button className="btn btn-outline-primary" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
-                                            </div>
-                                        </Col>
-                                        <Col>
-                                            <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
-                                        </Col>
+                                            <label className="form-label" htmlFor="customFile">Upload credit application</label>
+                                            <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
+                                        </div>
+                                    </Col>
 
-                                    </Row>
-                                </Container>
+                                </Row>
+                                <div className="mb-5">&nbsp;</div>
+                                <div className="mb-5">&nbsp;</div>
+                                <Row>
+                                    <Col sm={6} className="text-start">
+                                        <div className={styles.stepContainer}>
+                                            <button className="btn btn-outline-primary" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
+                                        </div>
+                                    </Col>
+                                    <Col className="text-text-end">
+                                        <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
+                                    </Col>
+
+                                </Row>
+                                <div className="pb-5">&nbsp;</div>
                             </Col>
                         </Row>
-                    </Container>
+                    </div>
                 </>
             )
         }
