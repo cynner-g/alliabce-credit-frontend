@@ -156,8 +156,8 @@ class CreditReports extends Component {
             case NEEDACTION:
                 text = "Needs Action";
                 icon = "faExclamationTriangle";
-                className = "status-needsAction",
-                    badge = <Badge bg="danger">Needs Action</Badge>;
+                className = "status-needsAction";
+                badge = <Badge bg="danger">Needs Action</Badge>;
                 badgeBG = "danger";
                 break;
             case ERROR:
@@ -166,7 +166,6 @@ class CreditReports extends Component {
                 className = "status-error",
                 badge = <Badge bg="secondary">Error</Badge>;
                 badgeBG = "secondary";
-
                 break;
             case COMPLETED:
                 text = "Completed"
@@ -558,9 +557,11 @@ class CreditReports extends Component {
         }
         else {
             let options = [
-                { value: "Canceled", label: "Cancelled" },
-                { value: "Completed", label: "Completed" },
+                { value: "All", "All"},
                 { value: "Processing", label: "Processing" },
+                { value: "Pending", label: "Pending" },
+                { value: "NeedsAction", label: "Needs Action" },
+                { value: "Completed", label: "Completed" },
             ]
             return (
                 <>
