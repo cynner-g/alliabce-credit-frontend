@@ -30,6 +30,8 @@ const LegalWatchlist = (props) => {
     const [newCompanyProvinces, setNewCompanyProvinces] = useState([]);
     const [newCompanyRefNum, setNewCompanyRefNum] = useState('');
 
+    const [newEmail, setNewEmail] = useState('');
+
     const [provinceList, setProvinces] = useState(props.provinces);
     const [currentWatchlistPage, setCurrentWatchlistpage] = useState(0);
     const [sortWatchlist, setSortWatchlist] = useState('');
@@ -74,17 +76,23 @@ const LegalWatchlist = (props) => {
 
         const resCompaniesData = await resCompanies.json()
         if (resCompaniesData?.data) {
-            setWatchlists(resCompaniesData.data)
+            ss(resCompaniesData.data)
         }
         if (!currentWatchlistID) setCurrentWatchlistID(resCompaniesData.data[0]._id);
         await getWatchlistCompanies(resCompaniesData.data[0]._id);
     }
 
+
+    const changeCurrentWatchlist = (id) => {
+        setCurrentWatchlistID(id);
+        getWatchlistCompanies(id)
+    }
+
     //get all companies for the current watchlist
-    const getWatchlistCompanies = async () => {
+    const getWatchlistCompanies = async (currentId) => {
         //get companies for this watchlist
         const token = Cookies.get('token');
-
+        if (!currentId) currentId = currentWatchlistID;
         if (!token) {
             return {
                 redirect: {
@@ -97,35 +105,33 @@ const LegalWatchlist = (props) => {
 
         let body = {
             "api_token": token,
-            watchlist_id: currentWatchlistID,
+            watchlist_id: currentId,
             skip: currentWatchlistPage * pageSize,
             limit: currentWatchlistPage * pageSize + pageSize,
             is_desc: is_watchlistSort_desc,
             sort_by: sortWatchlist
         }
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/companies-in-watchlist`, {
+        Promise.all([
+            fetch(`${process.env.API_URL}/watchlist/companies-in-watchlist`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(body)
-        })
+            }).then(resCompanies => resCompanies.json())
+                .then(companiesList => setCompanyList(companiesList.data))
+            ,
 
-        let companiesList = await resCompanies.json();
-
-        const resEmails = await fetch(`${process.env.API_URL}/watchlist/emails-in-watchlist`, {
+            fetch(`${process.env.API_URL}/watchlist/emails-in-watchlist`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(body)
-        })
-
-        let emails = await resEmails.json();
-
-        setCompanyList(companiesList.data);
-        setEmailsList(emails.data)
+            }).then(resEmails => resEmails.json())
+                .then(emails => setEmailsList(emails.data))
+        ]);
     }
 
     const addNewCompany = async () => {
@@ -183,6 +189,24 @@ const LegalWatchlist = (props) => {
         getWatchlistCompanies();
     }
 
+    const addNewEmail = async () => {
+        let token = Cookies.get('token');
+        let body = {
+            "api_token": token,
+            watchlist_id: currentWatchlistID,
+            email_id: newEmail
+        }
+
+        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/remove-company-from-watchlist`, {
+            method: "POST",
+            headers: {
+                "Content-Type": false,
+            },
+            body: JSON.stringify(body)
+        })
+        getWatchlistCompanies()// =>loads company data and emails data
+    }
+
 
     const addNewWatchlist = async () => {
         const token = Cookies.get('token');
@@ -205,8 +229,9 @@ const LegalWatchlist = (props) => {
 
         fetch_watchlists();
         setNewWatchlistName('');
-        setSetShowCreateWatchlist(false)
+        setShowCreateWatchlist(false)
     }
+
 
     const updateNewCompanyProvinceList = (e, province) => {
         let provinces = [...newCompanyProvinces];
@@ -246,7 +271,7 @@ const LegalWatchlist = (props) => {
                         <div style={{ width: '200px' }}>
                             <Select options={options} value={
                                 options.filter(option => option.value === value)
-                            } onChange={(e) => setWatchlist(e.value)} />
+                            } onChange={(e) => changeCurrentWatchlist(e.value)} />
                         </div>
                     </Col>
                     <Col sm={3}><button onClick={() => setShowCreateWatchlist(true)}>Create New Watchlist</button></Col>
@@ -254,7 +279,7 @@ const LegalWatchlist = (props) => {
                 </Row>
                 <Row>
                     <Col>
-                        <button className='btn btn-primary' id='btnCompanies' onClick={() => setShowAddCompany(true)}>Add company</button>&nbsp;
+                        <button className='btn btn-primary' id='btnCompanies' onClick={() => { setShowAddCompany(true); setShowEmailList(false) }}>Add company</button>&nbsp;
                         <button className='btn btn-primary' id='btnEmails' onClick={() => setShowEmailList(true)} >Add email</button>
                         <br /><br />
                     </Col>
@@ -419,11 +444,21 @@ const LegalWatchlist = (props) => {
     }
 
 
-    const showEmailListPage = (list) => {
+    const showEmailListPage = () => {
         return (
             <>
+                <Container>
                 {showHeadButtons()}
                 <Row>
+                        <Col>
+                            <input type='text' placeholder='Enter Business Email' onChange={(e) => setNewEmail(e.target.value)} />
+                            <button className='btn btn-primary' id='btnCompanies' onClick={() => addNewEmail()}>Add Email</button>
+                            <br /><br />
+                        </Col>
+                        <Col></Col>
+                        <Col></Col>
+                    </Row>
+                    <Row>
                     <table>
                         <thead>
                             <tr><th>Email</th>
@@ -432,7 +467,7 @@ const LegalWatchlist = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {emailsList.filter(item => item.watchlist == currentWatchlistID).map(row => {
+                                {emailsList ? emailsList?.filter(item => item.watchlist == currentWatchlistID).map(row => {
                                 return (
                                     <tr>
                                         <td>{row.email}</td>
@@ -447,10 +482,12 @@ const LegalWatchlist = (props) => {
                                         </td>
                                     </tr>
                                 )
-                            })}
+                                })
+                                    : ''}
                         </tbody>
                     </table>
                 </Row>
+                </Container>
             </>
         )
     }
