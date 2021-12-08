@@ -6,7 +6,8 @@ import Cookies from 'js-cookie';
 import Logo from './logo';
 import { Nav, Button } from 'react-bootstrap';
 import { useEffect } from 'react';
-const Header = () => {
+
+const Header = (props) => {
     const router = useRouter();
     const { token } = parseCookies();
     const role = Cookies.get('role');
@@ -124,8 +125,12 @@ const Header = () => {
                         </Nav>
                     </div>
                     <div className="col">
+                        <span className='status_header'>{props?.message || ''}</span>
                         <div className="user_nav pull-right">
-                            <div className="hello pull-right">Hello {name}</div>
+                            <div className="hello pull-right">
+
+                                Hello {name}
+                            </div>
                             <div className="dropdown pull-right">
                                 <a className="nav-link dropdown-toggle" href="#" id="dropdownMenuButton1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 

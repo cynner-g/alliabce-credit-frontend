@@ -7,69 +7,102 @@ import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 
-const addCompany = ({ industry, group, pricing }) => {
+const addCompany = ({ industry, group, pricing, company, parentID }) => {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => { setShow(true); setMessage(''); };
 
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
-
     const [formStatus, setFormStatus] = useState(false);
-    const [query, setQuery] = useState({
-        // company_logo_en: "",
-        // company_logo_fr: "",
-        company_name_en: "",
-        company_name_fr: "",
-        website: "",
-        domain: "",
-        email_id: "",
-        country_code: "",
-        phone_number: "",
-        address_line: "",
-        state: "",
-        city: "",
-        zip_code: "",
-        portal_language: "",
-        industry_id: "",
-        // groups: "",
-        pricing_chart_id: "",
-        bank_report_coun: "",
-        suppliers_report_count: "",
-        watchlist_count: "",
-        company_in_watchlist_count: "",
-        quick_report_price: "",
-        aging_discount: ""
-    });
+    // const [query, setQuery] = useState({ ...company.data });
+    console.log(company.data)
 
 
-    const handleFileChangeen = () => (e) => {
-        console.warn(e.target.files[0])
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_en: e.target.files[0]
-        // }));
-        setCompany_logo_en(e.target.files[0]);
+    const [language, setLanguage] = useState(company.portal_language);
+    const [company_name_en, setCompany_name_en] = useState(company.company_name_en || company.company_name);
+    const [company_name_fr, setCompany_name_fr] = useState(company.company_name_fr || company.company_name);
+    const [website, setWebsite] = useState(company.website);
+    const [domain, setDomain] = useState(company.domain || '');
+    const [email_id, setEmail_id] = useState(company.email_id);
+    const [country_code, setCountry_code] = useState(company.phone_number.country_code);
+    const [phone_number, setPhone_number] = useState(company.phone_number.phone_number);
+    const [address_line, setAddress_line] = useState(company.address.address_line);
+    const [province, setProvince] = useState(company.address.state_name);
+    const [city, setCity] = useState(company.address.city_name);
+    const [postal_code, setPostal_code] = useState(company.address.zip_code);
+    const [portal_language, setPortal_language] = useState(company.portal_language);
+    const [industry_id, setIndustry_id] = useState(company.industry_data._id);
+
+    const [message, setMessage] = useState('');
+
+    /*
+    {
+            // company_logo_en: "",
+            // company_logo_fr: "",
+            company_name_en: "",
+            company_name_fr: "",
+            website: "",
+            domain: "",
+            email_id: "",
+            country_code: "",
+            phone_number: "",
+            address_line: "",
+            state: "",
+            city: "",
+            zip_code: "",
+            portal_language: "",
+            industry_id: "",
+            // groups: "",
+            pricing_chart_id: "",
+            bank_report_coun: "",
+            suppliers_report_count: "",
+            watchlist_count: "",
+            company_in_watchlist_count: "",
+            quick_report_price: "",
+            aging_discount: ""
+        }
+    */
+    const handleFileChangeen = (e) => {
+        if (e?.target?.files) {
+            console.warn(e.target.files[0])
+            setCompany_logo_en(e.target.files[0]);
+        }
     };
 
-    const handleFileChangefr = () => (e) => {
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_fr: e.target.files[0]
-        // }));
-        setcompany_logo_fr(e.target.files[0])
+    const handleFileChangefr = (e) => {
+        if (e?.target?.files) {
+            console.warn(e.target.files[0])
+            setCompany_logo_fr(e.target.files[0]);
+        }
     };
 
-    const handleChange = () => (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setQuery((prevState) => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+    // const handleChange = (e) => {
+    //     const name = e.target.id;
+    //     const value = e.target.value;
+    //     let qry = query;
+    //     switch (name) {
+    //         case "company_name_en": qry.company_name_en = value; break;
+    //         case "company_name_fr": qry.company_name_fr = value; break;
+    //         case "website": qry.webSite = value; break;
+    //         case "domain": qry.domain = value; break;
+    //         case "email_id": qry = email_id = value; break;
+    //         case "phone_number": qry.phone_number.phone_number = value; break;
+    //         case "address_line": qry.address.address_line = value; break;
+    //         case "state": qry.address.state = value; break;
+    //         case "city_name": qry.address.city_name = value; break;
+    //         case "zip_code": qry.address.zip_code = value; break;
+    //         case "portal_language": qry.portal_language = value; break;
+    //         case "industry_id": qry.industry_data._id = value; break;
+    //     }
+    //     setQuery(qry);
+    //     // setQuery((prevState) => ({
+    //     //     ...prevState,
+    //     //     [name]: value
+    //     // }));
+    // };
 
     const addNewCompany = async (e) => {
 
@@ -83,123 +116,144 @@ const addCompany = ({ industry, group, pricing }) => {
                 },
             }
         }
-        const addCompanyDB = await fetch(`${process.env.API_URL}/company/add-company`, {
+        let body = {
+            "language": 'en',
+            "company_id": company._id,
+            "api_token": token,
+            "company_logo_en": company_logo_en,
+            "company_logo_fr": company_logo_fr,
+            "company_name_en": company_name_en,
+            "company_name_fr": company_name_fr,
+            "website": website,
+            "domain": domain,
+            "email_id": email_id,
+            "country_code": country_code,
+            "phone_number": phone_number,
+            "address_line": address_line,
+            "state": province,
+            "city": city,
+            "zip_code": postal_code,
+            "portal_language": portal_language,
+            "industry_id": industry_id,
+        }
+
+        console.log(body)
+
+
+        const addCompanyDB = await fetch(`${process.env.API_URL}/company/update-company`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "company_logo_en": company_logo_en,
-                "company_logo_fr": company_logo_fr,
-                "company_name_en": 'bb',
-                "company_name_fr": '11',
-                "website": 'www.google.com',
-                "domain": 'google.com',
-                "email_id": 'support@jklabs.ca',
-                "country_code": '+91',
-                "phone_number": '999999999',
-                "address_line": '77',
-                "state": '88',
-                "city": '99',
-                "zip_code": '10',
-                "portal_language": 'en',
-                "industry_id": '12',
-                "groups": [],
-                "pricing_chart_id": '61837b7d691bb0d09172e6d8',
-                "bank_report_count": '100',
-                "suppliers_report_count": '100',
-                "watchlist_count": '16',
-                "company_in_watchlist_count": '17',
-                "quick_report_price": '18',
-                "aging_discount": '19'
-            })
+            body: JSON.stringify()
         })
+
+        setShow(false)
+        if (addCompanyDB.status == 200) router.push(`/companies/${companyID}`)
+        else {
+            let data = await addCompanyDB.json();
+            setMessage(data.data);
+        }
+    }
+
+    const removeCompany = async () => {
+        // const addCompanyDB = await fetch(`${process.env.API_URL}/company/remove-sub-company`, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         api_token: token,
+        //         company_id: query._id
+        //     })
+        // })
+        router.push(`/companies/${parentID}`)
     }
 
     return (
         <>
-            <Header />
+            <Header message={message} />
             <div className="breadcrumb">
+                :
                 <ul className=" me-auto mb-2 mb-lg-0">
-                    <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
+                    <li className="back"><Link href={`/companies/${company.parent_company._id}`}>
+                        <a className="nav-link">{company.parent_company.company_name}</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
-                    <li>Add Company</li>
+                    <li>Edit Company</li>
                 </ul>
             </div>
             <div className="col-lg-7 companyform">
-                <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewCompany(e)}>
+                <form method="POST" encType="multipart/form-data" >
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_logo_en" className="form-label">English Logo</label>
-                            <input className="form-control" name="company_logo_en" type="file" id="company_logo_en" value={query.name} onChange={handleFileChangeen()} />
+                            <input className="form-control" name="company_logo_en" type="file" id="company_logo_en" value={company_logo_en} onChange={(e) => handleFileChangeen(e.target.value)} />
                         </div>
                         <div className="col">
                             <label htmlFor="company_logo_fr" className="form-label">French Logo</label>
-                            <input className="form-control" name="company_logo_fr" type="file" id="company_logo_fr" value={query.name} onChange={handleFileChangefr()} />
+                            <input className="form-control" name="company_logo_fr" type="file" id="company_logo_fr" value={company_logo_fr} onChange={(e) => handleFileChangefr(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_name_en" className="form-label">Company Name (English)</label>
-                            <input type="text" className="form-control" id="company_name_en" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="company_name_en" placeholder="" value={company_name_en || company_name} onChange={(e) => setCompany_name_en(e.target.value)} />
                         </div>
                         <div className="col">
-                            <label htmlFor="company_name_fr" className="form-label">Company Name (English)</label>
-                            <input type="text" className="form-control" id="company_name_fr" placeholder="" value={query.name} onChange={handleChange()} />
+                            <label htmlFor="company_name_fr" className="form-label">Company Name (French)</label>
+                            <input type="text" className="form-control" id="company_name_fr" placeholder="" value={company_name_fr || company_name} onChange={(e) => setCompany_name_fr(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="website" className="form-label">Website</label>
-                            <input type="text" className="form-control" id="website" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="website" placeholder="" value={website} onChange={(e) => setWebsite(e.target.value)} />
                         </div>
                         <div className="col">
                             <label htmlFor="domain" className="form-label">Company domain name</label>
-                            <input type="text" className="form-control" id="domain" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="domain" placeholder="" value={domain} onChange={(e) => setDomain(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="email_id" className="form-label">Email</label>
-                            <input type="text" className="form-control" id="email_id" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="email_id" placeholder="" value={email_id} onChange={(e) => setEmail_id(e.target.value)} />
                         </div>
                         <div className="col">
                             <label htmlFor="phone_number" className="form-label">Phone NUmber</label>
-                            <input type="text" className="form-control" id="phone_number" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="phone_number" placeholder="" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
                             <label htmlFor="address_line" className="form-label">Address</label>
-                            <input type="text" className="form-control" id="address_line" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="address_line" placeholder="" value={address_line} onChange={(e) => setAddress_line(e.target.value)} />
                         </div>
                     </div>
                     <div className="row">
                         <div className="col">
-                            <label htmlFor="state" className="form-label">State</label>
-                            <input type="text" className="form-control" id="state" placeholder="" value={query.name} onChange={handleChange()} />
+                            <label htmlFor="province" className="form-label">Province</label>
+                            <input type="text" className="form-control" id="province" placeholder="" value={province} onChange={(e) => setProvince(e.target.value)} />
                         </div>
                         <div className="col">
                             <label htmlFor="city" className="form-label">City</label>
-                            <input type="text" className="form-control" id="city" placeholder="" value={query.name} onChange={handleChange()} />
+                            <input type="text" className="form-control" id="city" placeholder="" value={city} onChange={(e) => setCity(e.target.value)} />
                         </div>
                         <div className="col">
-                            <label htmlFor="zip_code" className="form-label">Zip</label>
-                            <input type="text" className="form-control" id="zip_code" placeholder="" value={query.name} onChange={handleChange()} />
+                            <label htmlFor="zip_code" className="form-label">Postal Code</label>
+                            <input type="text" className="form-control" id="postal_code" placeholder="" value={postal_code} onChange={(e) => setPostal_code(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                            <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
-                                <option selected>Select Language</option>
+                            <select className="form-select form-select-sm" value={portal_language} id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setPortal_language(e.target.value)}>
+                                <option disabled>Select Language</option>
                                 <option value="en">English</option>
                                 <option value="fr">French</option>
                             </select>
@@ -208,8 +262,8 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="industry_id" className="form-label">Industry</label>
-                            <select className="form-select form-select-sm" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
-                                <option selected>Open this select menu</option>
+                            <select className="form-select form-select-sm" value={industry_id} name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={(e) => setIndustry_id(e.target.value)}>
+                                <option disabled>Open this select menu</option>
                                 {industry?.data.map((item) => (
                                     <option value={item._id}>{item.name}</option>
                                 ))}
@@ -222,8 +276,8 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col">
                             <p>&nbsp;</p>
-                            <button type="submit" className="btn btn-primary"  onClick={handleShow}>Save</button>
-                            <button type="submit" className="btn btn-primary">Remove Company</button>
+                            <button type="button" className="btn btn-primary" onClick={handleShow}>Save</button> &nbsp;
+                            <button type="button" className="btn btn-primary" onClick={removeCompany}>Remove Company</button>
                         </div>
                     </div>
 
@@ -251,7 +305,8 @@ const addCompany = ({ industry, group, pricing }) => {
 
 // export async function getStaticProps(context) {
 export async function getServerSideProps(ctx) {
-
+    const companyID = ctx.query.cid
+    const subID = ctx.query.sid
     const { token } = parseCookies(ctx)
     if (!token) {
         return {
@@ -285,6 +340,19 @@ export async function getServerSideProps(ctx) {
     })
     const group = await resGroup.json()
 
+    const subCompany = await fetch(`${process.env.API_URL}/company/company-detail`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "language": 'en',
+            "api_token": token,
+            "company_id": subID
+        })
+    })
+    const subData = await subCompany.json()
+
     // const resPricing = await fetch(`${process.env.API_URL}/group/list`, {
     //     method: "POST",
     //     headers: {
@@ -305,7 +373,9 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: []
+            pricing: [],
+            company: subData.data,
+            parentID: companyID
         }
     }
 

@@ -129,6 +129,13 @@ header {
   display: inline-block;
 }
 
+.status_header {
+  position: absolute;
+  top: 1em;
+  left: 70%;
+  color: red;
+}
+
 .company_wrap {
   background: #FAFAFA;
   position: relative;

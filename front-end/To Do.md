@@ -127,7 +127,7 @@ ref number is not mandatory (if not filled it do nothing)
 doesn’t work
 
 [Company - Aging]
-doesn’t work
+doesn’t work - ** Need retrieval API, files to test for aging **
 
 [Group]
 Show companies doesn’t work

@@ -7,7 +7,8 @@ import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 
-const addCompany = ({ industry, group, pricing }) => {
+const addCompany = ({ industry, group, pricing, msg }) => {
+    const router = useRouter();
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -26,10 +27,10 @@ const addCompany = ({ industry, group, pricing }) => {
     const [address_line, setaddress_line] = useState("");
     const [state, setstate] = useState("");
     const [city, setcity] = useState("");
-    const [zip_code, setzip_code] = useState("");
+    const [postal_code, setpostal_code] = useState("");
     const [portal_language, setportal_language] = useState("");
     const [industry_id, setindustry_id] = useState("");
-
+    const [message, setMessage] = useStstae(msg);
 
 
     const [formStatus, setFormStatus] = useState(false);
@@ -43,7 +44,7 @@ const addCompany = ({ industry, group, pricing }) => {
         address_line: "",
         state: "",
         city: "",
-        zip_code: "",
+        postal_code: "",
         portal_language: "",
         industry_id: "",
     });
@@ -88,32 +89,45 @@ const addCompany = ({ industry, group, pricing }) => {
                 },
             }
         }
+
+        let body = {
+            "language": 'en',
+            "api_token": token,
+            "parent_company_id": companyID,
+            "company_logo_en": company_logo_en,
+            "company_logo_fr": company_logo_fr,
+            "company_name": "missing layout not matching with API",
+            "company_name_en": company_name_en,
+            "company_name_fr": company_name_fr,
+            "website": website,
+            "email_id": email_id,
+            "country_code1": "+1",
+            "phone_number": phone_number,
+            "address_line": address_line,
+            "state": state,
+            "city": city,
+            "postal_code": postal_code,
+            "portal_language": portal_language,
+            "industry_id": industry_id,
+        }
+
+        console.log(body);
+
         const addCompanyDB = await fetch(`${process.env.API_URL}/company/add-sub-company`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "parent_company_id": companyID,
-                "company_logo_en": company_logo_en,
-                "company_logo_fr": company_logo_fr,
-                "company_name": "missing layout not matching with API",
-                "company_name_en": company_name_en,
-                "company_name_fr": company_name_fr,
-                "website": website,
-                "email_id": email_id,
-                "country_code1": "+1",
-                "phone_number": phone_number,
-                "address_line": address_line,
-                "state": state,
-                "city": city,
-                "zip_code": zip_code,
-                "portal_language": portal_language,
-                "industry_id": industry_id,
-            })
+            body: JSON.stringify(body)
+
         })
+        // if (addCompanyDB.status === 403) {
+        //     console.log(addCompanyDB.statusText)
+        // }
+        // else {
+        if (addCompanyDB.status === 200) router.push(`/companies/${companyID}`)
+        else setMessage(addCompDB.statusText);
+        // }
     }
 
 
@@ -121,7 +135,7 @@ const addCompany = ({ industry, group, pricing }) => {
 
     return (
         <>
-            <Header />
+            <Header statusMessage={message} />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
                     <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
@@ -130,7 +144,7 @@ const addCompany = ({ industry, group, pricing }) => {
                 </ul>
             </div>
             <div className="col-lg-7 companyform">
-                <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewCompany(e)}>
+                <form method="POST" encType="multipart/form-data">
                     <div className="row">
                         <div className="col">
                             <label htmlFor="company_logo_en" className="form-label">English Logo</label>
@@ -148,7 +162,7 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" className="form-control" id="company_name_en" placeholder="" value={company_name_en} onChange={(e) => setCompany_name_en(e.target.value)} />
                         </div>
                         <div className="col">
-                            <label htmlFor="company_name_fr" className="form-label">Company Name (English)</label>
+                            <label htmlFor="company_name_fr" className="form-label">Company Name (French)</label>
                             <input type="text" className="form-control" id="company_name_fr" placeholder="" value={company_name_fr} onChange={(e) => setcompany_name_fr(e.target.value)} />
                         </div>
                     </div>
@@ -173,7 +187,7 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" className="form-control" id="email_id" placeholder="" value={email_id} onChange={(e) => setemail_id(e.target.value)} />
                         </div>
                         <div className="col">
-                            <label htmlFor="phone_number" className="form-label">Phone NUmber</label>
+                            <label htmlFor="phone_number" className="form-label">Phone Number</label>
                             <input type="text" className="form-control" id="phone_number" placeholder="" value={phone_number} onChange={(e) => setphone_number(e.target.value)} />
                         </div>
                     </div>
@@ -186,7 +200,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     </div>
                     <div className="row">
                         <div className="col">
-                            <label htmlFor="state" className="form-label">State</label>
+                            <label htmlFor="state" className="form-label">Province</label>
                             <input type="text" className="form-control" id="state" placeholder="" value={state} onChange={(e) => setstate(e.target.value)} />
                         </div>
                         <div className="col">
@@ -194,16 +208,18 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" className="form-control" id="city" placeholder="" value={city} onChange={(e) => setcity(e.target.value)} />
                         </div>
                         <div className="col">
-                            <label htmlFor="zip_code" className="form-label">Zip</label>
-                            <input type="text" className="form-control" id="zip_code" placeholder="" value={zip_code} onChange={(e) => setzip_code(e.target.value)} />
+                            <label htmlFor="postal_code" className="form-label">Postal Code</label>
+                            <input type="text" className="form-control" id="postal_code" placeholder="" value={postal_code} onChange={(e) => setpostal_code(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                            <select className="form-select" id="portal_language" aria-label="" onChange={(e) => setportal_language(e.target.value)}>
-                                <option selected>Select Language</option>
+                            <select className="form-select" id="portal_language"
+                                aria-label="" onChange={(e) => setportal_language(e.target.value)}
+                                defaultValue='select'>
+                                <option value='select' disabled>Select Language</option>
                                 <option value="en">English</option>
                                 <option value="fr">French</option>
                             </select>
@@ -212,10 +228,12 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="industry_id" className="form-label">Industry</label>
-                            <select className="form-select" name="industry_id" id="industry_id" aria-label="" setindustry_id={(e) => setwebsite(e.target.value)}>
-                                <option selected>Open this select menu</option>
-                                {industry?.data.map((item) => (
-                                    <option value={item._id}>{item.name}</option>
+                            <select className="form-select" name="industry_id" id="industry_id"
+                                aria-label="" onChange={(e) => setindustry_id(e.target.value)}
+                                defaultValue='industrySelect'>
+                                <option value='industrySelect' disabled>Please choose industry</option>
+                                {industry?.data.map((item, idx) => (
+                                    <option key={idx} value={item._id}>{item.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -223,7 +241,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col">
                             <p>&nbsp;</p>
-                            <button type="submit" className="btn btn-primary"  onClick={handleShow}>Save</button>
+                            <button type="button" className="btn btn-primary" onClick={handleShow}>Save</button>
                         </div>
                     </div>
                     <div className="row">
@@ -238,7 +256,7 @@ const addCompany = ({ industry, group, pricing }) => {
                         <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
                         <Modal.Footer>
                             <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
-                            <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
+                            <button type="button" className="btn btn-primary" onClick={() => addNewCompany()}>Confirm</button>
                         </Modal.Footer>
                     </Modal>
                 </form>
@@ -304,7 +322,8 @@ export async function getServerSideProps(ctx) {
         props: {
             industry,
             group,
-            pricing: []
+            pricing: [],
+            message: ''
         }
     }
 

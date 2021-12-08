@@ -8,7 +8,7 @@ const SubCompanies = function ({ id, subCompanies }) {
             {subCompanies?.map((item) => (
                 <>
                     <div className="company_wrap">
-                        <Link href={`/companies/edit-sub-company/${item._id}`}><a className="btn btnedit edit_company">Edit Sub Company</a></Link>
+                        <Link href={`/companies/edit-sub-company?sid=${item._id}&cid=${id}`}><a className="btn btnedit edit_company">Edit Sub Company</a></Link>
                         <div className="imagewrap">
 
                         </div>

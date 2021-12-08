@@ -38,10 +38,10 @@ const ForgotPassword = () => {
         })
         const res2 = await res.json();
         if (res2.status_code == 403) {
-            setloginMessage("Either User name doesnot exists");
+            setloginMessage("User name does not exist");
         } else if (res2.status_code == 200) {
             setName("");
-            setloginMessage("Email has been send, please follow the login instruction");
+            setloginMessage("Email has been sent, please follow the login instruction");
         } else {
             setloginMessage("Ajax fails");
         }
