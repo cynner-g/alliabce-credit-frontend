@@ -1079,7 +1079,7 @@ class OrderNewReport extends Component {
                                 <div className="order_report_right">
                                     <div className="or_search mb-3">
                                         <label htmlFor="select_company"></label>
-                                        <input type="text" name="" value="" placeholder="try entering the company name" />
+                                        <input type="text" name="" placeholder="Company Name" />
                                     </div>
 
                                     <div className={`mb-3 ${styles.stepContainer}`} onChange={(e) => this.setRegion(e)}>

@@ -361,7 +361,9 @@ input[type=text] {
 
 
 
-.incorporate.warning {}
+.incorporate.warning {
+  color: black
+}
 
 
 .or_processing {
@@ -434,7 +436,9 @@ input[type=text] {
   padding: 2px 34px 2px 10px;
 } */
 
-.bank {}
+.bank {
+  color: black
+}
 
 .bank_warning {
   color: #CF5A5A;
@@ -465,7 +469,9 @@ input[type=text] {
   padding: 2px 34px 2px 10px;
 }
 
-.order-status {}
+.order-status {
+  color: black
+}
 
 .upload {
   color: #FFF;
@@ -544,9 +550,13 @@ input[type=text] {
   padding: 0 25px;
 }
 
-.cemail {}
+.cemail {
+  color: black
+}
 
-.cphone {}
+.cphone {
+  color: black
+}
 
 .subcompany_wrap {
   position: relative;
@@ -908,7 +918,9 @@ td.comments_indent {
 
 /*My account*/
 
-.myaccount {}
+.myaccount {
+  color: black
+}
 
 .acc_title {
   color: #517BCC;

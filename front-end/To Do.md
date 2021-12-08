@@ -1,21 +1,4 @@
-aging upload {file (xlsx), month}
 
-legal upload    {delete - file id}
-                {upload - type, language, file }
-legal upload admin  {delete - file id}           
-                    {upload - type, region, language, file }
-      
-External Pages URL's - creation and provision
-
-Credit-Reports  Add comments, report status reports and comments, set comment status
-Database Reports - List all reports, download reports, show owned reports
-
-Legal watchlist - add new watchlist, edit watchlist, delete watchlist, add/remove watchlist companies, 
-                  add/move watchlist emails, Show watchlist logs, bulk insert of companies
-
-
-                  post state data to header using <header msg={this.state.message} />
-fix multi select status
 
 https://www.getpostman.com/collections/a18c1a1b7c3816fe22f4
 
@@ -30,7 +13,8 @@ COLOR for status not correct **DONE**
 Ref ID. *we should have AC ID, not the _id (the alliance id report) - ****Done?****
 Filter doesn’t work? (Select status) **Done**
 Changing component for the “Date picker” **Done**
-Ordering is not working + we are not supposed to be able to order a report from an ADMIN (only from user or user manager) and from “simulate user” **TO validate the logic business
+Ordering is not working 
+we are not supposed to be able to order a report from an ADMIN (only from user or user manager) and from “simulate user” *TO validate the logic business - **Fixed - Enabled now for development**
 
 Can’t download anything **
 Naming of the status are WRONG ** need action status become : Warning?? **Done?**

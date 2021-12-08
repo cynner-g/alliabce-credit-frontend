@@ -197,16 +197,38 @@ const LegalWatchlist = (props) => {
             email_id: newEmail
         }
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/remove-company-from-watchlist`, {
+        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/add-email-to-watchlist`, {
             method: "POST",
             headers: {
-                "Content-Type": false,
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(body)
         })
         getWatchlistCompanies()// =>loads company data and emails data
     }
 
+    const removeEmail = async (id) => {
+
+        let token = Cookies.get('token')
+        //TODO:  Set api
+        let body = {
+            "api_token": token,
+            watchlist_id: currentWatchlistID,
+            email_record_id: id
+        }
+
+        console.log(body);
+
+        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/remove-email-from-watchlist`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body)
+        })
+
+        getWatchlistCompanies();
+    }
 
     const addNewWatchlist = async () => {
         const token = Cookies.get('token');
@@ -467,23 +489,22 @@ const LegalWatchlist = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                                {emailsList ? emailsList?.filter(item => item.watchlist == currentWatchlistID).map(row => {
+                                {emailsList?.map(row => {
                                 return (
                                     <tr>
                                         <td>{row.email}</td>
                                         <td>
-                                            {new Date(row.dateAdded).toLocaleDateString()}<br />
+                                            {new Date(row.create_date).toLocaleDateString()}<br />
                                             <div style={{ marginTop: '-5px', fontSize: '9px' }}>
-                                                {new Date(row.dateAdded).toLocaleTimeString()}</div></td>
+                                                {new Date(row.create_date).toLocaleTimeString()}</div></td>
 
                                         <td>
                                             {/* <button className={styles.tblButton + ' btn btn-primary'}>View More</button> */}
-                                            <button className={styles.tblButton + ' btn btn-warning'} onClick={() => this.removeEmail(row.email)}>Remove</button>
+                                            <button className={styles.tblButton + ' btn btn-warning'} onClick={() => removeEmail(row._id)}>Remove</button>
                                         </td>
                                     </tr>
                                 )
-                                })
-                                    : ''}
+                                })}
                         </tbody>
                     </table>
                 </Row>
