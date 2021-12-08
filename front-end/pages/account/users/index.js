@@ -8,7 +8,12 @@ import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
 import UserSidebar from "../../../components/user_sidebar"
 import TabButtonUser from "../../../components/tabbuttonuser"
-
+import {
+    getUserDetails,
+    list_associate_user,
+    create_user,
+    update_user
+} from '../../api/users'
 
 const Users = ({ data, listUsers }) => {
 
@@ -72,24 +77,16 @@ const Users = ({ data, listUsers }) => {
             }
         }
 
-
-        const req = await fetch('${process.env.API_URL}/user/list-associate-user', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "company_id": qstr.userid,
-                "filter_user_role": filter_user_role,
-                "filter_company": filter_company,
-                "sort_by": sort_by,
-                "is_desc": is_desc
-            })
-
-        });
-        const newData = await req.json();
+        const body = {
+            "language": 'en',
+            "api_token": token,
+            "company_id": qstr.userid,
+            "filter_user_role": filter_user_role,
+            "filter_company": filter_company,
+            "sort_by": sort_by,
+            "is_desc": is_desc
+        }
+        const newData = list_associate_user(body);
         console.log(newData);
         return setUserList(newData);
     };
@@ -113,23 +110,17 @@ const Users = ({ data, listUsers }) => {
                 },
             }
         }
-        const resUser = await fetch(`${process.env.API_URL}/user/create-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "company_access": [company_access],
-                "user_role": user_role,
-                "api_token": token
-            })
+        const body = {
+            "full_name": fullNname,
+            "email_id": emailID,
+            "country_code": "+1",
+            "phone_number": phone_number,
+            "company_access": [company_access],
+            "user_role": user_role,
+            "api_token": token
+        }
 
-        })
-        const res2User = await resUser.json();
+        const res2User = await create_user(body);
         console.log(res2User);
         if (res2User.status_code == 200) {
             handleClose();
@@ -161,19 +152,13 @@ const Users = ({ data, listUsers }) => {
                 },
             }
         }
-        const userData = await fetch(`${process.env.API_URL}/user/user-details`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": id,
-                "language": "en",
-                "api_token": token
-            })
 
-        })
-        const userData2 = await userData.json();
+        const userData2 = await getUserDetails({
+            "user_id": id,
+            "language": "en",
+            "api_token": token
+        });
+
         console.log(userData2);
         if (userData2.status_code == 200) {
             // handleClose();
@@ -210,27 +195,21 @@ const Users = ({ data, listUsers }) => {
                 },
             }
         }
-        const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": userID,
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "company_access": [company_access],
-                "user_role": user_role,
-                "api_token": token
-            })
 
-        })
-        const res2User = await resUser.json();
+        const body = {
+            "user_id": userID,
+            "full_name": fullNname,
+            "email_id": emailID,
+            "country_code": "+1",
+            "phone_number": phone_number,
+            "company_access": [company_access],
+            "user_role": user_role,
+            "api_token": token
+        }
+        const res2User = await update_user(body);
+
         console.log(res2User);
         if (res2User.status_code == 200) {
-
             setFullName("");
             setEmailID("");
             setCountry_code("");
@@ -489,44 +468,27 @@ export async function getServerSideProps(ctx) {
         }
     }
 
-    const res = await fetch(`${process.env.API_URL}/user/user-details`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const ret = Promise.all([
+        getUserDetails({
             "language": 'en',
             "api_token": token,
             "user_id": userid
-        })
+        }),
 
-    })
-
-    const data = await res.json()
-
-    const resuser = await fetch(`${process.env.API_URL}/user/list-associate-user`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+        list_associate_user({
             "language": 'en',
             "api_token": token,
         })
+    ])
 
-    })
-    const users1 = await resuser.json()
+    const data = ret[0]
+    const users1 = ret[1]
 
     if (!users1) {
         return {
             notFound: true,
         }
     }
-
-
-
-
-
 
     /** 
      * limit, start, search item

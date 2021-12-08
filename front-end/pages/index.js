@@ -11,6 +11,7 @@ import Lang from '../components/lang';
 // import client from './apollo-client';
 import Logo from '../components/logo';
 import Image from 'next/image'
+import { login_user } from './api/users'
 
 // export const GET_USERS = gql`
 //   query getUsers {
@@ -31,24 +32,13 @@ export default function Login(props) {
   const userLogin = async (e) => {
 
     e.preventDefault();
-    // const { data, Loading, NetworkStatus, Error } = await client.query({
-    //   query: GET_USERS,
-    // });
+    const body = {
+      "language": locale,
+      "email_id": userName.toLowerCase(),
+      password
+    }
 
-    // console.log(data);
-    const res = await fetch(`${process.env.API_URL}/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "language": locale,
-        "email_id": userName.toLowerCase(),
-        password
-      })
-    })
-
-    const res2 = await res.json();
+    const res2 = await login_user(body)
     console.log(res2);
     if (res2.status_code == 403) {
       setloginMessage("Either User name or password does not exist");

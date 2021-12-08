@@ -36,33 +36,6 @@ const UserSidebar = ({ data }) => {
                 },
             }
         }
-        // const resUser = await fetch(`${process.env.API_URL}/user/reset-password`, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //         "full_name": fullNname,
-        //         "email_id": emailID,
-        //         "country_code": "+1",
-        //         "phone_number": phone_number,
-        //         "company_access": [company_access],
-        //         "user_role": user_role,
-        //         "api_token": token
-        //     })
-
-        // })
-        // const res2User = await resUser.json();
-        // console.log(res2User);
-        // if (res2User.status_code == 200) {
-        //     handleClose();
-        //     setFullName("");
-        //     setEmailID("");
-        //     setCountry_code("");
-        //     setPhone_number("");
-        //     setCompany_access("");
-        //     setUser_role("");
-        // }
     }
 
     const router = useRouter();

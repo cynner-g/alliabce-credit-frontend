@@ -4,6 +4,11 @@ import { useState } from 'react'
 import { parseCookies } from "nookies"
 import { useRouter } from 'next/router';
 import Select from 'react-select';
+import {
+    getUserData,
+    delete_user,
+    create_sub_admin
+} from '../pages/api/users';
 
 const UserList = (props) => {
     const [show, setShow] = useState(false);
@@ -47,26 +52,20 @@ const UserList = (props) => {
                 },
             }
         }
-        const userData = await fetch(`${process.env.API_URL}/user/user-details`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": id,
-                "language": "en",
-                "api_token": token
-            })
 
-        })
-        const userData2 = await userData.json();
-        console.log(userData2);
-        if (userData2.status_code == 200) {
-            setFullName(userData2?.data?.full_name);
-            setEmailID(userData2?.data?.email_id);
-            setCountry_code(userData2?.data?.phone_number?.country_code);
-            setPhone_number(userData2?.data?.phone_number?.phone_number);
-            setActive(userData2?.data?.is_active)
+        const body = {
+            "user_id": id,
+            "language": "en",
+            "api_token": token
+        }
+        const userData = await getUserData(body);
+        console.log(userData);
+        if (userData.status_code == 200) {
+            setFullName(userData?.data?.full_name);
+            setEmailID(userData?.data?.email_id);
+            setCountry_code(userData?.data?.phone_number?.country_code);
+            setPhone_number(userData?.data?.phone_number?.phone_number);
+            setActive(userData?.data?.is_active)
             setSelectedUserId(id)
         }
         console.log(id)
@@ -123,15 +122,7 @@ const UserList = (props) => {
         }
 
         console.log(body)
-        const resUser = await fetch(`${process.env.API_URL}/user/delete-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-
-        })
-        const res2User = await resUser.json();
+        delete_user(body)
         console.log(res2User);
         if (res2User.status_code == 200) {
             closeDeleteUser()
@@ -157,23 +148,17 @@ const UserList = (props) => {
                 },
             }
         }
-        const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": userID,
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "api_token": token,
-                "is_active": isActive
-            })
 
-        })
-        const res2User = await resUser.json();
+        const body = {
+            "user_id": userID,
+            "full_name": fullNname,
+            "email_id": emailID,
+            "country_code": "+1",
+            "phone_number": phone_number,
+            "api_token": token,
+            "is_active": isActive
+        }
+        const res2User = await update_user(body);
         console.log(res2User);
         if (res2User.status_code == 200) {
             setFullName("");
@@ -202,21 +187,17 @@ const UserList = (props) => {
                 },
             }
         }
-        const resUser = await fetch(`${process.env.API_URL}/user/create-sub-admin`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "api_token": token
-            })
-        })
 
-        const res2User = await resUser.json();
+        const body = {
+            "full_name": fullNname,
+            "email_id": emailID,
+            "country_code": "+1",
+            "phone_number": phone_number,
+            "api_token": token
+        }
+
+        const resUser = await create_sub_admin(body)
+
         handleClose();
         deleteUserId();
         router.reload();

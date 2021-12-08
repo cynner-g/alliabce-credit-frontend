@@ -7,7 +7,15 @@ import { parseCookies } from "nookies"
 import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
 import TabButton from "../../../components/tabbutton"
+import {
+    list_user,
+    create_user,
+    verify_user,
+    getUserDetails,
+    update_user
+} from '../../api/users';
 
+import { list_companies } from '../../api/users';
 
 const Users = ({ data, page, totalPage, query, companiesData }) => {
 
@@ -92,17 +100,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             "is_desc": is_desc
         }
 
-
-        const resCompanies = await fetch(`${process.env.API_URL}/user/list-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-
-        })
-
-        const newData = await resCompanies.json();
+        const newDate = list_user(body)
         console.log(newData);
         return setUserList(newData);
     };
@@ -140,15 +138,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         }
 
         console.log(body);
-        const resUser = await fetch(`${process.env.API_URL}/user/create-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            //automatically verified if user is in an admin role
-            body: JSON.stringify(body)
-        })
-        const res2User = await resUser.json();
+
+        const res2User = create_user(body)
         console.log(res2User);
         if (res2User.status_code == 200) {
             handleClose();
@@ -172,18 +163,14 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
         const token = Cookies.get('token');
         const userId = Cookies.get('userid')
-        const userData = fetch(`${process.env.API_URL}/user/verify-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": id,
-                "request_by_user_id": "en",
-                "api_token": token
-            })
+
+        verify_user({
+            "user_id": userId,
+            "request_by_user_id": "en",
+            "api_token": token
         })
     }
+
     /**
      * Get user details basis of user id for edit purpose
      * @param {*} id 
@@ -201,19 +188,13 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
-        const userData = await fetch(`${process.env.API_URL}/user/user-details`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": id,
-                "language": "en",
-                "api_token": token
-            })
 
-        })
-        const userData2 = await userData.json();
+        const userData2 = getUserDetails({
+            "user_id": id,
+            "language": "en",
+            "api_token": token
+        });
+
         console.log(userData2);
         if (userData2.status_code == 200) {
             // handleClose();
@@ -272,24 +253,19 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
-        const resUser = await fetch(`${process.env.API_URL}/user/update-user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": userID,
-                "full_name": fullNname,
-                "email_id": emailID,
-                "country_code": "+1",
-                "phone_number": phone_number,
-                "company_access": ischecked,
-                "user_role": user_role,
-                "api_token": token
-            })
 
-        })
-        const res2User = await resUser.json();
+        const body = {
+            "user_id": userID,
+            "full_name": fullNname,
+            "email_id": emailID,
+            "country_code": "+1",
+            "phone_number": phone_number,
+            "company_access": ischecked,
+            "user_role": user_role,
+            "api_token": token
+        }
+
+        const res2User = update_user(body);
         console.log(res2User);
         if (res2User.status_code == 200) {
 
@@ -438,9 +414,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 <td>{item?.company_access?.join(", ")}</td>
                                 <td>
                                     <>{item.is_verified ? '' :
-                                    <>
-                                        <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
-                                        <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
+                                        <>
+                                            <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
+                                            <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
                                         </>
                                     }
                                         {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
@@ -564,37 +540,32 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
-    const res = await fetch(`${process.env.API_URL}/user/list-user`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+
+    let data = Promise.all([
+
+
+        list_user({
             "language": 'en',
             "api_token": token,
             "company_id": query.userid
-        })
+        }),
 
-    })
-    const users = await res.json()
+        list_companies({
+            "language": 'en',
+            "api_token": token,
+        })
+    ])
+
+    const users = data[0]
+    const resCompaniesData = data[1];
+
     // console.log(users)
     if (!users) {
         return {
             notFound: true,
         }
     }
-    const resCompanies = await fetch(`${process.env.API_URL}/company/list-companies`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-        })
 
-    })
-    const resCompaniesData = await resCompanies.json()
     /** 
      * limit, start, search item
      */

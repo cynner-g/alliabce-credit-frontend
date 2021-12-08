@@ -29,26 +29,15 @@ const ChangePassword = (props) => {
 
         console.log(email, origPassword, password, password2)
         e.preventDefault();
-        // const { data, Loading, NetworkStatus, Error } = await client.query({
-        //   query: GET_USERS,
-        // });
 
-        // console.log(data);
-        const res = await fetch(`${process.env.API_URL}/user/change-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "api_token": token,
-                "current_password": origPassword,
-                "new_password": password,
-                "confirm_password": password2,
+        const body = {
+            "api_token": token,
+            "current_password": origPassword,
+            "new_password": password,
+            "confirm_password": password2,
+        }
+        const res2 = await change_password(body)
 
-            })
-
-        })
-        const res2 = await res.json();
         console.log(res2);
         if (res2.status_code == 403) {
             setPasswordMessage(res2.message);

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import TabButtonUser from "../../components/tabbuttonuser"
 import { parseCookies } from "nookies"
 import UserSidebar from "../../components/user_sidebar"
-
+import { getUserDetails, list_sub_admin } from '../api/users'
 const Account = function ({ data }) {
     console.log(data)
     return (
@@ -82,20 +82,13 @@ export async function getServerSideProps(ctx) {
         }
     }
 
+    const body = {
+        "language": 'en',
+        "api_token": token,
+        "user_id": userid
+    }
 
-    const res = await fetch(`${process.env.API_URL}/user/user-details`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-            "user_id": userid
-        })
-
-    })
-    const data = await res.json()
+    const data = await getUserDetails(body)
 
     /** 
      * limit, start, search item
@@ -105,7 +98,6 @@ export async function getServerSideProps(ctx) {
             data: data?.data || [],
         }
     }
-
 }
 
 

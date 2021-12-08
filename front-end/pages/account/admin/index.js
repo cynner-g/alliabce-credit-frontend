@@ -41,22 +41,13 @@ const AdminUsers = ({ data }) => {
     useEffect(() => {
         const token = Cookies.get('token');
         const uid = Cookies.get('userid');
-        fetch(`${process.env.API_URL}/user/user-details`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        const thisUserData = await getUserDetails({
                 user_id: uid,
-                api_token: token,
-            }),
+            api_token: token,
         })
-            .then((user) => user.json())
-            .then((thisUserData) => {
-                if (thisUserData.status_code == 200) {
-                    setThisUser(thisUserData?.data);
-                }
-            });
+
+
+        setThisUser(thisUserData?.data);
     }, []);
 
     /**
@@ -158,19 +149,11 @@ export async function getServerSideProps(ctx) {
         }
     }
 
-    const res = await fetch(`${process.env.API_URL}/user/list-sub-admin`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-        })
+    const data = await list_sub_admin({
+        "language": 'en',
+        "api_token": token,
+    });
 
-    })
-
-    const data = await res.json()
 
 
     /** 

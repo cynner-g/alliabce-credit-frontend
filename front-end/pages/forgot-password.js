@@ -6,6 +6,7 @@ import langTrans from "../components/i18n";
 import Lang from "../components/lang";
 import Logo from '../components/logo';
 import Image from 'next/image'
+import { forgot_password } from '../pages/api/users'
 
 const ForgotPassword = () => {
 
@@ -19,24 +20,13 @@ const ForgotPassword = () => {
 
     const forgotPass = async () => {
 
-        // e.preventDefault();
-        // const { data, Loading, NetworkStatus, Error } = await client.query({
-        //   query: GET_USERS,
-        // });
+        const body = {
+            "language": locale,
+            "email_id": userName,
+        }
 
-        // console.log(data);
-        const res = await fetch(`${process.env.API_URL}/user/forgot-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "language": locale,
-                "email_id": userName,
-            })
 
-        })
-        const res2 = await res.json();
+        const res2 = await forgot_password(body)
         if (res2.status_code == 403) {
             setloginMessage("User name does not exist");
         } else if (res2.status_code == 200) {

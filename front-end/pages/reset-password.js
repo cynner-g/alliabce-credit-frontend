@@ -11,7 +11,7 @@ import Lang from '../components/lang';
 // import client from './apollo-client';
 import Logo from '../components/logo';
 import Image from 'next/image'
-
+import { reset_password } from './api/users'
 // export const GET_USERS = gql`
 //   query getUsers {
 //     users @rest(type: "Users", path: "users/login") {
@@ -32,20 +32,13 @@ export default function ResetPassword(props) {
     const userLogin = async (e) => {
 
         e.preventDefault();
+        let body = {
+            "language": locale,
+            "new_password": new_password,
+            "confirm_password": confirm_password
+        }
 
-        const res = await fetch(`${process.env.API_URL}/user/reset-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "language": locale,
-                "new_password": new_password,
-                "confirm_password": confirm_password
-            })
-
-        })
-        const res2 = await res.json();
+        const res2 = reset_password(body)
         if (res2.status_code == 403) {
             setloginMessage("Either User name or Password doesnot exists");
         } else if (res2.status_code == 200) {
