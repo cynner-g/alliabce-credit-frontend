@@ -7,7 +7,7 @@ import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 
-const addCompany = ({ industry, group, pricing, company, parentID }) => {
+const addCompany = ({ industry, group, pricing, company, }) => {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -18,8 +18,6 @@ const addCompany = ({ industry, group, pricing, company, parentID }) => {
 
     const [formStatus, setFormStatus] = useState(false);
     // const [query, setQuery] = useState({ ...company.data });
-    console.log(company.data)
-
 
     const [language, setLanguage] = useState(company.portal_language);
     const [company_name_en, setCompany_name_en] = useState(company.company_name_en || company.company_name);
@@ -149,7 +147,7 @@ const addCompany = ({ industry, group, pricing, company, parentID }) => {
         })
 
         setShow(false)
-        if (addCompanyDB.status == 200) router.push(`/companies/${companyID}`)
+        if (addCompanyDB.status == 200) router.push(`/companies/${company.parent_company._id}`)
         else {
             let data = await addCompanyDB.json();
             setMessage(data.data);
@@ -167,18 +165,18 @@ const addCompany = ({ industry, group, pricing, company, parentID }) => {
         //         company_id: query._id
         //     })
         // })
-        router.push(`/companies/${parentID}`)
+        router.push(`/companies/${company.parent_company._id}`)
     }
 
     return (
         <>
             <Header message={message} />
             <div className="breadcrumb">
-                :
+
                 <ul className=" me-auto mb-2 mb-lg-0">
-                    <li className="back"><Link href={`/companies/${company.parent_company._id}`}>
-                        <a className="nav-link">{company.parent_company.company_name}</a></Link></li>
-                    <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
+                    <li><Link href={`/companies/${company.parent_company._id}`}>
+                        <a className="nav-link">&lt;&lt; {company.parent_company.company_name}</a></Link></li>
+                    {/* <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li> */}
                     <li>Edit Company</li>
                 </ul>
             </div>
@@ -305,7 +303,7 @@ const addCompany = ({ industry, group, pricing, company, parentID }) => {
 
 // export async function getStaticProps(context) {
 export async function getServerSideProps(ctx) {
-    const companyID = ctx.query.cid
+
     const subID = ctx.query.sid
     const { token } = parseCookies(ctx)
     if (!token) {
@@ -374,8 +372,8 @@ export async function getServerSideProps(ctx) {
             industry,
             group,
             pricing: [],
-            company: subData.data,
-            parentID: companyID
+            company: subData.data
+
         }
     }
 
