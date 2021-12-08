@@ -19,6 +19,10 @@ import {
     update_status,
     download_report_file
 } from "../api/credit_reports";
+import {
+    getUserData
+} from '../api/users';
+
 import React, { Component } from 'react';
 // import Select from 'react-select';
 // import DatePicker, { CalendarContainer } from 'react-datepicker'
@@ -276,7 +280,7 @@ class CreditReports extends Component {
                                         onClick={(e) => { row.reports.suppliers.status_code == COMPLETE ? this.download_report(row.reports.suppliers._id, "Suppliers") : null }}
                                     >Suppliers</span>}
                             </div>
-                            <div><button className="btn download" disabled={isDisabled} onClick={(this.download_report(row._id, 'All')}>Download All</button></div>
+                            <div><button className="btn download" disabled={isDisabled} onClick={(this.download_report(row._id, 'All'))}>Download All</button></div>
                             <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                         </div>
                     </td>

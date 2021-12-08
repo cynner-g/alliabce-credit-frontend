@@ -8,8 +8,12 @@ import { Container, Row, Col, Modal } from 'react-bootstrap';
 import {
     order_details,
     order_report,
-    resubmit_report,
+    resubmit_report
 } from '../api/credit_reports';
+
+import {
+    getUserData
+} from '../api/users';
 
 import styles from "./order-New-Report.module.css";
 import Cookies from 'js-cookie'
@@ -33,8 +37,10 @@ class OrderNewReport extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({ columns: this.getColumns() });
+        //if passing in a report to edit
+        const token = Cookies.get('token')
         if (Router?.router?.query?.rptId?.length > 0) {
             let rptId = Router.router.query.rptId;
             let token = Cookies.get('token')
@@ -177,9 +183,14 @@ class OrderNewReport extends Component {
                     }
                 })
 
-                // columns.splice(firstRow, supplierCols.length, [...newSupplierCols]);
+
                 await this.setState({ data: data, origData: data, isEdit: false, step: 2, columns: columns });
             });
+        }
+
+        //get user company data
+        else {
+            await getUserData();
         }
     }
 

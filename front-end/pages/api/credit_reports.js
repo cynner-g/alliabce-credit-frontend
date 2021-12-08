@@ -13,7 +13,7 @@ export const order_list = (body, token) => {
 
     // var myReq = new Request(`${process.env.API_URL}/report/list-order`, init);
     console.log('fetching');
-    const ret = fetch(`${process.env.API_URL}/report/list-order`, init)
+    return fetch(`${process.env.API_URL}/report/list-order`, init)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -34,8 +34,9 @@ export const order_list = (body, token) => {
         })
         .catch((err) => {
             console.log(err)
+            return null;
         })
-    return ret;
+
 }
 
 export const cancel_order = (rptId, token) => {
@@ -46,7 +47,7 @@ export const cancel_order = (rptId, token) => {
 
     var myReq = new Request(`${process.env.API_URL}/report/cancel-order`, init);
     console.log('fetching');
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -67,9 +68,9 @@ export const cancel_order = (rptId, token) => {
 
         })
         .catch((err) => {
-
+            return null;
         })
-    return ret;
+
 }
 
 export const order_details = (rptId, token) => {
@@ -81,7 +82,7 @@ export const order_details = (rptId, token) => {
 
 
     var myReq = new Request(`${process.env.API_URL}/report/order-details`, init);
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             if (response.ok) {
                 return response;
@@ -102,7 +103,7 @@ export const order_details = (rptId, token) => {
         .catch((err) => {
 
         })
-    return ret;
+
 
 }
 
@@ -113,7 +114,7 @@ export const resubmit_report = ((rptData, token) => {
 
     var myReq = new Request(`${process.env.API_URL}/report/`, init); //order-report
     console.log('fetching');
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -135,7 +136,6 @@ export const resubmit_report = ((rptData, token) => {
         .catch((err) => {
             console.log(err)
         })
-    return ret;
 })
 
 export const order_report = ((rptData, api) => {
@@ -146,7 +146,7 @@ export const order_report = ((rptData, api) => {
 
     var myReq = new Request(`${process.env.API_URL}/report/order-report`, init);
     console.log('fetching');
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -168,7 +168,6 @@ export const order_report = ((rptData, api) => {
         .catch((err) => {
 
         })
-    return ret;
 })
 
 export const create_link_token = (rptData => {
@@ -183,7 +182,7 @@ export const add_comment = ((comment, token) => {
 
     var myReq = new Request(`${process.env.API_URL}/report/comment-order`, init);
     console.log('fetching');
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -201,12 +200,10 @@ export const add_comment = ((comment, token) => {
         .then((response) => { return response.json() })
         .then((data) => {
             return data?.data
-
         })
         .catch((err) => {
 
         })
-    return ret;
 });
 
 export const update_status = ((status, token) => {
@@ -217,7 +214,7 @@ export const update_status = ((status, token) => {
 
     var myReq = new Request(`${process.env.API_URL}/report/update-status`, init);
     console.log('fetching');
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {
@@ -240,7 +237,6 @@ export const update_status = ((status, token) => {
         .catch((err) => {
 
         })
-    return ret;
 });
 
 export const download_report_file = ((data, token) => {
@@ -253,7 +249,7 @@ export const download_report_file = ((data, token) => {
 
     var myReq = new Request(`${process.env.API_URL}/report/download-report`, init);
     console.log('fetching');
-    let ret = fetch(myReq)
+    return fetch(myReq)
         .then((response) => {
             console.log("Response: ", response)
             if (response.ok) {

@@ -1,0 +1,21 @@
+import Cookies from 'js-cookie'
+
+export const getUserData = async () => {
+    const body = {
+        api_token: Cookies.get('token'),
+        user_id: Cookies.get('userid'),
+        language: 'en'
+    }
+
+    return fetch(`${process.env.API_URL}/user/user-details`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': 'no-cors'
+        },
+        method: 'POST',
+        body: JSON.stringify(body)
+    })
+        .then(ret => ret.json())
+        .then(response => response.data)
+        .catch((err) => err.message)
+}
