@@ -12,7 +12,13 @@ import Cookies from "js-cookie"
 
 import { Loading } from "../../components/LoadingComponent"
 import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
-import { order_list, cancel_order, add_comment, update_status } from "../api/credit_reports";
+import {
+    order_list,
+    cancel_order,
+    add_comment,
+    update_status,
+    download_report_file
+} from "../api/credit_reports";
 import React, { Component } from 'react';
 // import Select from 'react-select';
 // import DatePicker, { CalendarContainer } from 'react-datepicker'
@@ -56,6 +62,13 @@ class CreditReports extends Component {
         this.get_data();
     }
 
+    download_report = (id, type) => {
+        const body = {
+            report_order_id: id,
+            type: type
+        }
+        api_token: this.state.token, (body, this.state.token)
+    }
     get_data = () => {
         let dates = {
             startDate: this.state.startFilter,
@@ -241,21 +254,29 @@ class CreditReports extends Component {
                         <div className="buttongroups">
                             <div className={`status${row.reports.incorporate.status_code}`}>
                                 {(row.reports.incorporate.status_code == -1) ? '' :
-                                    <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`} >Incorporate</span>}
+                                    <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`}
+                                        onClick={(e) => { row.reports.incorporate.status_code == COMPLETE ? this.download_report(row.reports.incorporate._id, "Incorporate") : null }}
+                                    >Incorporate</span>}
                             </div>
                             <div className={`status${row.reports.bank.status_code}`}>
                                 {(row.reports.bank.status_code == -1) ? '' :
-                                    <span className={`btn report-status bank_download ${reportCodes.bank.className}`} >Bank</span>}
+                                    <span className={`btn report-status bank_download ${reportCodes.bank.className}`}
+                                        onClick={(e) => { row.reports.bank.status_code == COMPLETE ? this.download_report(row.reports.bank._id, "Bank") : null }}
+                                    >Bank</span>}
                             </div>
                             <div className={`status${row.reports.legal.status_code}`}>
                                 {(row.reports.legal.status_code == -1) ? '' :
-                                    <span className={`btn report-status legal ${reportCodes.legal.className}`} >Legal</span>}
+                                    <span className={`btn report-status legal ${reportCodes.legal.className}`}
+                                        onClick={(e) => { row.reports.legal.status_code == COMPLETE ? this.download_report(row.reports.legal._id, "Legal") : null }}
+                                    >Legal</span>}
                             </div>
                             <div className={`suppliers status${row.reports.suppliers.status_code}`}>
                                 {(row.reports.suppliers.status_code == -1) ? '' :
-                                    <span className={`btn report-status supplier ${reportCodes.suppliers.className}`} >Suppliers</span>}
+                                    <span className={`btn report-status supplier ${reportCodes.suppliers.className}`}
+                                        onClick={(e) => { row.reports.suppliers.status_code == COMPLETE ? this.download_report(row.reports.suppliers._id, "Suppliers") : null }}
+                                    >Suppliers</span>}
                             </div>
-                            <div><button className="btn download" disabled={isDisabled}>Download All</button></div>
+                            <div><button className="btn download" disabled={isDisabled} onClick={(this.download_report(row._id, 'All')}>Download All</button></div>
                             <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                         </div>
                     </td>

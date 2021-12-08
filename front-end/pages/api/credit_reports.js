@@ -242,3 +242,30 @@ export const update_status = ((status, token) => {
         })
     return ret;
 });
+
+export const download_report_file = ((data, token) => {
+    reprot / download - report
+
+    if (!data) return;
+    let body = { ...data, api_token: token }
+    init.method = "POST"
+    init.body = JSON.stringify(body);
+
+    var myReq = new Request(`${process.env.API_URL}/report/download-report`, init);
+    console.log('fetching');
+    let ret = fetch(myReq)
+        .then((response) => {
+            console.log("Response: ", response)
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error("Error " + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, (error) => {
+            var err = new Error(error.message);
+            throw err;
+        })
+})

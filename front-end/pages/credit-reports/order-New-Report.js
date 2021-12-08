@@ -8,7 +8,7 @@ import { Container, Row, Col, Modal } from 'react-bootstrap';
 import {
     order_details,
     order_report,
-    resubmit_report
+    resubmit_report,
 } from '../api/credit_reports';
 
 import styles from "./order-New-Report.module.css";
