@@ -1289,22 +1289,4 @@ td.comments_indent {
   margin-bottom: -5px;
 }
 
-<<<<<<< HEAD
-.set_price {
-  white-space: nowrap;
-  padding: 5px;
-}
-
-.price_text {
-  width: 50px;
-  height: 25px;
-  margin: 10px;
-}
-
-.upload_report {
-  /* position: absolute; */
-  margin-top: -50px;
-}
-=======
 .status-cancelled {} */
->>>>>>> c79ec5266988b99f082a70fa3f177e6e4bf37978
