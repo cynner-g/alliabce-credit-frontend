@@ -2,8 +2,6 @@
 Only allow edit if needs action or error - Need status code in the API
 
 Breadcrumb on order report
-Add upload report button on any unfinished report
-
 
 
 [Credit Report]

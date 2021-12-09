@@ -1099,49 +1099,9 @@ class OrderNewReport extends Component {
             </div>)
     }
 
-    render() {
-        if (this.state.step == 1) { //introduction page
-            return (
-                <>
-                    <Modal
-                        show={this.state.warning !== null}
-                        onHide={() => this.setState({ warning: null })}
-                        backdrop="static">
-                        <Modal.Header closeButton>
-                            <Modal.Title>Information Needed</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>{this.state.warning}</Modal.Body>
-                        <Modal.Footer>
-                            <button className="btn btn-primary" onClick={() => this.setState({ warning: null })}>
-                                Continue
-                            </button>
-                        </Modal.Footer>
-                    </Modal>
-                    <Modal
-                        show={this.state.isModalOpen}
-                        onHide={() => this.quickOrder(false)}
-                        backdrop="static">
-                        <Modal.Header closeButton>
-                            <Modal.Title>Quick Order</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Please confirm if you wnat to quick order this report?</Modal.Body>
-                        <Modal.Footer>
-                            <button className="btn btn-outline-primary" onClick={() => this.quickOrder(false)}>
-                                Cancel
-                            </button>
-                            <button className="btn btn-primary" onClick={() => this.quickOrder(true)}>
-                                Confirm
-                            </button>
-                        </Modal.Footer>
-                    </Modal>
-                    <Header />
-                    <div className="breadcrumb">
-                        <ul className=" me-auto mb-2 mb-lg-0">
-                            <li><Link href="/credit-report"><a className="nav-link">Credit Report</a></Link></li>
-                            <li>Order New Report</li>
-                        </ul>
-                    </div>
-
+    buildPage = () => {
+        if (this.state.step == 1) {
+            return (<>
                     <div className="order_reportwrap">
                         <Row>
                             <Col sm={3} className="order_report_left" >
@@ -1262,8 +1222,6 @@ class OrderNewReport extends Component {
         else if (this.state.step == 2) { //show form
             return (
                 <>
-                    <Header />
-                    <Container>
                         <Row>
                             <Col sm={3}>
                                 {this.buildSteps()}
@@ -1272,8 +1230,7 @@ class OrderNewReport extends Component {
                             <Col>
                                 {this.buildForm()}
                             </Col>
-                        </Row>
-                    </Container>
+                    </Row>
                 </>
             )
 
@@ -1281,8 +1238,6 @@ class OrderNewReport extends Component {
         else if (this.state.step == 3) {
             return (
                 <>
-                    <Header />
-                    <Container>
                         <Row>
                             <Col sm={3}>
                                 <Container>
@@ -1331,24 +1286,18 @@ class OrderNewReport extends Component {
                                                         </Col>
                                                     </Row>
                                                 </Container>
-                                            </div>
-
-
-
+                                        </div>
                                         </div>
                                     </Col>
                                 </Row>
                             </Col>
-                        </Row>
-                    </Container>
+                    </Row>
                 </>
             )
         }
         else if (this.state.step == 4) { //Quick Reports
             return (
                 <>
-                    <Header />
-                    <Container>
                         <Row>
                             <Col sm={3}>
                                 <Container>
@@ -1402,12 +1351,60 @@ class OrderNewReport extends Component {
                                 </Row>
                             </Col>
                         </Row>
-                    </Container>
+
                 </>
             )
         }
     }
 
+    render() {
 
+        return (
+            <>
+                <Modal
+                    show={this.state.warning !== null}
+                    onHide={() => this.setState({ warning: null })}
+                    backdrop="static">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Information Needed</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>{this.state.warning}</Modal.Body>
+                    <Modal.Footer>
+                        <button className="btn btn-primary" onClick={() => this.setState({ warning: null })}>
+                            Continue
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal
+                    show={this.state.isModalOpen}
+                    onHide={() => this.quickOrder(false)}
+                    backdrop="static">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Quick Order</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Please confirm if you wnat to quick order this report?</Modal.Body>
+                    <Modal.Footer>
+                        <button className="btn btn-outline-primary" onClick={() => this.quickOrder(false)}>
+                            Cancel
+                        </button>
+                        <button className="btn btn-primary" onClick={() => this.quickOrder(true)}>
+                            Confirm
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+                <Header />
+                <div className="breadcrumb">
+                    <ul className=" me-auto mb-2 mb-lg-0">
+                        <li><Link href="/credit-report"><a className="nav-link">Credit Reports</a></Link></li>
+                        <li>{this.state.origData ? 'Edit ' : 'Order New '}Report</li>
+                    </ul>
+                </div>
+                <Container>
+                    {this.buildPage()}
+                </Container>
+            </>)
+    }
 }
+
+
 export default OrderNewReport;
