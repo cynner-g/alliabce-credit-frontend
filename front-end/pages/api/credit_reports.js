@@ -239,23 +239,25 @@ export const update_status = ((status, token) => {
         })
 });
 
-export const download_report_file = ((data, token) => {
+export const download_report_file = async (body) => {
 
-    if (!data) return;
-    let body = { ...data, api_token: token }
+    if (!body) return;
+
     init.method = "POST"
     init.body = JSON.stringify(body);
 
+    try {
     var myReq = new Request(`${process.env.API_URL}/report/download-report`, init);
     console.log('fetching');
     return fetch(myReq)
-        .then((response) => {
+        .then(async (response) => {
             console.log("Response: ", response)
             if (response.ok) {
                 return response;
             }
             else {
                 var error = new Error("Error " + response.statusText);
+                let test = await response.json();
                 error.response = response;
                 throw error;
             }
@@ -263,7 +265,11 @@ export const download_report_file = ((data, token) => {
             var err = new Error(error.message);
             throw err;
         })
-})
+    }
+    catch (ex) {
+        console.log(ex);
+    }
+}
 
 export const delete_comment = (body => {
     init.body = JSON.stringify(body)
@@ -276,4 +282,22 @@ export const update_pricing = (body => {
 
 export const upload_report = (body => {
     init.body = body
+
+    init.body = JSON.stringify(body)
+    return fetch(`${process.env.API_URL}/report/upload-custom-report`, init)
+        .then(async (response) => {
+            console.log("Response: ", response)
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error("Error " + response.statusText);
+                let test = await response.json();
+                error.response = response;
+                throw error;
+            }
+        }, (error) => {
+            var err = new Error(error.message);
+            throw err;
+        })
 })

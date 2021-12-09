@@ -79,13 +79,6 @@ class CreditReports extends Component {
         this.setState({ setPricing: false });
     }
 
-    download_report = (id, type) => {
-        const body = {
-            report_order_id: id,
-            type: type
-        }
-        api_token: this.state.token, (body, this.state.token)
-    }
     get_data = () => {
         let dates = {
             startDate: this.state.startFilter,
@@ -220,10 +213,11 @@ class CreditReports extends Component {
     }
 
     showUpload = (row, rptId, rptType) => {
+        return (
         <div className='upload_report' style={{ visibility: 'hidden' }}>
             <input type='file' onChange={(e) => this.setState({ reportUploadFile: e.target.files[0] })} />
-            <button onClick={(e) => this.setUpload(rowID)}>Upload</button>
-        </div>
+                <button onClick={(e) => this.setUpload(row, rptType)}>Upload</button>
+            </div>)
     }
 
     showDownload = (row, rptId, rptType) => {
@@ -232,12 +226,41 @@ class CreditReports extends Component {
         </div>
     }
 
-    downloadReport = (e, report, type) => {
-        if (report.status_code == COMPLETED)
-            e.preventDefault();
-        else {
-            //do other stuff
-        }
+    uploadReport = (e, report, type){
+        e.preventDefault();
+        let token = Cookies.get('token');
+        let file = await download_report_file({
+            api_token: token,
+            report_order_id: report._id,
+            type: type
+        });
+    }
+
+    downloadReport = async (e, report, type) => {
+
+        e.preventDefault();
+        let token = Cookies.get('token');
+        let file = await download_report_file({
+            api_token: token,
+            report_order_id: report._id,
+            type: type
+        });
+        file.blob().then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // the filename you want
+            const company = report.company_name.replace(' ', '_').replace('.', '')
+            const fileName = `${type}_report_${company}.pdf`;
+            a.download = fileName
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+        });
+
     }
 
     // showStatusBody = (row) => {
@@ -388,7 +411,7 @@ class CreditReports extends Component {
                                                 <Popover id={`popover-positioned-top`} classname='external_links_popup'>
                                                     <Popover.Header as="div" className='external_links_popup title'>{row.reports.incorporate.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
                                                     <Popover.Body>
-                                                        {row.reports.incorporate.status_code == COMPLETED ? this.showDownload(row, row.reports.incorporate._id, "incorporate") : this.showUpload(row, row.reports.incorporate._id, "incorporate")}
+                                                        {this.showUpload(row, row._id, "incorporate")}
                                                     </Popover.Body>
                                                 </Popover>
                                             }
@@ -399,7 +422,7 @@ class CreditReports extends Component {
                                         </OverlayTrigger>
                                         :
                                         <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`}
-                                            onClick={(e) => { this.downloadReport(e, row.reports.incorporate, 'incorporate') }}>
+                                            onClick={(e) => { this.downloadReport(e, row, 'Incorporate') }}>
                                             Incorporate
                                         </span>
                                 }
@@ -418,7 +441,7 @@ class CreditReports extends Component {
                                                 <Popover id={`popover-positioned-top`} classname='external_links_popup'>
                                                     <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
                                                     <Popover.Body>
-                                                        {row.reports.bank.status_code == COMPLETED ? this.showDownload(row, row.reports.bank._id, "bank") : this.showUpload(row, row.reports.incorporate._id, "bank")}
+                                                        {this.showUpload(row, row._id, "bank")}
                                                     </Popover.Body>
                                                 </Popover>
                                             }
@@ -428,7 +451,7 @@ class CreditReports extends Component {
                                         </OverlayTrigger>
                                         :
                                         <span className={`btn report-status bank_download ${reportCodes.bank.className}`}
-                                            onClick={(e) => { this.downloadReport(e, row.reports.bank, 'bank') }}>
+                                            onClick={(e) => { this.downloadReport(e, row, 'Bank') }}>
                                             Bank
                                         </span>
                                 }
@@ -445,7 +468,7 @@ class CreditReports extends Component {
                                                 <Popover id={`popover-positioned-top`} classname='external_links_popup'>
                                                     <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
                                                     <Popover.Body>
-                                                        {row.reports.legal.status_code == COMPLETED ? this.showDownload(row, row.reports.legal._id, "legal") : this.showUpload(row, row.reports.incorporate._id, "legal")}
+                                                        {this.showUpload(row, row._id, "legal")}
                                                     </Popover.Body>
                                                 </Popover>
                                             }
@@ -456,7 +479,7 @@ class CreditReports extends Component {
 
                                         :
                                         <span className={`btn report-status legal ${reportCodes.bank.className}`}
-                                            onClick={(e) => { this.downloadReport(e, row.reports.bank, 'legal') }}>
+                                            onClick={(e) => { this.downloadReport(e, row, 'Legal') }}>
                                             Legal
                                         </span>
 
@@ -475,7 +498,7 @@ class CreditReports extends Component {
                                                 <Popover id={`popover-positioned-top`} classname='external_links_popup'>
                                                     <Popover.Header as="div" className='external_links_popup title'>{row.reports.suppliers.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
                                                     <Popover.Body>
-                                                        {row.reports.suppliers.status_code == COMPLETED ? this.showDownload(row, row.reports.suppliers._id, "suppliers") : this.showUpload(row, row.reports.incorporate._id, "suppliers")}
+                                                        {this.showUpload(row, row._id, "suppliers")}
                                                     </Popover.Body>
                                                 </Popover>
                                             }
@@ -486,14 +509,12 @@ class CreditReports extends Component {
 
                                         :
                                         <span className={`btn report-status suppliers ${reportCodes.bank.className}`}
-                                            onClick={(e) => { this.downloadReport(e, row.reports.bank, 'suppliers') }}>
+                                            onClick={(e) => { this.downloadReport(e, row, 'Suppliers') }}>
                                             Suppliers
                                         </span>
-
-
                                 }
                             </div>
-                            <div><button className="btn download" disabled={isDownloadDisabled} onClick={(this.download_report(row._id, 'All'))}>Download All</button></div>
+                            <div><button className="btn download" disabled={isDownloadDisabled} onClick={e => this.downloadReport(e, row, 'All')}>Download All</button></div>
                             <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                         </div>
                     </td>
