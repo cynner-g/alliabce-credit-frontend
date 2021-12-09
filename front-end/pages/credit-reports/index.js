@@ -205,10 +205,11 @@ class CreditReports extends Component {
         return (<><div>{format(dt, day)}</div><div className='cr-time' style={{ marginTop: '-2px', fontSize: '12px' }}>{format(dt, time)}</div></>)
     }
 
-    deleteComment = (rowID) => {
+    deleteComment = (commentId, reportID) => {
+
         delete_comment({
-            comment_id: rowID,
-            company_id: this.state.companyId,
+            comment_id: commentId,
+            report_order_id: reportID,
             api_token: Cookies.get('token')
         })
     }
@@ -646,7 +647,7 @@ class CreditReports extends Component {
                                     : ''}
                                 <tr>
                                     <td colSpan={11} className="comments_indent">
-                                        <h5>Status & Comments</h5>
+                                        <h5>Status &amp; Comments</h5>
                                         <div className="comments_wrapper">
                                             {this.state.role === 'admin' ?
                                                 <table width="100%">
@@ -684,7 +685,7 @@ class CreditReports extends Component {
                                                                             :
                                                                             this.getStatusCss(comment.status_code).badge
                                                                         }
-                                                                        <button className='btn-close delete_comment' onClick={(e) => this.deleteComment(comment._id)}></button>
+                                                                        <button className='btn-close delete_comment' onClick={(e) => this.deleteComment(comment._id, row._id)}></button>
                                                                     </Col>
 
                                                                 </Row><Row>
