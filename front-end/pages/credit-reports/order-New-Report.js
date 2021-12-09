@@ -39,12 +39,12 @@ class OrderNewReport extends Component {
 
     async componentDidMount() {
         this.setState({ columns: this.getColumns() });
-        //if passing in a report to edit
-        // const token = Cookies.get('token')
-        // if (Router?.router?.query?.rptId?.length > 0) {
-        //     let rptId = Router.router.query.rptId;
-        if (true) {
-            let rptId = '61ab92dc799c28f4185b143e';
+        // // if passing in a report to edit
+        const token = Cookies.get('token')
+        if (Router?.router?.query?.rptId?.length > 0) {
+            let rptId = Router.router.query.rptId;
+        // if (true) {
+        //     let rptId = '61ab92dc799c28f4185b143e';
             let token = Cookies.get('token')
             order_details(rptId, token).then(async (data) => {
 
@@ -999,7 +999,7 @@ class OrderNewReport extends Component {
         let data = null
         console.log(rows)
         if (this.state.origData) { //if there is data
-            let status = this.state.origData.status_code;
+            let editable = this.state.origData.is_editable;
             if (!this.state.isEdit) {//if the edit button has been pressed
                 for (let i = rows.length - 1; i >= 0; i--) {
                     let col = rows[i]
@@ -1013,7 +1013,7 @@ class OrderNewReport extends Component {
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Edit"
-                        if (status == 3 || status == 4) col.params.visible = false;
+                        if (editable) col.params.visible = false;
                     }
 
                     //remove 'Cancel' button
@@ -1041,11 +1041,12 @@ class OrderNewReport extends Component {
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Resubmit"
-                        if (status == 3 || status == 4) col.params.visible = false;
+                        if (editable) col.params.visible = false;
                     }
 
                     //remove 'Cancel' button
                     if (col.params.fName === 'CancelButton') {
+                        if (editable) col.params.visible = false;
                         col.params.visible = true;
                     }
 
