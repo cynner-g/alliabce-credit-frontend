@@ -55,22 +55,25 @@ export class FormComponent extends Component {
         this.setState({ formData: data });
     };
 
-    handleClickEvent = (fn) => {
+    handleClickEvent = (col) => {
+        let fn = col.onClick
         let temp = 0; //only for debug breakpoint
-        fn();
+        fn(col.model);
     }
 
     buildTextRow = (column, index) => {
 
         return (
             <Col className='formCol formContent' key={index}>
+                <span style={{ visibility: column.params.visible !== false ? 'visible' : 'hidden' }}>
                 {column.title}
                 <input type='text' className='formText form-control'
                     name={column.params.model}
                     onChange={(e) => this.handleChange(e)}
                     value={this.state.formData[column.params.model] || undefined}
                     disabled={!column.params.editable}
-                />
+                    />
+                </span>
             </Col>
         )
     }
@@ -79,10 +82,13 @@ export class FormComponent extends Component {
         let model = `${col.params.model}`;
         return (
             <Col className='formCol' key={index}>
+                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                 {params.title}
 
                 <input type='date' className='formTextDate' model={model} />
+                </span>
             </Col>
+
         )
     }
 
@@ -90,12 +96,14 @@ export class FormComponent extends Component {
         let model = `${col.params.model}`;
         return (
             <Col className='formCol' key={index}>
+                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                 {col.title}
                 <input type='number' className='formTextNumber'
                     model={model}
                     min={col.params.minVal}
                     max={col.params.maxVal}
                 />
+                </span>
             </Col>
 
         )
@@ -106,12 +114,14 @@ export class FormComponent extends Component {
         return (
 
             <Col className='formCol formTextArea' md={{ size: 7 }}>
+                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                 {col.title}
                 <textarea
                     rows={col.params.rows || 5}
                     cols={col.params.cols || 50}
                     model={model}
                 />
+                </span>
             </Col>
         )
     }
@@ -132,10 +142,13 @@ export class FormComponent extends Component {
         if (this.props.cancel) {
             return (
                 <Col className='formCol' md={{ size: 1, offset: 1 }} key={index}>
+                    <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                     <br />
-                    <button type="button" className='formSubmit' onClick={() => this.props.cancel()} color={col.params.color || "primary"}>
+                        <button type="button" className='formCancel'
+                            onClick={() => this.props.cancel()} color={col.params.color || "primary"}>
                         {col.params.text}
                     </button >
+                    </span>
                 </Col>
             );
         }
@@ -148,6 +161,7 @@ export class FormComponent extends Component {
         }
         return (
             <Col className='formCol formDropdown' >
+                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                 {col.title}
                 <select
                     model={model}
@@ -159,11 +173,13 @@ export class FormComponent extends Component {
                         )
                     })}
                 </select>
+                </span>
             </Col>
         )
     }
 
-    buildCheckBox = (params, index) => {
+    buildCheckBox = (column, index) => {
+        let params = column.params;
         let model = params.model ? params.model : "propertyName_" + Math.random();
         model = `${model}`;
         //chenerate a unique id for the label to match the checkbox.  Index doesn't work.
@@ -173,17 +189,19 @@ export class FormComponent extends Component {
         if (!params.clickFn) params.clickFn = () => null;
         let ret = (
             <Col className='formCol formCheckContainer' md={{ offset: 1 }}>
+                <span style={{ visibility: params.visible !== false ? 'visible' : 'hidden' }}>
                 <label htmlFor={chkId}>{text}</label>
                 <input type='checkbox' id={chkId} className='formCheckbox'
                     model={model} onClick={(e) => { this.handleCheck(e, params.clickParameters) }} />
+                </span>
             </Col>
         )
         return ret;
     }
 
-    buildCheckCollapse = (props, index) => {
+    buildCheckCollapse = (column, index) => {
 
-        let params = props;
+        let params = column.params
         let open = this.state.openState;
         let chkId = 'check_' + index == null ? Math.floor(Math.random() * 10000) : index;
         let text = params.title.split('\n').map((item, i) => <p key={i} className='formCheckP'>{item}</p>);
@@ -195,9 +213,11 @@ export class FormComponent extends Component {
             <Row className="form-group" key={index}>
 
                 <Col className='formCol formCheckContainer' md={{ offset: 1 }}>
+                    <span style={{ visibility: params.visible ? 'visible' : 'hidden' }}>
                     <label htmlFor={chkId}>{text}</label>
                     <input type='checkbox' id={chkId} className='formCheckbox'
                         onClick={(e) => { this.handleCheck(e, params.id) }} />
+                    </span>
                 </Col>
 
 
@@ -215,8 +235,10 @@ export class FormComponent extends Component {
 
     buildDiv = (col, index) => {
         return (
-            <div className={col.params.divclassData}>
+            <div className={col.params.divclassData} >
+                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                 {this.buildRows(col.params.divrows)}
+                </span>
             </div>
         )
     }
@@ -224,16 +246,20 @@ export class FormComponent extends Component {
     buildLinkButton = (col, index) => {
         return (
             <Col className='formCol' key={index}>
-                <button type="button" className="btn btn-outline-primary formLinkButton" onClick={() => this.handleClickEvent(col.params.onClick)} key={index}>
+                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
+                    <button type="button" className="btn btn-outline-primary formLinkButton" onClick={() => this.handleClickEvent(col.params)} key={index}>
                     {col.Text}
                 </button>
+                </span>
             </Col>
         )
     }
     buildHeader = (col, index) => {
         return (<Col className='formCol formHeader' sm={col.length / 12} style={{ marginTop: '10px' }}>
+            <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
             <span style={{ fontSize: `${col.params.size}px`, fontWeight: 600 }}>
                 {col.title}
+            </span>
             </span>
         </Col>)
         // switch (col.params.size) {

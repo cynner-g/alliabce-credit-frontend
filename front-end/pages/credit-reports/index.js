@@ -11,13 +11,16 @@ import Router from "next/router"
 import Cookies from "js-cookie"
 
 import { Loading } from "../../components/LoadingComponent"
-import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
+import { Table, Container, Row, Col, Badge, Modal, Popover, OverlayTrigger, Button } from 'react-bootstrap';
 import {
     order_list,
     cancel_order,
     add_comment,
     update_status,
-    download_report_file
+    download_report_file,
+    delete_comment,
+    update_pricing,
+    upload_report
 } from "../api/credit_reports";
 import {
     getUserData
@@ -58,12 +61,22 @@ class CreditReports extends Component {
             statusChangeRow: null,
             rowStatus: { row: null, statusText: '', status: null },
             filterStatusData: [],
-            token: Cookies.get('token')
+            token: Cookies.get('token'),
+            displayLinks: null,
+            reportPrice: null,
+            setPricing: false
         };
     }
 
     async componentDidMount() {
         this.get_data();
+    }
+
+    updatePrices = async (row) => {
+        let token = Cookies.get('token');
+        await update_pricing({ api_token: token, report_ordered_id: row._id, pricing: this.state.reportPrice });
+        this.get_data();
+        this.setState({ setPricing: false });
     }
 
     download_report = (id, type) => {
@@ -85,11 +98,11 @@ class CreditReports extends Component {
             'dateRange': dates
         }
 
+
         order_list(body, this.state.token).then(async (data) => {
             this.setState({ origReportList: data, filteredReportList: data })
         })
     }
-
 
 
     showDropdownRow = (e, item) => {
@@ -109,6 +122,7 @@ class CreditReports extends Component {
         if (update == null) {
             update = [null, null] //make sure the array is updated correctly
         }
+
         this.setState({ startFilter: update[0], endFilter: update[1] });
         let newData = this.state.origReportList;
         if (update[0] != null) {
@@ -135,10 +149,6 @@ class CreditReports extends Component {
         if (e?.includes('All') || !e) e = [];
         await this.setState({ filterStatusData: e });
         this.get_data();
-    }
-
-    showLinks = () => {
-
     }
 
     //returns markup and text for report Status 
@@ -198,8 +208,107 @@ class CreditReports extends Component {
         dt = new Date(dt);
         let day = 'MM-dd-uuuu'
         let time = 'h:mmaa'
-        return (<><div>{format(dt, day)}</div><div className='cr-time' style={{ marginTop: '-4px', fontSize: '12px' }}>{format(dt, time)}</div></>)
+        return (<><div>{format(dt, day)}</div><div className='cr-time' style={{ marginTop: '-2px', fontSize: '12px' }}>{format(dt, time)}</div></>)
     }
+
+    deleteComment = (rowID) => {
+        delete_comment({
+            comment_id: rowID,
+            company_id: this.state.companyId,
+            api_token: Cookies.get('token')
+        })
+    }
+
+    showUpload = (row, rptId, rptType) => {
+        <div className='upload_report' style={{ visibility: 'hidden' }}>
+            <input type='file' onChange={(e) => this.setState({ reportUploadFile: e.target.files[0] })} />
+            <button onClick={(e) => this.setUpload(rowID)}>Upload</button>
+        </div>
+    }
+
+    showDownload = (row, rptId, rptType) => {
+        <div className='download_report'>
+            <a href={row}>Download</a>
+        </div>
+    }
+
+    // showStatusBody = (row) => {
+    //     if (!this.state.rowStatus.status) {
+    //         let status = { status: row.status_code };
+    //         this.setState({ rowStatus: status });
+    //     }
+    //     return <>
+    //         <div className="form-check">
+    //             <input type='checkbox' className="form-check-input" id="processing"
+    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
+    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
+    //                 checked={this.state.rowStatus?.status == PROCESSING} />
+
+    //             <label className="form-check-label" htmlFor="processing">Processing</label>
+    //         </div>
+    //         <div className="form-check">
+
+    //             <input type='checkbox' className="form-check-input" id="needaction"
+    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
+    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
+    //                 checked={this.state.rowStatus?.status == NEEDACTION} />
+
+    //             <label className="form-check-label" htmlFor="needaction">Need Action</label>
+    //         </div>
+    //         <div className="form-check">
+
+    //             <input type='checkbox' className="form-check-input" id="error"
+    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
+    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
+    //                 checked={this.state.rowStatus?.status == ERROR} />
+
+
+    //             <label className="form-check-label" htmlFor="error">Error</label>
+    //         </div>
+    //         <div className="form-check">
+    //             <input type='checkbox' className="form-check-input"
+    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
+    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
+    //                 checked={this.state.rowStatus?.status == PENDING} />
+
+
+    //             <label className="form-check-label" htmlFor="flexCheckDefault">Pending</label>
+    //         </div>
+    //         <div className="form-check">
+    //             <input type='checkbox' className="form-check-input"
+    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
+    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
+    //                 checked={this.state.rowStatus?.status == COMPLETED} />
+
+
+    //             <label className="form-check-label" htmlFor="flexCheckDefault">Completed</label>
+    //         </div>
+    //         {this.state.rowStatus.status ? this.getStatusCss(this.state.rowStatus.status).badge : this.getStatusCss(row.status).badge}
+
+
+    //         <div className="mt-3">
+    //             <textarea className="form-control"
+    //                 cols={50}
+    //                 rows={4}
+    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, e.target.value, 1)}>
+    //             </textarea>
+    //         </div>
+
+    //         <div>
+    //             <button className="btn btnedit m-3" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
+    //                 Cancel
+    //             </button>
+
+    //             <button className="btn btn-primary"
+    //                 onClick={() => this.setStatus(null, null, 2)}
+    //                 disabled={this.state.rowStatus?.statusText === ''}
+    //             >
+    //                 Update Status
+    //             </button>
+
+    //         </div>
+    //     </>
+    // }
 
     tblRow = (row, index) => {
         const getCodes = (rpts) => {
@@ -247,54 +356,121 @@ class CreditReports extends Component {
 
         return (
             <>
-                <tr>
+                <tr className='cr_status_row'>
                     <td>{refId}</td>
                     <td><div>{this.buildDateTime(order_date)}</div></td>
                     <td>{subject_name}</td>
-                    <td>{user_name}<br /><span className="small10">{company_name}</span></td>
+                    <td>
+                        <div>{user_name}</div>
+                        <div className='cr-time' style={{ marginTop: '-2px', fontSize: '12px' }}>{company_name}</div>
+                    </td>
                     <td><div className={`status${status.status_code} order-status`}>{status.badge}</div></td>
 
                     <td className="buttongroups_wrap">
                         <div className="buttongroups">
                             <div className={`status${row.reports.incorporate.status_code}`}>
                                 {(row.reports.incorporate.status_code == -1) ? '' :
-                                    <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`}
-                                        onClick={(e) => { row.reports.incorporate.status_code == COMPLETE ? this.download_report(row.reports.incorporate._id, "Incorporate") : null }}
-                                    >Incorporate</span>}
+
+                                    <OverlayTrigger
+                                        trigger="click"
+                                        key={'External' + index}
+                                        placement='top'
+                                        rootClose={true}
+                                        overlay={
+                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.incorporate.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                <Popover.Body>
+                                                    {row.reports.incorporate.status_code == COMPLETED ? this.showDownload(row, row.reports.incorporate._id, "incorporate") : this.showUpload(row, row.reports.incorporate._id, "incorporate")}
+                                                </Popover.Body>
+                                            </Popover>
+                                        }
+                                    >
+                                        <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`}
+                                        >Incorporate</span>
+                                    </OverlayTrigger>
+                                }
                             </div>
                             <div className={`status${row.reports.bank.status_code}`}>
                                 {(row.reports.bank.status_code == -1) ? '' :
-                                    <span className={`btn report-status bank_download ${reportCodes.bank.className}`}
-                                        onClick={(e) => { row.reports.bank.status_code == COMPLETE ? this.download_report(row.reports.bank._id, "Bank") : null }}
-                                    >Bank</span>}
+
+
+                                    <OverlayTrigger
+                                        trigger="click"
+                                        key={'External' + index}
+                                        placement='top'
+                                        rootClose={true}
+                                        overlay={
+                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                <Popover.Body>
+                                                    {row.reports.bank.status_code == COMPLETED ? this.showDownload(row, row.reports.bank._id, "bank") : this.showUpload(row, row.reports.incorporate._id, "bank")}
+                                                </Popover.Body>
+                                            </Popover>
+                                        }
+                                    >
+                                        <span className={`btn report-status bank_download ${reportCodes.bank.className}`}
+                                        >Bank</span>
+                                    </OverlayTrigger>
+                                }
                             </div>
                             <div className={`status${row.reports.legal.status_code}`}>
                                 {(row.reports.legal.status_code == -1) ? '' :
-                                    <span className={`btn report-status legal ${reportCodes.legal.className}`}
-                                        onClick={(e) => { row.reports.legal.status_code == COMPLETE ? this.download_report(row.reports.legal._id, "Legal") : null }}
-                                    >Legal</span>}
+                                    <OverlayTrigger
+                                        trigger="click"
+                                        key={'External' + index}
+                                        placement='top'
+                                        rootClose={true}
+                                        overlay={
+                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                <Popover.Body>
+                                                    {row.reports.legal.status_code == COMPLETED ? this.showDownload(row, row.reports.legal._id, "legal") : this.showUpload(row, row.reports.incorporate._id, "legal")}
+                                                </Popover.Body>
+                                            </Popover>
+                                        }
+                                    >
+                                        <span className={`btn report-status legal ${reportCodes.legal.className}`}
+                                        >Legal</span>
+                                    </OverlayTrigger>
+                                }
                             </div>
                             <div className={`suppliers status${row.reports.suppliers.status_code}`}>
                                 {(row.reports.suppliers.status_code == -1) ? '' :
-                                    <span className={`btn report-status supplier ${reportCodes.suppliers.className}`}
-                                        onClick={(e) => { row.reports.suppliers.status_code == COMPLETE ? this.download_report(row.reports.suppliers._id, "Suppliers") : null }}
-                                    >Suppliers</span>}
+
+                                    <OverlayTrigger
+                                        trigger="click"
+                                        key={'External' + index}
+                                        placement='top'
+                                        rootClose={true}
+                                        overlay={
+                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.suppliers.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                <Popover.Body>
+                                                    {row.reports.suppliers.status_code == COMPLETED ? this.showDownload(row, row.reports.suppliers._id, "suppliers") : this.showUpload(row, row.reports.incorporate._id, "suppliers")}
+                                                </Popover.Body>
+                                            </Popover>
+                                        }
+                                    >
+                                        <span className={`btn report-status suppliers ${reportCodes.suppliers.className}`}
+                                        >Suppliers</span>
+                                    </OverlayTrigger>
+                                }
                             </div>
                             <div><button className="btn download" disabled={isDisabled} onClick={(this.download_report(row._id, 'All'))}>Download All</button></div>
                             <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                         </div>
                     </td>
                 </tr>
-                <tr className="collapse" key={index + "_2"}>
+                <tr className="collapse subrow" key={index + "_2"}>
                     <td colSpan={6} className="comments_indent">
                         <Table style={{ width: '100%' }} striped >
                             <tbody>
                                 <tr>
                                     <td colSpan={1}>
-                                        {this.state.role === 'admin' ? '' :
+                                        {/*this.state.role === 'admin' ? '' :
                                             <button className="btn btnremove"
                                                 onClick={() => this.requestCancel(row._id)}>Request Cancellation</button>
-                                        }
+        */}
                                     </td>
                                     <td colSpan={1}>
 
@@ -303,10 +479,50 @@ class CreditReports extends Component {
                                         <div className="admin_moreinfo text-end">
                                             {this.state.role === 'admin' ?
                                                 <>
-                                                    <button className="btn btn_light" style={{ borderWidth: '1px' }}
-                                                        onClick={() => this.changeStatus(row)}>Change Status</button>
-                                                    <button className="btn btn_light" style={{ borderWidth: '1px' }}
-                                                        onClick={() => this.showLinks(row._id)}>Show External Links</button>
+                                                    {/* <OverlayTrigger
+                                                        trigger="click"
+                                                        key={'Status' + index}
+                                                        placement='bottom'
+                                                        rootClose={true}
+                                                        onEnter={() => this.setState({ rowStatus: row })}
+                                                        overlay={
+                                                            <Popover id={`popover-positioned-top`}
+                                                                classname='external_links_popup'
+                                                                isOpen={this.state.rowStatus?.row !== null}  >
+                                                                <Popover.Header as="div" className='external_links_popup title'>Change Status</Popover.Header>
+                                                                <Popover.Body>
+                                                                    {this.showStatusBody(row)}
+                                                                </Popover.Body>
+                                                            </Popover>
+                                                        }
+                                                    >
+                                                        <Button className="btn btn_light" style={{ borderWidth: '1px' }} onClick={() => this.changeStatus(row)}
+                                                        >Change Status</Button>
+                                                    </OverlayTrigger> */}
+                                                    <Button className="btn btn_light" style={{ borderWidth: '1px' }} onClick={() => this.changeStatus(row)}
+                                                    >Change Status</Button>
+
+                                                    <OverlayTrigger
+                                                        trigger="click"
+                                                        key={'External' + index}
+                                                        placement='bottom'
+                                                        rootClose={true}
+                                                        overlay={
+                                                            <Popover id={`popover-positioned-bottom`} classname='external_links_popup'>
+                                                                <Popover.Header as="div" className='external_links_popup title'>External Links</Popover.Header>
+                                                                <Popover.Body>
+                                                                    Banks Form: <a href={row.links.bank_form}>{row.links.bank_form}</a><br />
+                                                                    Supplier Form: <a href={row.links.plaid_auth}>{row.links.plaid_auth}</a>
+                                                                </Popover.Body>
+                                                            </Popover>
+                                                        }
+                                                    >
+                                                        <Button className="btn btn_light" style={{ borderWidth: '1px' }}
+                                                        >Show External Links</Button>
+                                                    </OverlayTrigger>
+
+
+
                                                 </>
                                                 :
                                                 ''
@@ -318,37 +534,48 @@ class CreditReports extends Component {
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colSpan={11} className="comments_indent">
-                                        <h5>More Information</h5>
-                                        <div className="more_info_wrap">
-                                            <table width="100%">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <p>
-                                                                Price Chart: <strong>A1</strong><br />
-                                                                User Phone: <strong>+1234567890</strong><br />
-                                                                User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
-                                                            </p>
-                                                        </td>
-                                                        <td className="info_manual">Set Manually</td>
-                                                        <td className="info_price"><strong>Final Price:</strong><br />
-                                                            Price :<br />
-                                                            Aging Discount :<br />
-                                                            Extra<br />
-                                                        </td>
-                                                        <td className="info_unit"><strong>CAD 90</strong><br />
-                                                            CAD 100<br />
-                                                            CAD 10 (10%)<br />
-                                                            CAD 20
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
+                                {this.state.role === 'admin' ?
+                                    <tr>
+                                        <td colSpan={11} className="comments_indent">
+                                            <h5>More Information</h5>
+                                            <div className="more_info_wrap">
+
+                                                <table width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <p>
+                                                                    Price Chart: <strong>{row.pricing.pricing_chart}</strong><br />
+                                                                    User Phone: <strong>+1234567890</strong><br />
+                                                                    User Email: <strong><a href="mailto:email@company.ca">email@company.ca</a></strong><br />
+                                                                </p>
+                                                            </td>
+                                                            <td className="info_manual">
+                                                                <div onClick={() => this.setState({ setPricing: true })}> Set Manually</div>
+                                                                <div className='set_price' style={{ visibility: this.state.setPricing ? 'visible' : 'hidden' }}>
+                                                                    <label htmlFor='price'>Enter Price</label>
+                                                                    <input type='text' className='price_text' defaultValue={row.pricing.price.replace(/^\D+/g, '')} onChange={(e) => this.setState({ reportPrice: e.target.value })} />
+                                                                    <button onClick={() => this.updatePrices(row)}>Save</button>
+                                                                </div>
+                                                            </td>
+                                                            <td className="info_price"><strong>Final Price:</strong><br />
+                                                                Price :<br />
+                                                                Aging Discount :<br />
+                                                                Extra<br />
+                                                            </td>
+                                                            <td className="info_unit"><strong>{row.pricing.final_price}</strong><br />
+                                                                {row.pricing.price}<br />
+                                                                {row.pricing.aging_discount}<br />
+                                                                {row.pricing.extra}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    : ''}
                                 <tr>
                                     <td colSpan={11} className="comments_indent">
                                         <h5>Status & Comments</h5>
@@ -381,11 +608,17 @@ class CreditReports extends Component {
                                                         return (
                                                             <div className='comments_items' key={idx}>
                                                                 <Row>
-                                                                    <Col>
-                                                                        <h6 className='comment-header'>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
+                                                                    <Col >
 
-                                                                        {this.getStatusCss(comment.status_code).badge}
+                                                                        <h6 className='comment-header'>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
+                                                                        {comment.is_private ?
+                                                                            <span className='private_comment'>Private</span>
+                                                                            :
+                                                                            this.getStatusCss(comment.status_code).badge
+                                                                        }
+                                                                        <button className='btn-close delete_comment' onClick={(e) => this.deleteComment(comment._id)}></button>
                                                                     </Col>
+
                                                                 </Row><Row>
                                                                     <Col>
                                                                         {comment.comment}
@@ -446,8 +679,10 @@ class CreditReports extends Component {
             await update_status(updatedStatus, token)
             this.get_data();
             this.setState({ rowStatus: { row: null } });
+            document.body.click();
         }
         else if (type == 3) {//cancel button
+            document.body.click();
             this.setState({ rowStatus: { row: null } });
         }
     }
@@ -549,27 +784,7 @@ class CreditReports extends Component {
 
     }
 
-    // rangeContainer = ({ className, children }) => {
-    //     //div sill call setDates to calculate and display date range
-    //     //backround 'dateRange' variable will also be set to change color
-    //     return (
 
-    //         <CalendarContainer className={className}>
-    //             <Row>
-    //                 <Col>
-    //                     <div onClick={() => this.setDates(0)} className={this.state.dateRange == 0 ? "bg-primary" : "bg-white"} >Today</div>
-    //                     <div onClick={() => this.setDates(1)} className={this.state.dateRange == 1 ? "bg-primary" : "bg-white"} >Yesterday</div>
-    //                     <div onClick={() => this.setDates(2)} className={this.state.dateRange == 2 ? "bg-primary" : "bg-white"} >Last 7 Days</div>
-    //                     <div onClick={() => this.setDates(3)} className={this.state.dateRange == 3 ? "bg-primary" : "bg-white"} >Last 30 Days</div>
-    //                     <div onClick={() => this.setDates(4)} className={this.state.dateRange == 4 ? "bg-primary" : "bg-white"} >This Month</div>
-    //                     <div onClick={() => this.setDates(5)} className={this.state.dateRange == 5 ? "bg-primary" : "bg-white"} >This Year</div>
-    //                 </Col><Col>
-    //                     <div style={{ position: "relative" }}>{children}</div>
-    //                 </Col>
-    //             </Row>
-    //         </CalendarContainer>
-    //     );
-    // };
 
     render() {
         if (this.state.reportList === null) {
@@ -654,8 +869,7 @@ class CreditReports extends Component {
 
                                 <label className="form-check-label" htmlFor="flexCheckDefault">Completed</label>
                             </div>
-                            {this.rowStatus?.status ? this.getStatusCss(this.rowStatus?.status).badge : ''}
-
+                            {this.state.rowStatus.status ? this.getStatusCss(this.state.rowStatus.status).badge : ''}
 
                             <div className="mt-3">
                                 <textarea className="form-control"
@@ -720,9 +934,12 @@ class CreditReports extends Component {
                                 <Col sm={4}>
                                     <div className="select_date">
                                         <label htmlFor="Status" className="form-label">Filter By Date</label>
+                                        {/* format='EEE MMM ee yyyy' value={[new Date(), new Date()]}
+ */}
                                         <div className='filterCol'
                                             onClick={e => this.setState({ showDates: true })}>
                                             <DateRangePicker showOneCalendar
+                                                format='dd-MM-yyyy'
                                                 ranges={dateSegments}
                                                 onOk={(update) => { this.filterDates(update) }}
                                                 onClean={() => { this.filterDates(null) }}

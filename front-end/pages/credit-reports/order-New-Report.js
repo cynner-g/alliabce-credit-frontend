@@ -40,9 +40,11 @@ class OrderNewReport extends Component {
     async componentDidMount() {
         this.setState({ columns: this.getColumns() });
         //if passing in a report to edit
-        const token = Cookies.get('token')
-        if (Router?.router?.query?.rptId?.length > 0) {
-            let rptId = Router.router.query.rptId;
+        // const token = Cookies.get('token')
+        // if (Router?.router?.query?.rptId?.length > 0) {
+        //     let rptId = Router.router.query.rptId;
+        if (true) {
+            let rptId = '61ab92dc799c28f4185b143e';
             let token = Cookies.get('token')
             order_details(rptId, token).then(async (data) => {
 
@@ -82,6 +84,7 @@ class OrderNewReport extends Component {
 
                 let newBankCols = [];
                 for (let index = 0; index < numBanks; index++) {
+                    //add bank name (number)
                     newBankCols.push({
                         'title': `Bank ${index + 1}`,
                         'params': {
@@ -196,20 +199,22 @@ class OrderNewReport extends Component {
 
     //Display JSON fucntions
     addBank = () => {
-
-
         let columns = this.state.columns;
         let banks = columns.filter(col => col.params?.model?.startsWith("banks"))
-        banks.shift()
-        banks.shift(); //remove title and add new button
+        banks.shift()//remove title 
+
         let newDupNum = banks[banks.length - 1].dupNum;//get the dupNum of the last bank
-        newBanks = banks.filter(bank => bank.dupNum == newDupNum); //get only last row of banks
+        newBanks = banks.filter(bank => bank.dupNum == 0); //get only last row of banks
         let newBanks = JSON.parse(JSON.stringify(newBanks)); //ensure new variable not reference
         newBanks.forEach(newBank => {
             newBank.params.model = newBank.params.model.replace(newBank.dupNum, ++newBank.dupNum)
-            // newBank.dupNum++;
             newBank.value = '';
             newBank.params.value = ''
+            //add remove button
+            if (newBank.params.fName === 'LinkButton' && newBank.dupNum > 0) { //if this is a second or greater bank
+                newBank.params.onClick = this.removeBank;
+                newBank.Text = "Remove"
+            }
 
             //rename the model to fit the bank number
         });
@@ -223,30 +228,51 @@ class OrderNewReport extends Component {
             titleBank.title = titleBank.title.replace(num, num + 1);
         }
 
-        let startArray = [...columns].slice(0, lastBank + numBanks + 2);
-        let endArray = [...columns].splice(lastBank + numBanks + 2);
+        let startArray = [...columns].slice(0, lastBank + numBanks + 1);
+        let endArray = [...columns].splice(lastBank + numBanks + 1);
         //concatenate start, new and end arrays
         columns = startArray.concat(newBanks, endArray);
         this.setState({ columns: columns });
     }
 
+    removeBank = (model) => {
+        let columns = this.state.columns;
+        let banks = columns.filter(col => col.params?.model?.startsWith("banks."))//get all banks
+        let ttlBanks = banks.length;
+        let bank = banks.filter(b => b.params.model == model); //get exact bank for dupNum
+        let dupNum = bank[0].dupNum;
+        let numBanks = banks.filter(b => b.dupNum == dupNum).length;//number of bank items
+        let firstItem = banks.findIndex(b => b.dupNum == dupNum);//number of bank items
+        let firstBank = columns.findIndex(col => col.params?.model?.startsWith("banks."))//get first bank
+
+        banks.splice(firstItem, numBanks);
+        let len = banks.length;
+        //in theory replace existing bank array with new bank array
+        columns.splice(firstBank, ttlBanks + 1, ...banks);
+        this.setState({ columns: columns });
+    }
+
     addSupplier = () => {
-
-
         let columns = this.state.columns;
         let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers"))
-        suppliers.shift()
+
         suppliers.shift(); //remove title and add new button
         let newDupNum = suppliers[suppliers.length - 1].dupNum;//get the dupNum of the last Supplier
-        newSuppliers = suppliers.filter(supplier => supplier.dupNum == newDupNum); //get only last row of Suppliers
+        newSuppliers = suppliers.filter(supplier => supplier.dupNum == 0); //get only last row of Suppliers
         let newSuppliers = JSON.parse(JSON.stringify(newSuppliers)); //ensure new variable not reference
+
+
         newSuppliers.forEach(newSupplier => {
             newSupplier.params.model = newSupplier.params.model.replace(newSupplier.dupNum, ++newSupplier.dupNum)
             // newSupplier.dupNum++;
             newSupplier.value = '';
             newSupplier.params.value = ''
+            //add remove button
+            if (newSupplier.params.fName === 'LinkButton' && newSupplier.dupNum > 0) { //if this is a second or greater bank
+                newSupplier.params.onClick = this.removeSupplier;
+                newSupplier.Text = "Remove"
+            }
 
-            //rename the model to fit the supplier number
         });
 
         let numSuppliers = newSuppliers.length; //Suppliers header and Add new supplier button
@@ -258,30 +284,31 @@ class OrderNewReport extends Component {
             titleSupplier.title = titleSupplier.title.replace(num, num + 1);
         }
 
-        let startArray = [...columns].slice(0, lastSupplier + numSuppliers + 2);
-        let endArray = [...columns].splice(lastSupplier + numSuppliers + 2);
+        let startArray = [...columns].slice(0, lastSupplier + numSuppliers + 1);
+        let endArray = [...columns].splice(lastSupplier + numSuppliers + 1);
         //concatenate start, new and end arrays
         columns = startArray.concat(newSuppliers, endArray);
         this.setState({ columns: columns });
-
-        /*
-        let columns = this.state.columns;
-        let suppliers = columns.filter(col => col.params.model.startsWith("suppliers"));
-        let numsuppliers = suppliers.length;
-
-        let lastSupplier = columns.findIndex(col => col.params.model.startsWith("suppliers")) + numsuppliers;
-
-        newDupNum = suppliers[suppliers.length - 1].dupNum;
-        suppliers = suppliers.filter(supplier => supplier.dupNum == newDupNum);
-        newSuppliers = JSON.parse(JSON.stringify(suppliers)); //ensure new variable not reference
-        newSuppliers.forEach(newBank => newSuppliers.dupNum = newDupNum + 1)
-        let startArray = [...columns.slice(0, lastSupplier)];
-        let endArray = [...columns.splice(lastSupplier)];
-        //concatenate all temp arrays, then concatenate those with rest of display data
-        columns = startArray.concat(suppliers, endArray);
-        this.setState({ columns: columns });
-        */
     }
+
+    removeSupplier = (model) => {
+        let columns = this.state.columns;
+        let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers."))//get all suppliers
+        let ttlsuppliers = suppliers.length;
+        let supplier = suppliers.filter(b => b.params.model == model); //get exact supplier for dupNum
+        let dupNum = supplier[0].dupNum;
+        let numsuppliers = suppliers.filter(b => b.dupNum == dupNum).length;//number of supplier items
+        let firstItem = suppliers.findIndex(b => b.dupNum == dupNum);//number of supplier items
+        let firstsupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers."))//get first supplier
+
+        suppliers.splice(firstItem, numsuppliers);
+        let len = suppliers.length;
+        //in theory replace existing supplier array with new supplier array
+        columns.splice(firstsupplier, ttlsuppliers + 1, ...suppliers);
+        this.setState({ columns: columns });
+    }
+
+
 
     getColumns = () => {
         let ret =
@@ -447,8 +474,9 @@ class OrderNewReport extends Component {
                 },
                 {
                     Text: "Add Bank Account",
+                    'dupNum': 0,
                     'params': {
-                        model: 'banksAdd',
+                        model: 'banks.add',
                         onClick: this.addBank,
                         'fName': "LinkButton",
                         colNum: 0
@@ -464,42 +492,6 @@ class OrderNewReport extends Component {
                         'editable': true,
                         'defaultVal': null,
                         colNum: 0
-                    }
-                },
-                {
-                    'title': "Bank Number",
-                    'dupNum': 0,
-                    'params': {
-                        'model': "banks.bank_phone_number",
-                        'required': true,
-                        'fName': "TextRow",
-                        'editable': true,
-                        'defaultVal': null,
-                        colNum: 1
-                    }
-                },
-                {
-                    'title': "Account Number",
-                    'dupNum': 0,
-                    'params': {
-                        'model': "banks.account_number",
-                        'required': true,
-                        'fName': "TextRow",
-                        'editable': true,
-                        'defaultVal': null,
-                        colNum: 0
-                    }
-                },
-                {
-                    'title': "Transit Number",
-                    'dupNum': 0,
-                    'params': {
-                        'model': "banks.transit_number",
-                        'required': true,
-                        'fName': "TextRow",
-                        'editable': true,
-                        'defaultVal': null,
-                        colNum: 1
                     }
                 },
                 {
@@ -575,7 +567,42 @@ class OrderNewReport extends Component {
                         colNum: 2
                     }
                 },
-
+                {
+                    'title': "Bank Number",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.bank_phone_number",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 0
+                    }
+                },
+                {
+                    'title': "Account Number",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.account_number",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 1
+                    }
+                },
+                {
+                    'title': "Transit Number",
+                    'dupNum': 0,
+                    'params': {
+                        'model': "banks.transit_number",
+                        'required': true,
+                        'fName': "TextRow",
+                        'editable': true,
+                        'defaultVal': null,
+                        colNum: 2
+                    }
+                },
                 {
                     'title': "Bank Unique Number",
                     'dupNum': 0,
@@ -636,7 +663,7 @@ class OrderNewReport extends Component {
                     supplierId: { model: '_id', visible: false },
                     Text: "Add Supplier",
                     'params': {
-                        model: 'suppliersAdd',
+                        model: 'suppliers.add',
                         onClick: this.addSupplier,
                         'fName': "LinkButton",
                         colNum: 0
@@ -961,14 +988,18 @@ class OrderNewReport extends Component {
         this.setState({ isEdit: true });
     }
 
+    cancelForm = () => {
+        this.reportsPanel()
+    }
+
     buildForm = () => {
         let rows = [...this.state.columns];
         let submit = this.submit;
-        let cancel = null;
+        let cancel = this.cancelForm;
         let data = null
         console.log(rows)
         if (this.state.origData) { //if there is data
-
+            let status = this.state.origData.status_code;
             if (!this.state.isEdit) {//if the edit button has been pressed
                 for (let i = rows.length - 1; i >= 0; i--) {
                     let col = rows[i]
@@ -976,9 +1007,13 @@ class OrderNewReport extends Component {
                     //TODO:  TEST TO SEE IF THIS REPORT IS EDITABLE
                     //IF IT IS NOT REMOVE THE EDIT BUTTON ALSO
 
+                    if (col.params.fName === 'LinkButton') {
+                        col.params.visible = false;
+                    }
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Edit"
+                        if (status == 3 || status == 4) col.params.visible = false;
                     }
 
                     //remove 'Cancel' button
@@ -986,18 +1021,44 @@ class OrderNewReport extends Component {
                         col.params.visible = false;
                     }
 
-                    if (col.params.editable) {
-                        col.params.editable = false;
-                    }
+                    col.params.editable = false;
+
 
                 }
-
             }
+            else {
+                for (let i = rows.length - 1; i >= 0; i--) {
+                    let col = rows[i]
+                    submit = this.beginEdit;
+                    //TODO:  TEST TO SEE IF THIS REPORT IS EDITABLE
+                    //IF IT IS NOT REMOVE THE EDIT BUTTON ALSO
+
+                    //show add/remove buttons
+                    if (col.params.fName === 'LinkButton') {
+                        col.params.visible = true;
+                    }
+
+                    //rename Submit to 'edit'
+                    if (col.params.fName === 'SubmitButton') {
+                        col.params.text = "Resubmit"
+                        if (status == 3 || status == 4) col.params.visible = false;
+                    }
+
+                    //remove 'Cancel' button
+                    if (col.params.fName === 'CancelButton') {
+                        col.params.visible = true;
+                    }
+
+                    col.params.editable = true;
+                }
+            }
+
+
+
         }
 
         return (
             <FormComponent rows={rows}
-
                 submit={submit}
                 cancel={cancel}
             />

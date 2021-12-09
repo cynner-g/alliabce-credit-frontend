@@ -578,7 +578,6 @@ export async function getServerSideProps(ctx) {
             companiesData: resCompaniesData?.data
         }
     }
-
 }
 
 export default Users

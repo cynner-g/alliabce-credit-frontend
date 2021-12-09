@@ -466,11 +466,15 @@ input[type=text] {
 
 .report-status {
   height: 24px;
-  padding: 2px 34px 2px 10px;
+  padding: 2px 34px 24px 10px;
+  text-align: center;
 }
 
 .order-status {
-  color: black
+  color: black;
+  padding: 0px;
+  margin: 0px;
+  height: 24px;
 }
 
 .upload {
@@ -698,17 +702,28 @@ input[type=text] {
   background: #FFF;
   padding: 16px 10px;
   border-bottom: 1px solid #F2F2F2;
+
+}
+
+.listing.subrow {
+  padding: 8px;
+  border: solid 1px white;
 }
 
 .listing .table-striped>tbody>tr:nth-of-type(odd) {
   --bs-table-accent-bg: #FFF;
   color: #323232;
   border-top: 0px;
+
+}
+
+
+.listing tr:hover {
+  background-color: rgba(31, 31, 109, 0.5)
 }
 
 .listing .table> :not(:first-child) {
   border-top: 0px solid currentColor;
-
 }
 
 .table> :not(:last-child)> :last-child>* {
@@ -1049,4 +1064,41 @@ td.comments_indent {
 .comment-header {
   display: inline-block;
   margin-right: 8px;
+}
+
+.cr_status_row td {
+  vertical-align: top
+}
+
+.external_links_popup {
+  background-color: #dddddd;
+}
+
+.external_links_popup.title {
+  border: solid 1px black;
+}
+
+.private_comment {
+  color: lightGrey;
+}
+
+.delete_comment {
+  margin-left: 15px;
+  margin-bottom: -5px;
+}
+
+.set_price {
+  white-space: nowrap;
+  padding: 5px;
+}
+
+.price_text {
+  width: 50px;
+  height: 25px;
+  margin: 10px;
+}
+
+.upload_report {
+  /* position: absolute; */
+  margin-top: -50px;
 }

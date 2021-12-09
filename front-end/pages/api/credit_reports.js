@@ -240,7 +240,6 @@ export const update_status = ((status, token) => {
 });
 
 export const download_report_file = ((data, token) => {
-    reprot / download - report
 
     if (!data) return;
     let body = { ...data, api_token: token }
@@ -264,4 +263,17 @@ export const download_report_file = ((data, token) => {
             var err = new Error(error.message);
             throw err;
         })
+})
+
+export const delete_comment = (body => {
+    init.body = JSON.stringify(body)
+    // return fetch(`${process.env.API_URL}/report/delete-comment`, init)
+})
+
+export const update_pricing = (body => {
+    init.body = JSON.stringify(body)
+})
+
+export const upload_report = (body => {
+    init.body = body
 })

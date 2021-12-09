@@ -6,12 +6,13 @@ import Cookies from 'js-cookie'
 
 import langTrans from './../components/i18n';
 import Lang from '../components/lang';
-
+import { Input, InputGroup } from 'rsuite';
 // import gql from 'graphql-tag';
 // import client from './apollo-client';
 import Logo from '../components/logo';
 import Image from 'next/image'
 import { login_user } from './api/users'
+import 'rsuite/dist/rsuite.min.css';
 
 // export const GET_USERS = gql`
 //   query getUsers {
@@ -27,7 +28,11 @@ export default function Login(props) {
   const { locale, locales, defaultLocale, asPath } = useRouter();
   const { login, a_forgot_pass, btn_login } = langTrans[locale];
   const router = useRouter()
+  const [visible, setVisible] = useState(false);
 
+  const handleChange = () => {
+    setVisible(!visible);
+  };
 
   const userLogin = async (e) => {
 
@@ -79,6 +84,12 @@ export default function Login(props) {
                 <div className="mb-3">
                   <label htmlFor="password">{login.password}</label>
                   <input className="form-control" type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  {/* <InputGroup inside style={styles}>
+                    <Input type={visible ? 'text' : 'password'} />
+                    <InputGroup.Button onClick={handleChange}>
+                      {visible ? <EyeIcon /> : <EyeSlashIcon />}
+                    </InputGroup.Button>
+                  </InputGroup> */}
                 </div>
                 <div className="mb-3">
                   <button type="submit" className="btn btn-primary mb-3">{btn_login}</button>
