@@ -11,7 +11,7 @@ export const get_provinces = (body => {
 
 
 export const add_province = (body => {
-    return fetch(`${process.env.API_URL}/company/list-companies`, {
+    return fetch(`${process.env.API_URL}/provience/add-provience`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

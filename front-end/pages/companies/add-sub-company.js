@@ -6,6 +6,7 @@ import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
+import { add_sub_company } from '../api/companies';
 
 const addCompany = ({ industry, group, pricing, msg }) => {
     const router = useRouter();
@@ -113,21 +114,15 @@ const addCompany = ({ industry, group, pricing, msg }) => {
 
         console.log(body);
 
-        const addCompanyDB = await fetch(`${process.env.API_URL}/company/add-sub-company`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-
-        })
-        // if (addCompanyDB.status === 403) {
-        //     console.log(addCompanyDB.statusText)
-        // }
-        // else {
-        if (addCompanyDB.status === 200) router.push(`/companies/${companyID}`)
-        else setMessage(addCompDB.statusText);
-        // }
+        add_sub_company(body)
+            .then(addCompanyDB => {
+                if (addCompanyDB.status === 200) {
+                    router.push(`/companies/${companyID}`)
+                }
+                else {
+                    setMessage(addCompDB.statusText);
+                }
+            })
     }
 
 

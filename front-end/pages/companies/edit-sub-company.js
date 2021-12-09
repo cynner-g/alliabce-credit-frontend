@@ -6,6 +6,11 @@ import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
+import {
+    get_company_details,
+    update_company,
+    remove_sub_company
+} from '../api/companies';
 
 const addCompany = ({ industry, group, pricing, company, }) => {
     const [show, setShow] = useState(false);
@@ -138,33 +143,24 @@ const addCompany = ({ industry, group, pricing, company, }) => {
         console.log(body)
 
 
-        const addCompanyDB = await fetch(`${process.env.API_URL}/company/update-company`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify()
-        })
+        const addCompanyDB = update_company(body)
+            .then(addCompanyDB => {
+                if (addCompanyDB.status == 200) router.push(`/companies/${company.parent_company._id}`)
+                else {
+                    let data = await addCompanyDB.json();
+                    setMessage(data.data);
+                }
+            })
 
         setShow(false)
-        if (addCompanyDB.status == 200) router.push(`/companies/${company.parent_company._id}`)
-        else {
-            let data = await addCompanyDB.json();
-            setMessage(data.data);
-        }
     }
 
     const removeCompany = async () => {
-        // const addCompanyDB = await fetch(`${process.env.API_URL}/company/remove-sub-company`, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
+        // remove_sub_company({
         //         api_token: token,
         //         company_id: query._id
         //     })
-        // })
+
         router.push(`/companies/${company.parent_company._id}`)
     }
 
@@ -338,18 +334,12 @@ export async function getServerSideProps(ctx) {
     })
     const group = await resGroup.json()
 
-    const subCompany = await fetch(`${process.env.API_URL}/company/company-detail`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-            "company_id": subID
-        })
+
+    const subData = get_company_details({
+        "language": 'en',
+        "api_token": token,
+        "company_id": subID
     })
-    const subData = await subCompany.json()
 
     // const resPricing = await fetch(`${process.env.API_URL}/group/list`, {
     //     method: "POST",

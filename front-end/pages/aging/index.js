@@ -4,7 +4,9 @@ import DynamicTable from '../../components/DynamicTable'
 import { Row, Col, Container, Modal, Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker'
 import Cookies from "js-cookie"
-
+import {
+    get_company_details
+} from '../api/companies';
 const Aging = function (props) {
     let [data, setData] = useState();
     let [showUpload, setShowUpload] = useState(false);
@@ -80,7 +82,7 @@ const Aging = function (props) {
         formData.append("month", dt.getMonth());
         formData.append("yeah", dt.getYear())
 
-        const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
+        const res = await fetch(`${process.env.API_URL}/aging/upload-user-aging`, {
             method: "POST",
             headers: {
                 contentType: false,

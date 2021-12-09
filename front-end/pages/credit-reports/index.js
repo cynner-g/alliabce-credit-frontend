@@ -11,7 +11,11 @@ import Router from "next/router"
 import Cookies from "js-cookie"
 
 import { Loading } from "../../components/LoadingComponent"
-import { Table, Container, Row, Col, Badge, Modal, Popover, OverlayTrigger, Button } from 'react-bootstrap';
+import {
+    Table, Container, Row, Col,
+    Badge, Modal, Popover, OverlayTrigger, Button,
+    Tabs, Tab
+} from 'react-bootstrap';
 import {
     order_list,
     cancel_order,
@@ -30,7 +34,7 @@ import React, { Component } from 'react';
 // import Select from 'react-select';
 // import DatePicker, { CalendarContainer } from 'react-datepicker'
 import { TagPicker, DateRangePicker } from 'rsuite'
-import "react-datepicker/dist/react-datepicker.css";
+// import "react-datepicker/dist/react-datepicker.css";
 import 'rsuite/dist/rsuite.min.css';
 import "./index.module.css"
 
@@ -650,7 +654,67 @@ class CreditReports extends Component {
                                         </div>
                                     </td>
                                 </tr>
+                                {this.state.role === 'admin' ?
+                                    <tr>
+                                        <td colSpan={11} className="activities_indent">
+                                            <h5>Activities Log</h5>
+                                            <div className="activities_wrapper">
+                                                <Tabs defaultActiveKey="bank" className="activities_tabContainer">
+                                                    <Tab eventKey="bank" title="Bank Report">
+                                                        <ul className='cr_activity_list'>
+                                                            {row.activity_log.bank.map(bank => {
+                                                                return (
+                                                                    <li className="cr_activity_item">
+                                                                        <div className="cr_activity_item_container">{bank.message}</div>
+                                                                        <div className="cr_activity_date">{new Date(bank.create_date).toLocaleString()}</div>
+                                                                    </li>
+                                                                )
+                                                            })}
+                                                        </ul>
+                                                    </Tab>
+                                                    <Tab eventKey="incorporate" title="Incorporate Report">
+                                                        <ul className='cr_activity_list'>
+                                                            {row.activity_log.incorporate.map(incorporate => {
+                                                                return (
+                                                                    <li className="cr_activity_item">
+                                                                        <div className="cr_activity_item_container">{incorporate.message}</div>
+                                                                        <div className="cr_activity_date">{new Date(incorporate.create_date).toLocaleString()}</div>
+                                                                    </li>
+                                                                )
+                                                            })}
+                                                        </ul>
+                                                    </Tab>
+                                                    <Tab eventKey="legal" title="Legal Report">
+                                                        <ul className='cr_activity_list'>
+                                                            {row.activity_log.legal.map(legal => {
+                                                                return (
+                                                                    <li className="cr_activity_item">
+                                                                        <div className="cr_activity_item_container">{legal.message}</div>
+                                                                        <div className="cr_activity_date">{new Date(legal.create_date).toLocaleString()}</div>
+                                                                    </li>
+                                                                )
+                                                            })}
+                                                        </ul>
 
+                                                    </Tab>
+                                                    <Tab eventKey="supplier" title="Supplier Report">
+                                                        <ul className='cr_activity_list'>
+                                                            {row.activity_log.supplier.map(supplier => {
+                                                                return (
+                                                                    <li className="cr_activity_item">
+                                                                        <div className="cr_activity_item_container">{supplier.message}</div>
+                                                                        <div className="cr_activity_date">{new Date(supplier.create_date).toLocaleString()}</div>
+                                                                    </li>
+                                                                )
+                                                            })}
+                                                        </ul>
+
+                                                    </Tab>
+                                                </Tabs>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    : ''}
                             </tbody>
                         </Table>
 

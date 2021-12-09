@@ -111,19 +111,11 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
-    const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const data = await get_company_details({
             "language": 'en',
             "api_token": token,
             "company_id": companyID
         })
-
-    })
-    const data = await res.json()
 
     /**
      * limit, start, search item

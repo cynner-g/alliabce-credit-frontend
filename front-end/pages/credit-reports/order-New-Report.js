@@ -4,6 +4,7 @@ import Router from "next/router";
 import Image from 'next/image'
 import Link from 'next/link'
 import { Component } from 'react'
+import { SelectPicker } from 'rsuite'
 import { Container, Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import {
     order_details,
@@ -21,7 +22,7 @@ import {
 
 import styles from "./order-New-Report.module.css";
 import Cookies from 'js-cookie'
-
+import 'rsuite/dist/rsuite.min.css';
 
 class OrderNewReport extends Component {
     constructor(props) {
@@ -39,7 +40,9 @@ class OrderNewReport extends Component {
             showEditSubmit: false,
             warning: null,
             provinces: [],
-            role: "user"
+            role: "user",
+            companiesList: [],
+            selectedCompany: null
         }
     }
 
@@ -54,8 +57,8 @@ class OrderNewReport extends Component {
         console.log(Router?.router?.query?.rptId?.length)
         if (Router?.router?.query?.rptId?.length > 0) {
             let rptId = Router.router.query.rptId;
-        // if (true) {
-        //     let rptId = '61ab92dc799c28f4185b143e';
+            // if (true) {
+            //     let rptId = '61ab92dc799c28f4185b143e';
             let token = Cookies.get('token')
             order_details(rptId, token).then(async (data) => {
 
@@ -207,6 +210,7 @@ class OrderNewReport extends Component {
             //if admin get list of all companies
             const role = Cookies.get("role")
             this.setState({ role: role })
+            let list = [];
             if (role === "admin") {
                 let body = {
                     "api_token": token,
@@ -216,9 +220,27 @@ class OrderNewReport extends Component {
                 //download all company names
 
                 let companies = await list_companies(body)
-                console.log(companies.data)
+                console.log(companies.data);
+                for (let company of companies.data) {
+                    list.push({ value: company._id, label: company.company_name });
+                }
             }
-            //TODO
+            else {
+                let user = await get_user_details({
+                    api_token: token,
+                    language: 'en',
+                    user_id: Cookies.get('userid')
+                });
+
+                for (let company of user.data.parent_companies) {
+                    list.push({ value: company._id, label: company.company_name });
+                }
+                for (let company of user.data.child_companies) {
+                    list.push({ value: company._id, label: company.company_name });
+                }
+            }
+            this.setState({ companiesList: list });
+
         }
     }
 
@@ -295,25 +317,36 @@ class OrderNewReport extends Component {
     addSupplier = () => {
         let columns = this.state.columns;
         let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers"))
+        suppliers.shift()//remove title 
 
-        suppliers.shift(); //remove title and add new button
-        let newDupNum = suppliers[suppliers.length - 1].dupNum;//get the dupNum of the last Supplier
-        newSuppliers = suppliers.filter(supplier => supplier.dupNum == 0); //get only last row of Suppliers
+        let item = suppliers[suppliers.length - 1];
+        let newDupNum = item.dupNum;//get the dupNum of the last supplier
+
+        newSuppliers = suppliers.filter(supplier => supplier.dupNum == newDupNum); //get only last row of suppliers
+        newDupNum++;
         let newSuppliers = JSON.parse(JSON.stringify(newSuppliers)); //ensure new variable not reference
-
-
-        newSuppliers.forEach(newSupplier => {
-            newSupplier.params.model = newSupplier.params.model.replace(newSupplier.dupNum, ++newSupplier.dupNum)
-            // newSupplier.dupNum++;
-            newSupplier.value = '';
-            newSupplier.params.value = ''
-            //add remove button
-            if (newSupplier.params.fName === 'LinkButton' && newSupplier.dupNum > 0) { //if this is a second or greater bank
-                newSupplier.params.onClick = this.removeSupplier;
-                newSupplier.Text = "Remove"
+        // newSuppliers.forEach(newSupplier => {
+        for (let i = 0; i < newSuppliers.length; i++) {
+            let params = { ...newSuppliers[i].params };
+            if (params.model.indexOf('_') > 0) {
+                params.model = params.model.replace(newSuppliers[i].dupNum, newDupNum)
             }
+            else {
+                params.model = params.model + '_' + newDupNum;
+            }
+            newSuppliers[i].value = '';
+            params.value = ''
+            newSuppliers[i].dupNum = newDupNum;
+            //add remove button
+            if (params.fName === 'LinkButton' && newSuppliers[i].dupNum > 0) { //if this is a second or greater supplier
+                params.onClick = (model) => this.removeSupplier(newSuppliers[i].dupNum, model);
+                newSuppliers[i].Text = "Remove"
+            }
+            newSuppliers[i].params = params;
 
-        });
+            //rename the model to fit the supplier number
+        }
+        // });
 
         let numSuppliers = newSuppliers.length; //Suppliers header and Add new supplier button
         let lastSupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers")) + numSuppliers * newDupNum;
@@ -324,30 +357,88 @@ class OrderNewReport extends Component {
             titleSupplier.title = titleSupplier.title.replace(num, num + 1);
         }
 
-        let startArray = [...columns].slice(0, lastSupplier + numSuppliers + 1);
-        let endArray = [...columns].splice(lastSupplier + numSuppliers + 1);
-        //concatenate start, new and end arrays
-        columns = startArray.concat(newSuppliers, endArray);
+        columns.splice(lastSupplier + 1, 0, ...newSuppliers);
+        // let startArray = [...columns].slice(0, lastSupplier + numSuppliers + 1);
+        // let endArray = [...columns].splice(lastSupplier + numSuppliers + 1);
+        // //concatenate start, new and end arrays
+        // columns = startArray.concat(newSuppliers, endArray);
         this.setState({ columns: columns });
     }
 
-    removeSupplier = (model) => {
+
+    removeSupplier = (supplierNum, model) => {
         let columns = this.state.columns;
         let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers."))//get all suppliers
-        let ttlsuppliers = suppliers.length;
+        let ttlSuppliers = suppliers.length;
         let supplier = suppliers.filter(b => b.params.model == model); //get exact supplier for dupNum
-        let dupNum = supplier[0].dupNum; //dupNum of the model
-        // let dupNum = model.replace(/^\D+/g, ''); //remove all text characters, leaving only numbers:  The dupNum.
-        let numsuppliers = suppliers.filter(b => b.dupNum == dupNum).length;//number of supplier items
+        // let dupNum = supplier[0].dupNum + 1;
+        let dupNum = supplierNum;
+        let numSuppliers = suppliers.filter(b => b.dupNum == dupNum).length;//number of supplier items
         let firstItem = suppliers.findIndex(b => b.dupNum == dupNum);//number of supplier items
-        let firstsupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers."))//get first supplier
+        let firstSupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers."))//get first supplier
 
-        suppliers.splice(firstItem, numsuppliers);
+        suppliers.splice(firstItem, numSuppliers);
         let len = suppliers.length;
         //in theory replace existing supplier array with new supplier array
-        columns.splice(firstsupplier, ttlsuppliers + 1, ...suppliers);
+        columns.splice(firstSupplier, ttlSuppliers, ...suppliers);
         this.setState({ columns: columns });
     }
+    // addSupplier = () => {
+    //     let columns = this.state.columns;
+    //     let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers"))
+
+    //     suppliers.shift(); //remove title and add new button
+    //     let newDupNum = suppliers[suppliers.length - 1].dupNum;//get the dupNum of the last Supplier
+    //     newSuppliers = suppliers.filter(supplier => supplier.dupNum == 0); //get only last row of Suppliers
+    //     let newSuppliers = JSON.parse(JSON.stringify(newSuppliers)); //ensure new variable not reference
+
+
+    //     newSuppliers.forEach(newSupplier => {
+    //         newSupplier.params.model = newSupplier.params.model.replace(newSupplier.dupNum, ++newSupplier.dupNum)
+    //         // newSupplier.dupNum++;
+    //         newSupplier.value = '';
+    //         newSupplier.params.value = ''
+    //         //add remove button
+    //         if (newSupplier.params.fName === 'LinkButton' && newSupplier.dupNum > 0) { //if this is a second or greater bank
+    //             newSupplier.params.onClick = this.removeSupplier;
+    //             newSupplier.Text = "Remove"
+    //         }
+
+    //     });
+
+    //     let numSuppliers = newSuppliers.length; //Suppliers header and Add new supplier button
+    //     let lastSupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers")) + numSuppliers * newDupNum;
+
+    //     let titleSupplier = newSuppliers.find(supplier => supplier.params.fName == 'Header');
+    //     if (titleSupplier) {
+    //         let num = +titleSupplier.title.split(' ').pop();
+    //         titleSupplier.title = titleSupplier.title.replace(num, num + 1);
+    //     }
+
+    //     let startArray = [...columns].slice(0, lastSupplier + numSuppliers + 1);
+    //     let endArray = [...columns].splice(lastSupplier + numSuppliers + 1);
+    //     //concatenate start, new and end arrays
+    //     columns = startArray.concat(newSuppliers, endArray);
+    //     this.setState({ columns: columns });
+    // }
+
+    // removeSupplier = (model) => {
+    //     let columns = this.state.columns;
+    //     let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers."))//get all suppliers
+    //     let ttlsuppliers = suppliers.length;
+    //     let supplier = suppliers.filter(b => b.params.model == model); //get exact supplier for dupNum
+    //     let dupNum = supplier[0].dupNum; //dupNum of the model
+    //     // let dupNum = model.replace(/^\D+/g, ''); //remove all text characters, leaving only numbers:  The dupNum.
+    //     let numsuppliers = suppliers.filter(b => b.dupNum == dupNum).length;//number of supplier items
+    //     let firstItem = suppliers.findIndex(b => b.dupNum == dupNum);//number of supplier items
+    //     let firstsupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers."))//get first supplier
+
+    //     suppliers.splice(firstItem, numsuppliers);
+    //     let len = suppliers.length;
+    //     //in theory replace existing supplier array with new supplier array
+    //     columns.splice(firstsupplier, ttlsuppliers + 1, ...suppliers);
+    //     this.setState({ columns: columns });
+    // }
 
 
 
@@ -840,7 +931,10 @@ class OrderNewReport extends Component {
     //Button Functions
     submit = (data) => { //submit from the form component
         data = this.unflatten(data);
+
         let api = Cookies.get('token')
+        let company_id = this.state.selectedCompany;
+        data.company_id = company_id;
         if (this.state.isEdit) { //if we are editing page
             this.setState({ storedEdit: data, showEditSubmit: true });
             resubmit_report(data, api).then((data) => {
@@ -956,6 +1050,9 @@ class OrderNewReport extends Component {
             return;
         }
 
+        if (this.state.selectedCompany == null) {
+            this.setState({ warnind: "You must select a company to receive this report." })
+        }
         //build list of items for the side of the page under steps
         let reports = this.state.reports;
         let rpts = [];
@@ -1150,17 +1247,23 @@ class OrderNewReport extends Component {
                 <div className="order_reportwrap">
                     <Row>
                         {this.state.origData ? '' :
-                        <Col sm={3} className="order_report_left" >
-                            {this.buildSteps()}
-                        </Col>
+                            <Col sm={3} className="order_report_left" >
+                                {this.buildSteps()}
+                            </Col>
                         }
                         <Col sm={9}>
                             <div className="order_report_right">
+                                {/* {Cookies.get('role') == 'admin' ? */}
                                 <div className="or_search">
                                     <label htmlFor="select_company">Select Company</label>
-                                    <input type="text" className='form-control' name="" value="" placeholder="try entering the company name" />
+                                    <SelectPicker size="lg" placeholder="Select Company"
+                                        data={this.state.companiesList}
+                                        className="cr_order_companySelect form-control'"
+                                        onChange={(value, e) => this.setState({ selectedCompany: value })}
+                                    />
+                                    {/* <input type="text" className='form-control' name="" value="" placeholder="try entering the company name" /> */}
                                 </div>
-
+                                {/* : ''} */}
                                 <div className={`or_check_group ${styles.stepContainer}`} onChange={(e) => this.setRegion(e)}>
                                     <div className='or_subtitle'>Select Region</div>
                                     <div className={`form-check ${styles.rdoSpan}`}>
@@ -1306,11 +1409,11 @@ class OrderNewReport extends Component {
                     <div className='order_reportwrap'>
                         <Row>
                             {this.state.origData ? '' :
-                            <Col className='order_report_left' sm={3}>
-                                <div className='report_steps'>
-                                    {this.buildSteps()}
+                                <Col className='order_report_left' sm={3}>
+                                    <div className='report_steps'>
+                                        {this.buildSteps()}
                                     </div>
-                            </Col>
+                                </Col>
                             }
                             <Col>
                                 {this.buildForm()}
@@ -1336,9 +1439,9 @@ class OrderNewReport extends Component {
                     <div className='order_reportwrap'>
                         <Row>
                             {this.state.origData ? '' :
-                            <Col sm={3} className="order_report_left" >
-                                {this.buildSteps()}
-                            </Col>
+                                <Col sm={3} className="order_report_left" >
+                                    {this.buildSteps()}
+                                </Col>
                             }
                             {/* <Col className='order_report_left' sm={3}>
                                 <div className='report_steps'>
@@ -1407,29 +1510,29 @@ class OrderNewReport extends Component {
                     <Row>
                         {this.state.origData ? '' :
                             <Col sm={3}>
-                            <Container>
-                                <Row>
-                                    <Col className={styles.stepContainer}>
-                                        <div className={styles.stepBullet}>1</div>
-                                        Select Reports
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col className={styles.stepUndone}>
-                                        <div className={styles.stepUnselected}>2</div>
-                                        Fill in Details<br />
-                                    </Col>
-                                </Row>
+                                <Container>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>1</div>
+                                            Select Reports
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className={styles.stepUndone}>
+                                            <div className={styles.stepUnselected}>2</div>
+                                            Fill in Details<br />
+                                        </Col>
+                                    </Row>
 
-                                <Row>
-                                    <Col className={styles.stepContainer}>
-                                        <div className={styles.stepBullet}>3</div>
-                                        Done
-                                    </Col>
-                                </Row>
-                            </Container>
+                                    <Row>
+                                        <Col className={styles.stepContainer}>
+                                            <div className={styles.stepBullet}>3</div>
+                                            Done
+                                        </Col>
+                                    </Row>
+                                </Container>
 
-                        </Col>
+                            </Col>
                         }
                         <Col >
                             <Row>

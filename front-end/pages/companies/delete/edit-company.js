@@ -6,6 +6,10 @@ import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
+import {
+    update_company,
+    get_company_details
+} from '../../api/companies'
 
 const editCompany = ({ industry, group, pricing, data }) => {
     const [show, setShow] = useState(false);
@@ -80,50 +84,45 @@ const editCompany = ({ industry, group, pricing, data }) => {
             }
         }
 
-
-        const addCompanyDB = await fetch(`${process.env.API_URL}/company/update-company`, {
-            method: "POST",
-
-            body: JSON.stringify({
-                "language": 'en',
-                "api_token": token,
-                "company_logo_en": company_logo_en,
-                "company_logo_fr": company_logo_fr,
-                "company_name_en": query.company_name_en,
-                "company_name_fr": query.company_name_fr,
-                "website": query.website,
-                "domain": query.domain,
-                "email_id": query.email_id,
-                "country_code": query.country_code,
-                "phone_number": query.phone_number,
-                "address_line": query.address_line,
-                "state": query.state,
-                "city": query.city,
-                "zip_code": query.zip_code,
-                "portal_language": query.portal_language,
-                "industry_id": query.industry_id,
-                "groups": query.groups,
-                "pricing_chart_id": query.pricing_chart_id,
-                "bank_report_count": query.bank_report_count,
-                "suppliers_report_count": query.suppliers_report_count,
-                "watchlist_count": query.watchlist_count,
-                "company_in_watchlist_count": query.company_in_watchlist_count,
-                "quick_report_price": query.quick_report_price,
-                "aging_discount": query.aging_discount,
-            })
-        })
-
-        const res2 = await addCompanyDB.json();
-
-        if (res2.status_code == 403) {
-            setShow(false);
-            alert("Error ");
-        } else if (res2.status_code == 200) {
-            setShow(false);
-        } else {
-            setShow(false);
+        let body = {
+            "language": 'en',
+            "api_token": token,
+            "company_logo_en": company_logo_en,
+            "company_logo_fr": company_logo_fr,
+            "company_name_en": query.company_name_en,
+            "company_name_fr": query.company_name_fr,
+            "website": query.website,
+            "domain": query.domain,
+            "email_id": query.email_id,
+            "country_code": query.country_code,
+            "phone_number": query.phone_number,
+            "address_line": query.address_line,
+            "state": query.state,
+            "city": query.city,
+            "zip_code": query.zip_code,
+            "portal_language": query.portal_language,
+            "industry_id": query.industry_id,
+            "groups": query.groups,
+            "pricing_chart_id": query.pricing_chart_id,
+            "bank_report_count": query.bank_report_count,
+            "suppliers_report_count": query.suppliers_report_count,
+            "watchlist_count": query.watchlist_count,
+            "company_in_watchlist_count": query.company_in_watchlist_count,
+            "quick_report_price": query.quick_report_price,
+            "aging_discount": query.aging_discount,
         }
 
+        update_company(body)
+            .then(res2 => {
+                if (res2.status_code == 403) {
+                    setShow(false);
+                    alert("Error ");
+                } else if (res2.status_code == 200) {
+                    setShow(false);
+                } else {
+                    setShow(false);
+                }
+            })
     }
 
 
@@ -348,20 +347,11 @@ export async function getServerSideProps(ctx) {
     const pricing = await resPricing.json()
 
     const companyID = ctx.params.id
-
-    const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    const data = get_company_details({
             "language": 'en',
             "api_token": token,
             "company_id": companyID
-        })
-
     })
-    const data = await res.json()
 
     /** 
      * limit, start, search item

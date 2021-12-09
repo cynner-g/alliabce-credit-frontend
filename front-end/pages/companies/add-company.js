@@ -6,6 +6,9 @@ import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
+import {
+    add_company
+} from '../api/companies';
 
 const addCompany = ({ industry, group, pricing }) => {
     const [show, setShow] = useState(false);
@@ -118,25 +121,18 @@ const addCompany = ({ industry, group, pricing }) => {
         data.append('country_code', query.country_code);
         data.append('groups', ischecked);
 
-        const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/company/add-company`, {
-            method: "POST",
-            headers: {
-                contentType: false,
-            },
-            body: data,
-        })
-
-        const res2 = await addCompanyDB.json();
-
-        if (res2.status_code == 403) {
-            setShow(false);
-            alert("Error ");
-        } else if (res2.status_code == 200) {
-            setShow(false);
-        } else {
-            setShow(false);
-        }
-
+        add_company(data)
+            .then(addCompanyDB => addCompanyDB.json())
+            .then(res2 => {
+                if (res2.status_code == 403) {
+                    setShow(false);
+                    alert("Error ");
+                } else if (res2.status_code == 200) {
+                    setShow(false);
+                } else {
+                    setShow(false);
+                }
+            })
     }
 
 

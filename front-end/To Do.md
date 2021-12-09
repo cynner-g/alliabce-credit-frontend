@@ -52,7 +52,6 @@ We might use the field “State” and make it as a select province from the lis
 We will need to refine the “FORM” in a better view logic way for all data with some logic depending on what we have clicked roughly
 
 
-Add activity log
 Add.remove banks still failing - Add banks array to state, plus last bank item
 Fix suppliers
 
