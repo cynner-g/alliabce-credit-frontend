@@ -23,7 +23,7 @@ import {
     upload_report,
 } from "../api/credit_reports";
 import {
-    getUserData
+    get_user_details
 } from '../api/users';
 
 import React, { Component } from 'react';
@@ -734,7 +734,7 @@ class CreditReports extends Component {
         }
         else if (type == 1) {//textarea
             status.row = row;
-            status.statusText = value;
+            status.statusText = "STATUS CHANGE: " + value;
             this.setState({ rowStatus: status });
         }
         else if (type == 2) {//submit button

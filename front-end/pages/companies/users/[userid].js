@@ -11,7 +11,7 @@ import {
     list_user,
     create_user,
     verify_user,
-    getUserDetails,
+    get_user_details,
     update_user
 } from '../../api/users';
 
@@ -189,7 +189,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             }
         }
 
-        const userData2 = getUserDetails({
+        const userData2 = get_user_details({
             "user_id": id,
             "language": "en",
             "api_token": token

@@ -8,43 +8,47 @@ COLOR for status not correct **DONE**
 Ref ID. *we should have AC ID, not the _id (the alliance id report) - ****Done?****
 Filter doesn’t work? (Select status) **Done**
 Changing component for the “Date picker” **Done**
-Ordering is not working 
+Ordering is not working **Done**
 we are not supposed to be able to order a report from an ADMIN (only from user or user manager) and from “simulate user” *TO validate the logic business - **Fixed - Enabled now for development**
 
-Can’t download anything **
+Can’t download anything **Done**
 Naming of the status are WRONG ** need action status become : Warning?? **Done?**
 
 [Credit report - Dropdown**]
 From admin side we’re not suppose to see the Request Cancellation button..  ****DONE *****
-If we change status “Message” should not only write the comment but add the status and say theirs a change in the status + comment (rewriting the logic of the change status and comments section)
+If we change status “Message” should not only write the comment but add the status and say theirs a change in the status + comment (rewriting the logic of the change status and comments section) **Done**
 We cant just change status, if we dont post any comment it doesnt do anything… **Done**
 
-Pricing doesn’t work 
+Pricing doesn’t work **Done??** - untested
 
 Status&Comment :
-When we add a comment (we dont know if its private or public) need to show it somwhere or icon
+When we add a comment (we dont know if its private or public) need to show it somwhere or icon **Done**
 After posting the comment (the comment stay in the text box) should be erased..  ***Done***
 Status should be in a “box” which we can scroll so its not taking all the page, add max-height with scrolling ***Done***
 
-****************CANNOT DO*********************
 [Credit report Button : dropdown]
-Show external link doesnt work
-view credit application doesn’t work
-Set Manually pricing doesnt work
+Show external link doesnt work **Done**
+view credit application doesn’t work **Done**
+Set Manually pricing doesnt work **Done**
 
+**What happens if we send multiple bank for “plaid automation” we will need to send same number of plaid link? So they could pull 2 banks or more.. if necessary?
+
+[ORder Reprot]
+New report - Backing our and changing selected fields does not show updated fields
+Adding then removing bank/supplier 
 
 [Credit report (VIEW form)]
-“add bank” and add supplier should not be there in the view mode
-Edit button doesnt work
-Edit button should not be there if status is completed
+“add bank” and add supplier should not be there in the view mode **Done**
+Edit button doesnt work **Done**
+Edit button should not be there if status is completed **Done - only if 'is_editable' flag is on**
 [Order Report]
 Full design missing **
 Quick order dont work **ERROR
 Step filling form goes directly to success message even if we didnt fill anything into the form ** How possible
-I dont see the order (so its not working properly)
+I dont see the order (so its not working properly) **Done**
 Missing “Legal Section” in step2 (we need to add province selection, to make sure in which province we will do the legal search)
 We might use the field “State” and make it as a select province from the list..
-**What happens if we send multiple bank for “plaid automation” we will need to send same number of plaid link? So they could pull 2 banks or more.. if necessary?
+
 We will need to refine the “FORM” in a better view logic way for all data with some logic depending on what we have clicked roughly
 
 

@@ -41,7 +41,7 @@ const AdminUsers = ({ data }) => {
     useEffect(() => {
         const token = Cookies.get('token');
         const uid = Cookies.get('userid');
-        const thisUserData = await getUserDetails({
+        const thisUserData = await get_user_details({
                 user_id: uid,
             api_token: token,
         })

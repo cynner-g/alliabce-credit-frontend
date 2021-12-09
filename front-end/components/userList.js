@@ -5,7 +5,7 @@ import { parseCookies } from "nookies"
 import { useRouter } from 'next/router';
 import Select from 'react-select';
 import {
-    getUserData,
+    get_user_details,
     delete_user,
     create_sub_admin
 } from '../pages/api/users';
@@ -58,7 +58,7 @@ const UserList = (props) => {
             "language": "en",
             "api_token": token
         }
-        const userData = await getUserData(body);
+        const userData = await get_user_details(body);
         console.log(userData);
         if (userData.status_code == 200) {
             setFullName(userData?.data?.full_name);

@@ -12,8 +12,12 @@ import {
 } from '../api/credit_reports';
 
 import {
-    getUserData
+    get_user_details
 } from '../api/users';
+
+import {
+    get_provinces
+} from '../api/provinces'
 
 import styles from "./order-New-Report.module.css";
 import Cookies from 'js-cookie'
@@ -34,13 +38,19 @@ class OrderNewReport extends Component {
             columns: null,
             showEditSubmit: false,
             warning: null,
+            provinces: [],
         }
     }
 
     async componentDidMount() {
-        this.setState({ columns: this.getColumns() });
-        // // if passing in a report to edit
         const token = Cookies.get('token')
+        this.setState({ columns: this.getColumns() });
+        this.setState({
+            provinces: await get_provinces({ api_token: token, language: 'en' })
+        })
+
+        // // if passing in a report to edit
+
         if (Router?.router?.query?.rptId?.length > 0) {
             let rptId = Router.router.query.rptId;
         // if (true) {
@@ -193,7 +203,8 @@ class OrderNewReport extends Component {
 
         //get user company data
         else {
-            await getUserData();
+            //if admin get list of all companies
+            //TODO
         }
     }
 
@@ -919,12 +930,13 @@ class OrderNewReport extends Component {
         let reports = this.state.reports;
         let rpts = [];
         let rptList = ["Incorporate", "Bank", "Legal", "Suppliers"]
-        let columns = this.state.columns;
+        // let columns = this.state.columns;
+        let columns = this.getColumns();
         //general is always listed
         rpts.push(<li>General</li>);
         reports.forEach((report, idx) => {
             //for each report if it is selected to be requested
-            if (report || idx == 2) {
+            if (report || idx == 2) { //legal is always selected??
                 rpts.push(<li>{rptList[idx]}</li>)
             }
             else { //if this report data is not in the selected list
@@ -1198,6 +1210,7 @@ class OrderNewReport extends Component {
 
                                     <label className="form-label btn" htmlFor="customFile">Upload credit application</label>
                                     <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
+                                    <span classname="upload_cr_app fileName"> {this.state.requestFile?.name || ""}</span>
                                 </div>
 
                                 <div className="mb-5">&nbsp;</div>

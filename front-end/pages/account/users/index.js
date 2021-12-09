@@ -9,7 +9,7 @@ import { Modal, Button } from "react-bootstrap";
 import UserSidebar from "../../../components/user_sidebar"
 import TabButtonUser from "../../../components/tabbuttonuser"
 import {
-    getUserDetails,
+    get_user_details,
     list_associate_user,
     create_user,
     update_user
@@ -153,7 +153,7 @@ const Users = ({ data, listUsers }) => {
             }
         }
 
-        const userData2 = await getUserDetails({
+        const userData2 = await get_user_details({
             "user_id": id,
             "language": "en",
             "api_token": token
@@ -469,7 +469,7 @@ export async function getServerSideProps(ctx) {
     }
 
     const ret = Promise.all([
-        getUserDetails({
+        get_user_details({
             "language": 'en',
             "api_token": token,
             "user_id": userid
