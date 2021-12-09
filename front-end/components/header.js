@@ -43,25 +43,25 @@ const Header = () => {
                                         </li>
 
 
-                                        <li className={`credit-report {router.pathname == "/database-reports" ? "active" : ""}`}>
+                                        <li className={`database-report ${router.pathname == "/database-reports" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/database-reports"} href="/database-reports">
                                                 <a className="nav-link">Database Reports</a>
                                             </Link>
                                         </li>
 
-                                        <li className={`credit-report {router.pathname == "/companies" ? "active" : ""}`}>
+                                        <li className={`companies ${router.pathname == "/companies" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/companies"} href="/companies">
                                                 <a className="nav-link">Companies</a>
                                             </Link>
                                         </li>
 
-                                        <li className={`credit-report {router.pathname == "/groups" ? "active" : ""}`}>
+                                        <li className={`groups ${router.pathname == "/groups" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/groups"} href="/groups">
                                                 <a className="nav-link">Groups</a>
                                             </Link>
                                         </li>
 
-                                        <li className={`credit-report {router.pathname == "/legal-uploads" ? "active" : ""}`}>
+                                        <li className={`legal-uploads ${router.pathname == "/legal-uploads" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/legal-uploads"} href="/legal-uploads">
                                                 <a className="nav-link">Legal Upload</a>
                                             </Link>
@@ -84,26 +84,26 @@ const Header = () => {
                                     </>
                                     :
                                     <>
-                                        <li className={`credit-report {router.pathname == "/credit-reports" ? "active" : ""}`}>
+                                        <li className={`credit-report ${router.pathname == "/credit-reports" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/credit-reports"} href="/credit-reports">
                                                 <a className="nav-link">Credit Reports</a>
                                             </Link>
                                         </li>
 
-                                        <li className={`database-report {router.pathname == "/database-reports" ? "active" : ""}`}>
+                                        <li className={`database-report ${router.pathname == "/database-reports" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/database-reports"} href="/database-reports">
                                                 <a className="nav-link">Database Reports</a>
                                             </Link>
                                         </li>
 
-                                        <li className={`legal-watchlist {router.pathname == "/legal-watchlist" ? "active" : ""}`}>
+                                        <li className={`legal-watchlist ${router.pathname == "/legal-watchlist" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
                                                 <a className="nav-link">Legal Watchlist</a>
                                             </Link>
                                         </li>
 
 
-                                        <li className={`aging {router.pathname == "/aging" ? "active" : ""}`}>
+                                        <li className={`aging ${router.pathname == "/aging" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/aging"} href="/aging">
                                                 <a className="nav-link">Aging</a>
                                             </Link>

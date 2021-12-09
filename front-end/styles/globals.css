@@ -1100,29 +1100,32 @@ td.comments_indent {
   background: #F8F8F8;
   border: 1px solid #DDDDDD;
 }
-.form-group{
+
+.form-group {
   margin-bottom: 20px;
 }
-.form_head{
+
+.form_head {
   font-size: 24px;
   font-weight: 600;
   color: #555B6E;
 }
 
-.or_success_message{
+.or_success_message {
   text-align: center;
   padding: 15px;
   padding-top: 40px;
   max-width: 600px;
   margin: auto;
 }
-.or_success_message p{
+
+.or_success_message p {
   text-align: center;
   font-size: 18px;
   color: #747474;
 }
 
-.imgblockmessage{
+.imgblockmessage {
   display: block;
   /* max-width: 100%; */
   overflow: hidden;
@@ -1133,6 +1136,82 @@ td.comments_indent {
   width: initial;
   max-width: 300px;
 }
+
+
+.credit-report,
+.database-report,
+.legal-watchlist,
+.groups,
+.companies,
+.legal-uploads,
+.aging {
+  padding-left: 23px;
+  background-size: 25px !important;
+  margin: 0 15px;
+}
+
+.groups {
+  background: url(/icons/groups_0.svg) 0px 4px no-repeat;
+}
+
+.groups.active {
+  background: url(/icons/groups.svg) 0px 4px no-repeat;
+}
+
+.companies {
+  background: url(/icons/companies_0.svg) 0px 4px no-repeat;
+}
+
+.companies.active {
+  background: url(/icons/companies.svg) 0px 4px no-repeat;
+}
+
+.legal-uploads {
+  background: url(/icons/legal_upload_0.svg) 0px 4px no-repeat;
+}
+
+.legal-uploads.active {
+  background: url(/icons/legal_upload.svg) 0px 4px no-repeat;
+}
+
+
+
+
+.credit-report {
+  background: url(/icons/credit_reports_0.svg) 0px 4px no-repeat;
+}
+
+.credit-report.active {
+  background: url(/icons/credit_reports.svg) 0px 4px no-repeat;
+}
+
+
+.database-report {
+  background: url(/icons/database_reports_0.svg) 0px 4px no-repeat;
+}
+
+.database-report.active {
+  background: url(/icons/database_reports.svg) 0px 4px no-repeat;
+}
+
+.legal-watchlist {
+  background: url(/icons/legal_watchlist_0.svg) 0px 4px no-repeat;
+}
+
+.legal-watchlist.active {
+  background: url(/icons/legal_watchlist.svg) 0px 4px no-repeat;
+}
+
+.aging {
+  background: url(/icons/help.png) 0px 4px no-repeat;
+}
+
+.aging.active {
+  background: url(/icons/help.png) 0px 4px no-repeat;
+}
+
+/* .aging {}
+.aging.active {} */
 /* .status-needsAction {}
 
 .status-error {}
