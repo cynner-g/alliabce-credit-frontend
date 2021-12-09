@@ -985,11 +985,12 @@ class OrderNewReport extends Component {
         }
 
         return (
-            <FormComponent rows={rows}
-
-                submit={submit}
-                cancel={cancel}
-            />
+            <div className='order_report_right'>
+                <FormComponent rows={rows}
+                    submit={submit}
+                    cancel={cancel}
+                />
+            </div>
         )
     }
 
@@ -1077,13 +1078,13 @@ class OrderNewReport extends Component {
                             </Col>
                             <Col sm={9}>
                                 <div className="order_report_right">
-                                    <div className="or_search mb-3">
-                                        <label htmlFor="select_company"></label>
-                                        <input type="text" name="" value="" placeholder="try entering the company name" />
+                                    <div className="or_search">
+                                        <label htmlFor="select_company">Select Company</label>
+                                        <input type="text" className='form-control' name="" value="" placeholder="try entering the company name" />
                                     </div>
 
-                                    <div className={`mb-3 ${styles.stepContainer}`} onChange={(e) => this.setRegion(e)}>
-                                        <div>Select Region</div>
+                                    <div className={`or_check_group ${styles.stepContainer}`} onChange={(e) => this.setRegion(e)}>
+                                        <div className='or_subtitle'>Select Region</div>
                                         <div className={`form-check ${styles.rdoSpan}`}>
                                             <input type='checkbox' name='region' value="Quebec"
                                                 onChange={() => { }}
@@ -1110,9 +1111,12 @@ class OrderNewReport extends Component {
                                         </div>
                                     </div>
 
-                                    <div className={`mb-3 ${styles.stepContainer}`}>
-                                        Select the reports you want to order, or you can click on "Select All" to select all at once<br />
-                                        <button className="btn btn-outline-primary" onClick={this.selectAllReports}>Select All</button>
+                                    <div className={`or_select_all ${styles.stepContainer}`}>
+                                        <div className='or_subtitle'>Select the reports you want to order, or you can click on "Select All" to select all at once</div>
+                                        <div className='form-check '>
+                                            <input type='checkbox' className="form-check-input" onClick={this.selectAllReports} />
+                                            <label className="form-check-label" htmlFor='rdoUSA'>Select All Reports</label>
+                                        </div>
                                     </div>
 
                                     <div className="select_report">
@@ -1154,33 +1158,41 @@ class OrderNewReport extends Component {
                                         </div>
                                     </div>
                                     <div className="clearB"></div>
+
+                                    <div className={`upload_cr_app {styles.stepContainer}`}>
+                                        <div className='or_subtitle'>Upload credit application</div>
+
+                                        <label className="form-label btn" htmlFor="customFile">Upload credit application</label>
+                                        <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
+                                    </div>
+
+                                    <div className="mb-5">&nbsp;</div>
+                                    {/* <div className="mb-5">&nbsp;</div> */}
+
+
                                 </div>
 
+                                <div className=''>
+                                    <Row className='quick_order_wrap'>
+                                        <Col className="text-start">
+                                            <div className={styles.stepContainer}>
+                                                <button className="btn quick_order" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
+                                                <i className='or_help'></i>
+                                            </div>
+                                        </Col>
+                                        <Col className="text-end">
+                                            <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
+                                        </Col>
 
-                                <Row>
-                                    <Col>
-                                        <div className={styles.stepContainer}>
-
-                                            <label className="form-label" htmlFor="customFile">Upload credit application</label>
-                                            <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
-                                        </div>
-                                    </Col>
-
-                                </Row>
-                                <div className="mb-5">&nbsp;</div>
-                                <div className="mb-5">&nbsp;</div>
-                                <Row>
-                                    <Col sm={6} className="text-start">
-                                        <div className={styles.stepContainer}>
-                                            <button className="btn btn-outline-primary" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
-                                        </div>
-                                    </Col>
-                                    <Col className="text-text-end">
-                                        <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
-                                    </Col>
-
-                                </Row>
+                                    </Row>
+                                </div>
                                 <div className="pb-5">&nbsp;</div>
+
+
+
+
+
+
                             </Col>
                         </Row>
                     </div>
@@ -1191,17 +1203,27 @@ class OrderNewReport extends Component {
             return (
                 <>
                     <Header />
-                    <Container>
+                    {/* <Container> */}
+                    <div className="breadcrumb">
+                        <ul className=" me-auto mb-2 mb-lg-0">
+                            <li><Link href="/credit-report"><a className="nav-link">Credit Report</a></Link></li>
+                            <li>Order New Report</li>
+                        </ul>
+                    </div>
+                    <div className='order_reportwrap'>
                         <Row>
-                            <Col sm={3}>
-                                {this.buildSteps()}
+                            <Col className='order_report_left' sm={3}>
+                                <div className='report_steps'>
+                                    {this.buildSteps()}
+                                </div>
 
                             </Col>
                             <Col>
                                 {this.buildForm()}
                             </Col>
                         </Row>
-                    </Container>
+                    </div>
+                    {/* </Container> */}
                 </>
             )
 
@@ -1210,10 +1232,17 @@ class OrderNewReport extends Component {
             return (
                 <>
                     <Header />
-                    <Container>
+                    {/* <Container> */}
+                    <div className="breadcrumb">
+                        <ul className=" me-auto mb-2 mb-lg-0">
+                            <li><Link href="/credit-report"><a className="nav-link">Credit Report</a></Link></li>
+                            <li>Order New Report</li>
+                        </ul>
+                    </div>
+                    <div className='order_reportwrap'>
                         <Row>
-                            <Col sm={3}>
-                                <Container>
+                            <Col className='order_report_left' sm={3}>
+                                <div className='report_steps'>
                                     <Row>
                                         <Col className={styles.stepContainer}>
                                             <div className={styles.stepBullet}>1</div>
@@ -1227,48 +1256,49 @@ class OrderNewReport extends Component {
 
                                         </Col>
                                     </Row>
-
                                     <Row>
                                         <Col className={styles.stepContainer}>
                                             <div className={styles.stepBullet}>3</div>
                                             Done
                                         </Col>
                                     </Row>
-                                </Container>
-
+                                </div>
                             </Col>
                             <Col>
-                                <Row>
-                                    <Col>
-                                        <div className={styles.doneImage}>
-                                            <Image
-                                                src='/images/notepad.png'
-                                                height={314}
-                                                width={251}
-                                            />
-                                            <div className={styles.doneMessage}>
-                                                You have successfully ordered the report, you can now see this report on your “Credit Reports Panel.
-                                                <br /><br />
-                                                <Container>
-                                                    <Row >
-                                                        <Col className={styles.doneButtonL}>
-                                                            <button className="btn btn-outline-primary" onClick={this.newReport}>Order New Report</button>
-                                                        </Col>
-                                                        <Col className={styles.doneButtonR}>
-                                                            <button className="btn btn-outline-primary" onClick={this.reportsPanel}>Go to Credit Reports Panel</button>
-                                                        </Col>
-                                                    </Row>
-                                                </Container>
+                                <div className='order_report_right'>
+                                    <Row>
+                                        <Col>
+                                            <div className="imgblockmessage">
+                                                <Image
+                                                    src='/images/notepad.png'
+                                                    height={314}
+                                                    width={251}
+                                                />
+
                                             </div>
+                                        </Col>
 
+                                    </Row>
+                                    <div className="or_success_message">
+                                        <p>You have successfully ordered the report, you can now see this report on your “Credit Reports Panel.</p>
+                                        <br />
 
+                                        <Row >
+                                            <Col className={styles.doneButtonL}>
+                                                <button className="btn btn-outline-primary" onClick={this.newReport}>Order New Report</button>
+                                            </Col>
+                                            <Col className={styles.doneButtonR}>
+                                                <button className="btn btn-outline-primary" onClick={this.reportsPanel}>Go to Credit Reports Panel</button>
+                                            </Col>
+                                        </Row>
 
-                                        </div>
-                                    </Col>
-                                </Row>
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
-                    </Container>
+                    </div>
+                    {/* </Container> */}
+
                 </>
             )
         }

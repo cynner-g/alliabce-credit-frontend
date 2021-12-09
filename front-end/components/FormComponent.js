@@ -63,8 +63,8 @@ export class FormComponent extends Component {
     buildTextRow = (column, index) => {
 
         return (
-            <Col className='formCol formContent' key={index}>
-                {column.title}
+            <Col className='step2_form' key={index}>
+                <label>{column.title}</label>
                 <input type='text' className='formText form-control'
                     name={column.params.model}
                     onChange={(e) => this.handleChange(e)}
@@ -118,13 +118,15 @@ export class FormComponent extends Component {
 
     buildSubmitButton = (col, index) => {
         return (
-            <Col className='formCol' md={{ size: 1, offset: 1 }} key={index}>
-                <br />
-                <button type="submit" className='formSubmit' color={col.params.color || "primary"}>
-                    {col.params.text}
-                </button >
-                <br /><br />
-            </Col>
+            <div className='quick_order_wrap'>
+                <Col className='formCol text-end' md={{ size: 1, offset: 1 }} key={index}>
+                    <br />
+                    <button type="submit" className='btn btn-primary' color={col.params.color || "primary"}>
+                        {col.params.text}
+                    </button >
+                    <br />
+                </Col>
+            </div>
         );
     }
 
@@ -232,7 +234,7 @@ export class FormComponent extends Component {
     }
     buildHeader = (col, index) => {
         return (<Col className='formCol formHeader' sm={col.length / 12} style={{ marginTop: '10px' }}>
-            <span style={{ fontSize: `${col.params.size}px`, fontWeight: 600 }}>
+            <span className='form_head'>
                 {col.title}
             </span>
         </Col>)

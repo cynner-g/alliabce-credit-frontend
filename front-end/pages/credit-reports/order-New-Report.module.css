@@ -103,11 +103,11 @@
 }
 
 .doneImage {
-    position: absolute;
+    /* position: absolute;
     left: 54.96%;
     right: 27.64%;
     top: 19.55%;
-    bottom: 40.68%;
+    bottom: 40.68%; */
     background: #FFFFFF;
 }
 
