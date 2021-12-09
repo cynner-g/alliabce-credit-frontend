@@ -75,7 +75,11 @@ class CreditReports extends Component {
 
     updatePrices = async (row) => {
         let token = Cookies.get('token');
-        await update_pricing({ api_token: token, report_ordered_id: row._id, pricing: this.state.reportPrice });
+        await update_pricing({
+            api_token: token,
+            report_order_id: row._id,
+            price: +this.state.reportPrice
+        });
         this.get_data();
         this.setState({ setPricing: false });
     }
@@ -205,12 +209,14 @@ class CreditReports extends Component {
         return (<><div>{format(dt, day)}</div><div className='cr-time' style={{ marginTop: '-2px', fontSize: '12px' }}>{format(dt, time)}</div></>)
     }
 
-    deleteComment = (commentId, reportID) => {
+    deleteComment = async (commentId, reportID) => {
 
         delete_comment({
             comment_id: commentId,
             report_order_id: reportID,
             api_token: Cookies.get('token')
+        }).then((res) => {
+            this.get_data()
         })
     }
 
@@ -274,83 +280,21 @@ class CreditReports extends Component {
 
     }
 
-    // showStatusBody = (row) => {
-    //     if (!this.state.rowStatus.status) {
-    //         let status = { status: row.status_code };
-    //         this.setState({ rowStatus: status });
-    //     }
-    //     return <>
-    //         <div className="form-check">
-    //             <input type='checkbox' className="form-check-input" id="processing"
-    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
-    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, PROCESSING, 0)}
-    //                 checked={this.state.rowStatus?.status == PROCESSING} />
 
-    //             <label className="form-check-label" htmlFor="processing">Processing</label>
-    //         </div>
-    //         <div className="form-check">
-
-    //             <input type='checkbox' className="form-check-input" id="needaction"
-    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
-    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, NEEDACTION, 0)}
-    //                 checked={this.state.rowStatus?.status == NEEDACTION} />
-
-    //             <label className="form-check-label" htmlFor="needaction">Need Action</label>
-    //         </div>
-    //         <div className="form-check">
-
-    //             <input type='checkbox' className="form-check-input" id="error"
-    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
-    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, ERROR, 0)}
-    //                 checked={this.state.rowStatus?.status == ERROR} />
-
-
-    //             <label className="form-check-label" htmlFor="error">Error</label>
-    //         </div>
-    //         <div className="form-check">
-    //             <input type='checkbox' className="form-check-input"
-    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
-    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, PENDING, 0)}
-    //                 checked={this.state.rowStatus?.status == PENDING} />
-
-
-    //             <label className="form-check-label" htmlFor="flexCheckDefault">Pending</label>
-    //         </div>
-    //         <div className="form-check">
-    //             <input type='checkbox' className="form-check-input"
-    //                 onClick={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
-    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, COMPLETED, 0)}
-    //                 checked={this.state.rowStatus?.status == COMPLETED} />
-
-
-    //             <label className="form-check-label" htmlFor="flexCheckDefault">Completed</label>
-    //         </div>
-    //         {this.state.rowStatus.status ? this.getStatusCss(this.state.rowStatus.status).badge : this.getStatusCss(row.status).badge}
-
-
-    //         <div className="mt-3">
-    //             <textarea className="form-control"
-    //                 cols={50}
-    //                 rows={4}
-    //                 onChange={(e) => this.setStatus(this.state.rowStatus?.row, e.target.value, 1)}>
-    //             </textarea>
-    //         </div>
-
-    //         <div>
-    //             <button className="btn btnedit m-3" onClick={() => this.setStatus(this.state.rowStatus?.row, null, 3)}>
-    //                 Cancel
-    //             </button>
-
-    //             <button className="btn btn-primary"
-    //                 onClick={() => this.setStatus(null, null, 2)}
-    //                 disabled={this.state.rowStatus?.statusText === ''}
-    //             >
-    //                 Update Status
-    //             </button>
-
-    //         </div>
-    //     </>
-    // }
+    viewApplication = (row) => {
+        const report = row;
+        let URL = row.credit_application
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = URL;
+        // the filename you want
+        const fileName = `Sample_Credit_Application.pdf`;
+        a.download = fileName
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(URL);
+    }
 
     tblRow = (row, index) => {
         const getCodes = (rpts) => {
@@ -406,7 +350,7 @@ class CreditReports extends Component {
                         <div>{user_name}</div>
                         <div className='cr-time' style={{ marginTop: '-2px', fontSize: '12px' }}>{company_name}</div>
                     </td>
-                    <td><div className={`status${status.status_code} order-status`}>{status.badge}</div></td>
+                    <td><div className={`status${row.status_code} order-status`}>{status.badge}</div></td>
 
                     <td className="buttongroups_wrap">
                         <div className="buttongroups">
@@ -580,8 +524,8 @@ class CreditReports extends Component {
                                                             <Popover id={`popover-positioned-bottom`} classname='external_links_popup'>
                                                                 <Popover.Header as="div" className='external_links_popup title'>External Links</Popover.Header>
                                                                 <Popover.Body>
-                                                                    Banks Form: <a href={row.links.bank_form}>{row.links.bank_form}</a><br />
-                                                                    Supplier Form: <a href={row.links.plaid_auth}>{row.links.plaid_auth}</a>
+                                                                    Banks Form: <a href={row.links.bank_form}>{row.links.bank_form}</a><button type="button">Copy</button><br />
+                                                                    Supplier Form: <a href={row.links.plaid_auth}>{row.links.plaid_auth}<button type="button">Copy</button></a>
                                                                 </Popover.Body>
                                                             </Popover>
                                                         }
@@ -590,14 +534,12 @@ class CreditReports extends Component {
                                                         >Show External Links</Button>
                                                     </OverlayTrigger>
 
-
-
+                                                    <button className="btn btnedit"
+                                                        onClick={() => this.viewApplication(row)}>View Credit Application</button>
                                                 </>
                                                 :
                                                 ''
                                             }
-                                            <button className="btn btnedit" disabled
-                                                onClick={() => this.viewApplication(row._id)}>View Credit Application</button>
                                             <button className="btn btnedit"
                                                 onClick={() => this.orderReport(row._id)}>View Report Form</button>
                                         </div>
@@ -658,7 +600,7 @@ class CreditReports extends Component {
                                                                     placeholder='Write a comment here' />
                                                             </td>
                                                             <td className="post_status_wrap">
-                                                                <select className="form-select" value={this.state.newCommentVisibility} onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
+                                                                <select className="form-select" defaultValue="private" value={this.state.newCommentVisibility} onChange={(e) => this.setState({ newCommentVisibility: e.target.value })}>
                                                                     <option value='private'>Private</option>
                                                                     <option value='public'>Public</option>
                                                                 </select>
@@ -678,14 +620,14 @@ class CreditReports extends Component {
                                                             <div className='comments_items' key={idx}>
                                                                 <Row>
                                                                     <Col >
-
+                                                                        <button className='btn-close delete_comment' onClick={(e) => this.deleteComment(comment._id, row._id)}></button>
                                                                         <h6 className='comment-header'>{comment.is_system_comment ? "System" : "Alliance Credit"}</h6>
                                                                         {comment.is_private ?
                                                                             <span className='private_comment'>Private</span>
                                                                             :
                                                                             this.getStatusCss(comment.status_code).badge
                                                                         }
-                                                                        <button className='btn-close delete_comment' onClick={(e) => this.deleteComment(comment._id, row._id)}></button>
+
                                                                     </Col>
 
                                                                 </Row><Row>
@@ -890,6 +832,7 @@ class CreditReports extends Component {
                         onHide={() => this.setStatus(null, null, 3)}
                         backdrop="static">
                         <Modal.Header closeButton>
+                            <span className='popup_title'> Change Status</span>
                         </Modal.Header>
                         <Modal.Body>
 

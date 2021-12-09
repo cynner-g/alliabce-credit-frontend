@@ -15,7 +15,6 @@ export const order_list = (body, token) => {
     console.log('fetching');
     return fetch(`${process.env.API_URL}/report/list-order`, init)
         .then((response) => {
-            console.log("Response: ", response)
             if (response.ok) {
                 return response;
             }
@@ -271,16 +270,18 @@ export const download_report_file = async (body) => {
     }
 }
 
-export const delete_comment = (body => {
+export const delete_comment = (body) => {
     init.body = JSON.stringify(body)
-    // return fetch(`${process.env.API_URL}/report/delete-comment`, init)
-})
+    return fetch(`${process.env.API_URL}/report/delete-comment`, init)
+}
 
-export const update_pricing = (body => {
+export const update_pricing = (body) => {
     init.body = JSON.stringify(body)
-})
+    return fetch(`${process.env.API_URL}/report/custom-price`, init)
+    this.getData();
+}
 
-export const upload_report = (body => {
+export const upload_report = (body) => {
     init.body = body
 
     init.body = JSON.stringify(body)
@@ -300,4 +301,4 @@ export const upload_report = (body => {
             var err = new Error(error.message);
             throw err;
         })
-})
+}

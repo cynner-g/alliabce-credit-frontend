@@ -62,8 +62,7 @@ export class FormComponent extends Component {
     }
 
     buildTextRow = (column, index) => {
-
-        return (
+        let ret = (
             <Col className='formCol formContent' key={index}>
                 <span style={{ visibility: column.params.visible !== false ? 'visible' : 'hidden' }}>
                     {column.title}
@@ -76,6 +75,7 @@ export class FormComponent extends Component {
                 </span>
             </Col>
         )
+        return ret;
     }
 
     buildDateRow = (col, index) => {
@@ -314,6 +314,7 @@ export class FormComponent extends Component {
             let Rows = [], Cols = [];
             let formData = {};
             displayRows.forEach((displayCol, index) => {
+
                 //if col.params.colNum==0 start a new row...
                 if (Cols.length > 0 && displayCol.params.colNum === 0) {
                     let key = displayCol.params.model + '_' + index;
@@ -374,7 +375,7 @@ export class FormComponent extends Component {
                 if (!isNaN(num) && !isNaN(parseFloat(num))) { //if it is a number
                     dataArray = dataArray.split('.');
                     let first = dataArray.shift();
-
+                    if (dataArray.length > 1) dataArray = dataArray.join('.')
                     //reorder so the index is no long 'key.item.number' but rather 'key.number.item'
                     newData[`${first}.${num}.${dataArray}`] = data[key];
                 }

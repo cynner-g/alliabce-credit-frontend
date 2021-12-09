@@ -1290,3 +1290,8 @@ td.comments_indent {
 }
 
 .status-cancelled {} */
+
+.popup_title {
+  font-size: '24px';
+  font-weight: 500;
+}

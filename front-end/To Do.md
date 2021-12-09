@@ -34,8 +34,8 @@ Set Manually pricing doesnt work **Done**
 **What happens if we send multiple bank for “plaid automation” we will need to send same number of plaid link? So they could pull 2 banks or more.. if necessary?
 
 [ORder Reprot]
-New report - Backing our and changing selected fields does not show updated fields
-Adding then removing bank/supplier 
+New report - Backing our and changing selected fields does not show updated fields **Done**
+Adding then removing bank/supplier  **Done**
 
 [Credit report (VIEW form)]
 “add bank” and add supplier should not be there in the view mode **Done**
@@ -43,7 +43,7 @@ Edit button doesnt work **Done**
 Edit button should not be there if status is completed **Done - only if 'is_editable' flag is on**
 [Order Report]
 Full design missing **
-Quick order dont work **ERROR
+Quick order dont work **Done**
 Step filling form goes directly to success message even if we didnt fill anything into the form ** How possible
 I dont see the order (so its not working properly) **Done**
 Missing “Legal Section” in step2 (we need to add province selection, to make sure in which province we will do the legal search)
@@ -51,6 +51,12 @@ We might use the field “State” and make it as a select province from the lis
 
 We will need to refine the “FORM” in a better view logic way for all data with some logic depending on what we have clicked roughly
 
+
+Add activity log
+Add.remove banks still failing - Add banks array to state, plus last bank item
+Fix suppliers
+
+Ad report logs to page
 
 Database Report:
 Not completed at all?

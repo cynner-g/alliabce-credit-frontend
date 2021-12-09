@@ -4,7 +4,7 @@ import Router from "next/router";
 import Image from 'next/image'
 import Link from 'next/link'
 import { Component } from 'react'
-import { Container, Row, Col, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import {
     order_details,
     order_report,
@@ -12,8 +12,8 @@ import {
 } from '../api/credit_reports';
 
 import {
-    get_user_details
-} from '../api/users';
+    list_companies
+} from '../api/companies'
 
 import {
     get_provinces
@@ -39,6 +39,7 @@ class OrderNewReport extends Component {
             showEditSubmit: false,
             warning: null,
             provinces: [],
+            role: "user"
         }
     }
 
@@ -50,7 +51,7 @@ class OrderNewReport extends Component {
         })
 
         // // if passing in a report to edit
-
+        console.log(Router?.router?.query?.rptId?.length)
         if (Router?.router?.query?.rptId?.length > 0) {
             let rptId = Router.router.query.rptId;
         // if (true) {
@@ -204,6 +205,19 @@ class OrderNewReport extends Component {
         //get user company data
         else {
             //if admin get list of all companies
+            const role = Cookies.get("role")
+            this.setState({ role: role })
+            if (role === "admin") {
+                let body = {
+                    "api_token": token,
+                    "language": "en",
+                    "sort_by": "company_name",
+                }
+                //download all company names
+
+                let companies = await list_companies(body)
+                console.log(companies.data)
+            }
             //TODO
         }
     }
@@ -214,21 +228,34 @@ class OrderNewReport extends Component {
         let banks = columns.filter(col => col.params?.model?.startsWith("banks"))
         banks.shift()//remove title 
 
-        let newDupNum = banks[banks.length - 1].dupNum;//get the dupNum of the last bank
-        newBanks = banks.filter(bank => bank.dupNum == 0); //get only last row of banks
+        let item = banks[banks.length - 1];
+        let newDupNum = item.dupNum;//get the dupNum of the last bank
+
+        newBanks = banks.filter(bank => bank.dupNum == newDupNum); //get only last row of banks
+        newDupNum++;
         let newBanks = JSON.parse(JSON.stringify(newBanks)); //ensure new variable not reference
-        newBanks.forEach(newBank => {
-            newBank.params.model = newBank.params.model.replace(newBank.dupNum, ++newBank.dupNum)
-            newBank.value = '';
-            newBank.params.value = ''
-            //add remove button
-            if (newBank.params.fName === 'LinkButton' && newBank.dupNum > 0) { //if this is a second or greater bank
-                newBank.params.onClick = this.removeBank;
-                newBank.Text = "Remove"
+        // newBanks.forEach(newBank => {
+        for (let i = 0; i < newBanks.length; i++) {
+            let params = { ...newBanks[i].params };
+            if (params.model.indexOf('_') > 0) {
+                params.model = params.model.replace(newBanks[i].dupNum, newDupNum)
             }
+            else {
+                params.model = params.model + '_' + newDupNum;
+            }
+            newBanks[i].value = '';
+            params.value = ''
+            newBanks[i].dupNum = newDupNum;
+            //add remove button
+            if (params.fName === 'LinkButton' && newBanks[i].dupNum > 0) { //if this is a second or greater bank
+                params.onClick = (model) => this.removeBank(newBanks[i].dupNum, model);
+                newBanks[i].Text = "Remove"
+            }
+            newBanks[i].params = params;
 
             //rename the model to fit the bank number
-        });
+        }
+        // });
 
         let numBanks = newBanks.length; //Banks header and Add new bank button
         let lastBank = columns.findIndex(col => col.params?.model?.startsWith("banks")) + numBanks * newDupNum;
@@ -239,19 +266,21 @@ class OrderNewReport extends Component {
             titleBank.title = titleBank.title.replace(num, num + 1);
         }
 
-        let startArray = [...columns].slice(0, lastBank + numBanks + 1);
-        let endArray = [...columns].splice(lastBank + numBanks + 1);
-        //concatenate start, new and end arrays
-        columns = startArray.concat(newBanks, endArray);
+        columns.splice(lastBank + 1, 0, ...newBanks);
+        // let startArray = [...columns].slice(0, lastBank + numBanks + 1);
+        // let endArray = [...columns].splice(lastBank + numBanks + 1);
+        // //concatenate start, new and end arrays
+        // columns = startArray.concat(newBanks, endArray);
         this.setState({ columns: columns });
     }
 
-    removeBank = (model) => {
+    removeBank = (bankNum, model) => {
         let columns = this.state.columns;
         let banks = columns.filter(col => col.params?.model?.startsWith("banks."))//get all banks
         let ttlBanks = banks.length;
         let bank = banks.filter(b => b.params.model == model); //get exact bank for dupNum
-        let dupNum = bank[0].dupNum;
+        // let dupNum = bank[0].dupNum + 1;
+        let dupNum = bankNum;
         let numBanks = banks.filter(b => b.dupNum == dupNum).length;//number of bank items
         let firstItem = banks.findIndex(b => b.dupNum == dupNum);//number of bank items
         let firstBank = columns.findIndex(col => col.params?.model?.startsWith("banks."))//get first bank
@@ -259,7 +288,7 @@ class OrderNewReport extends Component {
         banks.splice(firstItem, numBanks);
         let len = banks.length;
         //in theory replace existing bank array with new bank array
-        columns.splice(firstBank, ttlBanks + 1, ...banks);
+        columns.splice(firstBank, ttlBanks, ...banks);
         this.setState({ columns: columns });
     }
 
@@ -307,7 +336,8 @@ class OrderNewReport extends Component {
         let suppliers = columns.filter(col => col.params?.model?.startsWith("suppliers."))//get all suppliers
         let ttlsuppliers = suppliers.length;
         let supplier = suppliers.filter(b => b.params.model == model); //get exact supplier for dupNum
-        let dupNum = supplier[0].dupNum;
+        let dupNum = supplier[0].dupNum; //dupNum of the model
+        // let dupNum = model.replace(/^\D+/g, ''); //remove all text characters, leaving only numbers:  The dupNum.
         let numsuppliers = suppliers.filter(b => b.dupNum == dupNum).length;//number of supplier items
         let firstItem = suppliers.findIndex(b => b.dupNum == dupNum);//number of supplier items
         let firstsupplier = columns.findIndex(col => col.params?.model?.startsWith("suppliers."))//get first supplier
@@ -487,7 +517,7 @@ class OrderNewReport extends Component {
                     Text: "Add Bank Account",
                     'dupNum': 0,
                     'params': {
-                        model: 'banks.add',
+                        model: 'banks.add_0',
                         onClick: this.addBank,
                         'fName': "LinkButton",
                         colNum: 0
@@ -497,7 +527,7 @@ class OrderNewReport extends Component {
                     'title': "Bank Name",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_name",
+                        'model': "banks.bank_name_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -509,7 +539,7 @@ class OrderNewReport extends Component {
                     'title': "Civic Number",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address.civic_number",
+                        'model': "banks.bank_address.civic_number_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -521,7 +551,7 @@ class OrderNewReport extends Component {
                     'title': "Street",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address.street_name",
+                        'model': "banks.bank_address.street_name_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -533,7 +563,7 @@ class OrderNewReport extends Component {
                     'title': "Suite",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address.suite",
+                        'model': "banks.bank_address.suite_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -546,7 +576,7 @@ class OrderNewReport extends Component {
                     'title': "City",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address.city",
+                        'model': "banks.bank_address.city_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -558,7 +588,7 @@ class OrderNewReport extends Component {
                     'title': "Province",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address.state",
+                        'model': "banks.bank_address.state_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -570,7 +600,7 @@ class OrderNewReport extends Component {
                     'title': "Postal Code",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_address.postal_code",
+                        'model': "banks.bank_address.postal_code_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -582,7 +612,7 @@ class OrderNewReport extends Component {
                     'title': "Bank Number",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_phone_number",
+                        'model': "banks.bank_phone_number_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -594,7 +624,7 @@ class OrderNewReport extends Component {
                     'title': "Account Number",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.account_number",
+                        'model': "banks.account_number_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -606,7 +636,7 @@ class OrderNewReport extends Component {
                     'title': "Transit Number",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.transit_number",
+                        'model': "banks.transit_number_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -618,7 +648,7 @@ class OrderNewReport extends Component {
                     'title': "Bank Unique Number",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_unique_number",
+                        'model': "banks.bank_unique_number_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -630,7 +660,7 @@ class OrderNewReport extends Component {
                     'title': "Name of Bank Manager",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_manager_name",
+                        'model': "banks.bank_manager_name_0",
                         'required': false,
                         'fName': "TextRow",
                         'editable': true,
@@ -642,7 +672,7 @@ class OrderNewReport extends Component {
                     'title': "Bank Manager Email",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_manager_email_id",
+                        'model': "banks.bank_manager_email_id_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -654,7 +684,7 @@ class OrderNewReport extends Component {
                     'title': "Phone Number of Bank Manager",
                     'dupNum': 0,
                     'params': {
-                        'model': "banks.bank_manager_phone_number",
+                        'model': "banks.bank_manager_phone_number_0",
                         'required': true,
                         'fName': "TextRow",
                         'editable': true,
@@ -867,11 +897,11 @@ class OrderNewReport extends Component {
             //button from modal popup - closes modal
             this.setState({ isModalOpen: false })
             if (resp) { //if confirm is clicked
-
+                let data = new FormData()
                 let reports = this.state.reports
                 let ordered_report = [];
                 let rptList = ["Incorporate", "Bank", "Legal", "Suppliers"]
-                for (i = 0; i < 4; i++) {
+                for (let i = 0; i < 4; i++) {
                     if (reports[i]) ordered_report.push(rptList[i])
                 }
 
@@ -1025,7 +1055,7 @@ class OrderNewReport extends Component {
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Edit"
-                        if (!editable) col.params.visible = false;
+                        if (editable == false) col.params.visible = false;
                     }
 
                     //remove 'Cancel' button
@@ -1119,9 +1149,11 @@ class OrderNewReport extends Component {
             return (<>
                 <div className="order_reportwrap">
                     <Row>
+                        {this.state.origData ? '' :
                         <Col sm={3} className="order_report_left" >
                             {this.buildSteps()}
                         </Col>
+                        }
                         <Col sm={9}>
                             <div className="order_report_right">
                                 <div className="or_search">
@@ -1210,7 +1242,7 @@ class OrderNewReport extends Component {
 
                                     <label className="form-label btn" htmlFor="customFile">Upload credit application</label>
                                     <input type="file" className="form-control" id="customFile" onChange={e => this.uploadApplication(e)} />
-                                    <span classname="upload_cr_app fileName"> {this.state.requestFile?.name || ""}</span>
+                                    <span className="upload_cr_app fileName"> {this.state.requestFile?.name || ""}</span>
                                 </div>
 
                                 <div className="mb-5">&nbsp;</div>
@@ -1224,7 +1256,26 @@ class OrderNewReport extends Component {
                                     <Col className="text-start">
                                         <div className={styles.stepContainer}>
                                             <button className="btn quick_order" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
-                                            <i className='or_help'></i>
+
+                                            <OverlayTrigger
+                                                trigger="hover focus"
+                                                placement='right'
+                                                rootClose={true}
+                                                overlay={
+                                                    <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                        <Popover.Header as="div" className='external_links_popup title'></Popover.Header>
+                                                        <Popover.Body>
+                                                            You can "Quick Order" a report and <br />
+                                                            Alliance Credit will fill out the form for<br />
+                                                            you, it may charge extra.
+                                                        </Popover.Body>
+                                                    </Popover>
+                                                }
+                                            >
+                                                <i className='or_help'></i>
+                                            </OverlayTrigger>
+
+
                                         </div>
                                     </Col>
                                     <Col className="text-end">
@@ -1254,12 +1305,13 @@ class OrderNewReport extends Component {
                     </div> */}
                     <div className='order_reportwrap'>
                         <Row>
+                            {this.state.origData ? '' :
                             <Col className='order_report_left' sm={3}>
                                 <div className='report_steps'>
                                     {this.buildSteps()}
-                                </div>
-
+                                    </div>
                             </Col>
+                            }
                             <Col>
                                 {this.buildForm()}
                             </Col>
@@ -1283,9 +1335,11 @@ class OrderNewReport extends Component {
                     </div> */}
                     <div className='order_reportwrap'>
                         <Row>
+                            {this.state.origData ? '' :
                             <Col sm={3} className="order_report_left" >
                                 {this.buildSteps()}
                             </Col>
+                            }
                             {/* <Col className='order_report_left' sm={3}>
                                 <div className='report_steps'>
                                     <Row>
@@ -1351,7 +1405,8 @@ class OrderNewReport extends Component {
             return (
                 <>
                     <Row>
-                        {/* <Col sm={3}>
+                        {this.state.origData ? '' :
+                            <Col sm={3}>
                             <Container>
                                 <Row>
                                     <Col className={styles.stepContainer}>
@@ -1374,11 +1429,9 @@ class OrderNewReport extends Component {
                                 </Row>
                             </Container>
 
-                        </Col> */}
-                        <Col sm={3} className="order_report_left" >
-                            {this.buildSteps()}
                         </Col>
-                        <Col>
+                        }
+                        <Col >
                             <Row>
                                 <Col>
                                     <div className={styles.doneImage}>
