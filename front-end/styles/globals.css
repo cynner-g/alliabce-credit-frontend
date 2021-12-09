@@ -1003,12 +1003,13 @@ td.comments_indent {
 
 /*Order new reports*/
 .order_reportwrap {
-  border-top: #F2F2F2;
+  border-top: 1px solid #F2F2F2;
 }
 
 .order_report_right {
   padding-top: 15px;
   padding-bottom: 50px;
+  padding-left: 20px;
 }
 
 .order_report_left {
@@ -1074,9 +1075,210 @@ td.comments_indent {
   background-color: #dddddd;
 }
 
-.external_links_popup.title {
-  border: solid 1px black;
+.or_search {
+  max-width: 400px;
+  margin-bottom: 30px;
 }
+
+.or_subtitle,
+.or_search label {
+  color: #323232;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.or_search input[type="text"] {
+  background: url(/icons/Seach.svg) 10px 10px no-repeat;
+  padding-left: 35px;
+}
+
+.or_check_group {
+  margin-bottom: 30px;
+}
+
+.or_check_group label {
+  color: #747474;
+  font-weight: 400;
+  padding-right: 50px;
+}
+
+.or_select_all label {
+  color: #747474;
+  font-weight: 400;
+}
+
+.upload_cr_app {
+  padding-top: 20px;
+}
+
+.upload_cr_app label {
+  background: url(/icons/upload_blue.svg) 19px 9px no-repeat;
+  border: 1px solid #517BCC;
+  font-size: 16px;
+  color: #517BCC;
+  padding: 11px 15px 11px 57px;
+}
+
+.upload_cr_app input[type="file"] {
+  display: none;
+}
+
+
+.quick_order_wrap {
+  border-top: 1px solid #F2F2F2;
+  padding-top: 20px;
+  color: #517BCC;
+}
+
+.quick_order {
+  border: 1px solid #517BCC;
+  padding: 11px 20px 11px 60px;
+  margin-left: 25px;
+  background: url(/icons/quick-order.svg) 19px 11px no-repeat;
+  color: #517BCC;
+}
+
+.or_help {
+  background: url(/icons/help.png) 0px 0px no-repeat;
+  display: inline-block;
+  width: 21px;
+  height: 21px;
+  margin-left: 20px;
+  position: relative;
+  top: 5px;
+}
+
+.order_report_right .h2 {
+  color: General;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.step2_form label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #747474;
+  margin-bottom: 5px;
+}
+
+.step2_form input[type=text] {
+  background: #F8F8F8;
+  border: 1px solid #DDDDDD;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form_head {
+  font-size: 24px;
+  font-weight: 600;
+  color: #555B6E;
+}
+
+.or_success_message {
+  text-align: center;
+  padding: 15px;
+  padding-top: 40px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.or_success_message p {
+  text-align: center;
+  font-size: 18px;
+  color: #747474;
+}
+
+.imgblockmessage {
+  display: block;
+  /* max-width: 100%; */
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0px;
+  margin: auto;
+  width: initial;
+  max-width: 300px;
+}
+
+
+.credit-report,
+.database-report,
+.legal-watchlist,
+.groups,
+.companies,
+.legal-uploads,
+.aging {
+  padding-left: 23px;
+  background-size: 25px !important;
+  margin: 0 15px;
+}
+
+.groups {
+  background: url(/icons/groups_0.svg) 0px 4px no-repeat;
+}
+
+.groups.active {
+  background: url(/icons/groups.svg) 0px 4px no-repeat;
+}
+
+.companies {
+  background: url(/icons/companies_0.svg) 0px 4px no-repeat;
+}
+
+.companies.active {
+  background: url(/icons/companies.svg) 0px 4px no-repeat;
+}
+
+.legal-uploads {
+  background: url(/icons/legal_upload_0.svg) 0px 4px no-repeat;
+}
+
+.legal-uploads.active {
+  background: url(/icons/legal_upload.svg) 0px 4px no-repeat;
+}
+
+
+
+
+.credit-report {
+  background: url(/icons/credit_reports_0.svg) 0px 4px no-repeat;
+}
+
+.credit-report.active {
+  background: url(/icons/credit_reports.svg) 0px 4px no-repeat;
+}
+
+
+.database-report {
+  background: url(/icons/database_reports_0.svg) 0px 4px no-repeat;
+}
+
+.database-report.active {
+  background: url(/icons/database_reports.svg) 0px 4px no-repeat;
+}
+
+.legal-watchlist {
+  background: url(/icons/legal_watchlist_0.svg) 0px 4px no-repeat;
+}
+
+.legal-watchlist.active {
+  background: url(/icons/legal_watchlist.svg) 0px 4px no-repeat;
+}
+
+.aging {
+  background: url(/icons/help.png) 0px 4px no-repeat;
+}
+
+.aging.active {
+  background: url(/icons/help.png) 0px 4px no-repeat;
+}
+
+/* .aging {}
+.aging.active {} */
+/* .status-needsAction {}
 
 .private_comment {
   color: lightGrey;
@@ -1087,6 +1289,7 @@ td.comments_indent {
   margin-bottom: -5px;
 }
 
+<<<<<<< HEAD
 .set_price {
   white-space: nowrap;
   padding: 5px;
@@ -1102,3 +1305,6 @@ td.comments_indent {
   /* position: absolute; */
   margin-top: -50px;
 }
+=======
+.status-cancelled {} */
+>>>>>>> c79ec5266988b99f082a70fa3f177e6e4bf37978
