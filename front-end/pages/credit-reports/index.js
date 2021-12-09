@@ -232,6 +232,14 @@ class CreditReports extends Component {
         </div>
     }
 
+    downloadReport = (e, report, type) => {
+        if (report.status_code == COMPLETED)
+            e.preventDefault();
+        else {
+            //do other stuff
+        }
+    }
+
     // showStatusBody = (row) => {
     //     if (!this.state.rowStatus.status) {
     //         let status = { status: row.status_code };
@@ -349,9 +357,9 @@ class CreditReports extends Component {
         let company_name = row.company_name;
         let status = this.getStatusCss(row.status_code)
         let reportCodes = getCodes(row.reports);
-        let isDisabled = false
+        let isDownloadDisabled = false
         for (let report of row.ordered_reports) {
-            if (row.reports[report.toLowerCase()].status_code !== COMPLETED) isDisabled = true;
+            if (row.reports[report.toLowerCase()].status_code !== COMPLETED) isDownloadDisabled = true;
         }
 
         return (
@@ -370,93 +378,122 @@ class CreditReports extends Component {
                         <div className="buttongroups">
                             <div className={`status${row.reports.incorporate.status_code}`}>
                                 {(row.reports.incorporate.status_code == -1) ? '' :
-
-                                    <OverlayTrigger
-                                        trigger="click"
-                                        key={'External' + index}
-                                        placement='top'
-                                        rootClose={true}
-                                        overlay={
-                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
-                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.incorporate.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
-                                                <Popover.Body>
-                                                    {row.reports.incorporate.status_code == COMPLETED ? this.showDownload(row, row.reports.incorporate._id, "incorporate") : this.showUpload(row, row.reports.incorporate._id, "incorporate")}
-                                                </Popover.Body>
-                                            </Popover>
-                                        }
-                                    >
+                                    row.reports.incorporate.status_code !== COMPLETED ?
+                                        <OverlayTrigger
+                                            trigger="click"
+                                            key={'External' + index}
+                                            placement='top'
+                                            rootClose={true}
+                                            overlay={
+                                                <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                    <Popover.Header as="div" className='external_links_popup title'>{row.reports.incorporate.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                    <Popover.Body>
+                                                        {row.reports.incorporate.status_code == COMPLETED ? this.showDownload(row, row.reports.incorporate._id, "incorporate") : this.showUpload(row, row.reports.incorporate._id, "incorporate")}
+                                                    </Popover.Body>
+                                                </Popover>
+                                            }
+                                        >
+                                            <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`}>
+                                                Incorporate
+                                            </span>
+                                        </OverlayTrigger>
+                                        :
                                         <span className={`btn report-status incorporate ${reportCodes.incorporate.className}`}
-                                        >Incorporate</span>
-                                    </OverlayTrigger>
+                                            onClick={(e) => { this.downloadReport(e, row.reports.incorporate, 'incorporate') }}>
+                                            Incorporate
+                                        </span>
                                 }
                             </div>
                             <div className={`status${row.reports.bank.status_code}`}>
                                 {(row.reports.bank.status_code == -1) ? '' :
 
 
-                                    <OverlayTrigger
-                                        trigger="click"
-                                        key={'External' + index}
-                                        placement='top'
-                                        rootClose={true}
-                                        overlay={
-                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
-                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
-                                                <Popover.Body>
-                                                    {row.reports.bank.status_code == COMPLETED ? this.showDownload(row, row.reports.bank._id, "bank") : this.showUpload(row, row.reports.incorporate._id, "bank")}
-                                                </Popover.Body>
-                                            </Popover>
-                                        }
-                                    >
+                                    row.reports.bank.status_code !== COMPLETED ?
+                                        <OverlayTrigger
+                                            trigger="click"
+                                            key={'External' + index}
+                                            placement='top'
+                                            rootClose={true}
+                                            overlay={
+                                                <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                    <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                    <Popover.Body>
+                                                        {row.reports.bank.status_code == COMPLETED ? this.showDownload(row, row.reports.bank._id, "bank") : this.showUpload(row, row.reports.incorporate._id, "bank")}
+                                                    </Popover.Body>
+                                                </Popover>
+                                            }
+                                        >
+                                            <span className={`btn report-status bank_download ${reportCodes.bank.className}`}
+                                            >Bank</span>
+                                        </OverlayTrigger>
+                                        :
                                         <span className={`btn report-status bank_download ${reportCodes.bank.className}`}
-                                        >Bank</span>
-                                    </OverlayTrigger>
+                                            onClick={(e) => { this.downloadReport(e, row.reports.bank, 'bank') }}>
+                                            Bank
+                                        </span>
                                 }
                             </div>
                             <div className={`status${row.reports.legal.status_code}`}>
                                 {(row.reports.legal.status_code == -1) ? '' :
-                                    <OverlayTrigger
-                                        trigger="click"
-                                        key={'External' + index}
-                                        placement='top'
-                                        rootClose={true}
-                                        overlay={
-                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
-                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
-                                                <Popover.Body>
-                                                    {row.reports.legal.status_code == COMPLETED ? this.showDownload(row, row.reports.legal._id, "legal") : this.showUpload(row, row.reports.incorporate._id, "legal")}
-                                                </Popover.Body>
-                                            </Popover>
-                                        }
-                                    >
-                                        <span className={`btn report-status legal ${reportCodes.legal.className}`}
-                                        >Legal</span>
-                                    </OverlayTrigger>
+                                    row.reports.legal.status_code !== COMPLETED ?
+                                        <OverlayTrigger
+                                            trigger="click"
+                                            key={'External' + index}
+                                            placement='top'
+                                            rootClose={true}
+                                            overlay={
+                                                <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                    <Popover.Header as="div" className='external_links_popup title'>{row.reports.bank.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                    <Popover.Body>
+                                                        {row.reports.legal.status_code == COMPLETED ? this.showDownload(row, row.reports.legal._id, "legal") : this.showUpload(row, row.reports.incorporate._id, "legal")}
+                                                    </Popover.Body>
+                                                </Popover>
+                                            }
+                                        >
+                                            <span className={`btn report-status legal ${reportCodes.legal.className}`}
+                                            >Legal</span>
+                                        </OverlayTrigger>
+
+                                        :
+                                        <span className={`btn report-status legal ${reportCodes.bank.className}`}
+                                            onClick={(e) => { this.downloadReport(e, row.reports.bank, 'legal') }}>
+                                            Legal
+                                        </span>
+
                                 }
                             </div>
                             <div className={`suppliers status${row.reports.suppliers.status_code}`}>
                                 {(row.reports.suppliers.status_code == -1) ? '' :
 
-                                    <OverlayTrigger
-                                        trigger="click"
-                                        key={'External' + index}
-                                        placement='top'
-                                        rootClose={true}
-                                        overlay={
-                                            <Popover id={`popover-positioned-top`} classname='external_links_popup'>
-                                                <Popover.Header as="div" className='external_links_popup title'>{row.reports.suppliers.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
-                                                <Popover.Body>
-                                                    {row.reports.suppliers.status_code == COMPLETED ? this.showDownload(row, row.reports.suppliers._id, "suppliers") : this.showUpload(row, row.reports.incorporate._id, "suppliers")}
-                                                </Popover.Body>
-                                            </Popover>
-                                        }
-                                    >
-                                        <span className={`btn report-status suppliers ${reportCodes.suppliers.className}`}
-                                        >Suppliers</span>
-                                    </OverlayTrigger>
+                                    row.reports.legal.status_code !== COMPLETED ?
+                                        <OverlayTrigger
+                                            trigger="click"
+                                            key={'External' + index}
+                                            placement='top'
+                                            rootClose={true}
+                                            overlay={
+                                                <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                    <Popover.Header as="div" className='external_links_popup title'>{row.reports.suppliers.status_code == COMPLETED ? 'Download' : 'Upload'} Report</Popover.Header>
+                                                    <Popover.Body>
+                                                        {row.reports.suppliers.status_code == COMPLETED ? this.showDownload(row, row.reports.suppliers._id, "suppliers") : this.showUpload(row, row.reports.incorporate._id, "suppliers")}
+                                                    </Popover.Body>
+                                                </Popover>
+                                            }
+                                        >
+                                            <span className={`btn report-status suppliers ${reportCodes.suppliers.className}`}
+                                            >Suppliers</span>
+                                        </OverlayTrigger>
+
+                                        :
+                                        <span className={`btn report-status suppliers ${reportCodes.bank.className}`}
+                                            onClick={(e) => { this.downloadReport(e, row.reports.bank, 'suppliers') }}>
+                                            Suppliers
+                                        </span>
+
+
                                 }
                             </div>
-                            <div><button className="btn download" disabled={isDisabled} onClick={(this.download_report(row._id, 'All'))}>Download All</button></div>
+                            <div><button className="btn download" disabled={isDownloadDisabled} onClick={(this.download_report(row._id, 'All'))}>Download All</button></div>
                             <div><button className="btn downarrow" onClick={(e) => this.showDropdownRow(e, index)} /></div>
                         </div>
                     </td>

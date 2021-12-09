@@ -1223,10 +1223,6 @@ class OrderNewReport extends Component {
                             <div className="pb-5">&nbsp;</div>
 
 
-
-
-
-
                         </Col>
                     </Row>
                 </div>
@@ -1237,12 +1233,12 @@ class OrderNewReport extends Component {
             return (
                 <>
                     {/* <Container> */}
-                    <div className="breadcrumb">
+                    {/* <div className="breadcrumb">
                         <ul className=" me-auto mb-2 mb-lg-0">
                             <li><Link href="/credit-report"><a className="nav-link">Credit Report</a></Link></li>
                             <li>Order New Report</li>
                         </ul>
-                    </div>
+                    </div> */}
                     <div className='order_reportwrap'>
                         <Row>
                             <Col className='order_report_left' sm={3}>
@@ -1264,17 +1260,20 @@ class OrderNewReport extends Component {
         else if (this.state.step == 3) {
             return (
                 <>
-                    <Header />
+                    {/* <Header /> */}
                     {/* <Container> */}
-                    <div className="breadcrumb">
+                    {/* <div className="breadcrumb">
                         <ul className=" me-auto mb-2 mb-lg-0">
                             <li><Link href="/credit-report"><a className="nav-link">Credit Report</a></Link></li>
                             <li>Order New Report</li>
                         </ul>
-                    </div>
+                    </div> */}
                     <div className='order_reportwrap'>
                         <Row>
-                            <Col className='order_report_left' sm={3}>
+                            <Col sm={3} className="order_report_left" >
+                                {this.buildSteps()}
+                            </Col>
+                            {/* <Col className='order_report_left' sm={3}>
                                 <div className='report_steps'>
                                     <Row>
                                         <Col className={styles.stepContainer}>
@@ -1296,7 +1295,7 @@ class OrderNewReport extends Component {
                                         </Col>
                                     </Row>
                                 </div>
-                            </Col>
+                            </Col> */}
                             <Col>
                                 <div className='order_report_right'>
                                     <Row>
@@ -1339,7 +1338,7 @@ class OrderNewReport extends Component {
             return (
                 <>
                     <Row>
-                        <Col sm={3}>
+                        {/* <Col sm={3}>
                             <Container>
                                 <Row>
                                     <Col className={styles.stepContainer}>
@@ -1362,6 +1361,9 @@ class OrderNewReport extends Component {
                                 </Row>
                             </Container>
 
+                        </Col> */}
+                        <Col sm={3} className="order_report_left" >
+                            {this.buildSteps()}
                         </Col>
                         <Col>
                             <Row>
