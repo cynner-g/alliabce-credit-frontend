@@ -66,12 +66,12 @@ export class FormComponent extends Component {
         return (
             <Col className='formCol formContent' key={index}>
                 <span style={{ visibility: column.params.visible !== false ? 'visible' : 'hidden' }}>
-                {column.title}
-                <input type='text' className='formText form-control'
-                    name={column.params.model}
-                    onChange={(e) => this.handleChange(e)}
-                    value={this.state.formData[column.params.model] || undefined}
-                    disabled={!column.params.editable}
+                    {column.title}
+                    <input type='text' className='formText form-control'
+                        name={column.params.model}
+                        onChange={(e) => this.handleChange(e)}
+                        value={this.state.formData[column.params.model] || undefined}
+                        disabled={!column.params.editable}
                     />
                 </span>
             </Col>
@@ -83,9 +83,9 @@ export class FormComponent extends Component {
         return (
             <Col className='formCol' key={index}>
                 <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                {params.title}
+                    {params.title}
 
-                <input type='date' className='formTextDate' model={model} />
+                    <input type='date' className='formTextDate' model={model} />
                 </span>
             </Col>
 
@@ -97,12 +97,12 @@ export class FormComponent extends Component {
         return (
             <Col className='formCol' key={index}>
                 <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                {col.title}
-                <input type='number' className='formTextNumber'
-                    model={model}
-                    min={col.params.minVal}
-                    max={col.params.maxVal}
-                />
+                    {col.title}
+                    <input type='number' className='formTextNumber'
+                        model={model}
+                        min={col.params.minVal}
+                        max={col.params.maxVal}
+                    />
                 </span>
             </Col>
 
@@ -115,12 +115,12 @@ export class FormComponent extends Component {
 
             <Col className='formCol formTextArea' md={{ size: 7 }}>
                 <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                {col.title}
-                <textarea
-                    rows={col.params.rows || 5}
-                    cols={col.params.cols || 50}
-                    model={model}
-                />
+                    {col.title}
+                    <textarea
+                        rows={col.params.rows || 5}
+                        cols={col.params.cols || 50}
+                        model={model}
+                    />
                 </span>
             </Col>
         )
@@ -130,11 +130,13 @@ export class FormComponent extends Component {
         return (
             <div className='quick_order_wrap'>
                 <Col className='formCol text-end' md={{ size: 1, offset: 1 }} key={index}>
-                    <br />
-                    <button type="submit" className='btn btn-primary' color={col.params.color || "primary"}>
-                        {col.params.text}
-                    </button >
-                    <br />
+                    <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
+                        <br />
+                        <button type="submit" className='btn btn-primary' color={col.params.color || "primary"}>
+                            {col.params.text}
+                        </button >
+                        <br />
+                    </span>
                 </Col>
             </div>
         );
@@ -145,11 +147,11 @@ export class FormComponent extends Component {
             return (
                 <Col className='formCol' md={{ size: 1, offset: 1 }} key={index}>
                     <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                    <br />
+                        <br />
                         <button type="button" className='formCancel'
                             onClick={() => this.props.cancel()} color={col.params.color || "primary"}>
-                        {col.params.text}
-                    </button >
+                            {col.params.text}
+                        </button >
                     </span>
                 </Col>
             );
@@ -164,17 +166,17 @@ export class FormComponent extends Component {
         return (
             <Col className='formCol formDropdown' >
                 <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                {col.title}
-                <select
-                    model={model}
-                    defaultValue={false}
-                >
-                    {col.params.options.map((option, i) => {
-                        return (
-                            <option key={i} value={option.id || option.value || null} disabled='{option.disabled?"true":"false"}'>{option.value}</option>
-                        )
-                    })}
-                </select>
+                    {col.title}
+                    <select
+                        model={model}
+                        defaultValue={false}
+                    >
+                        {col.params.options.map((option, i) => {
+                            return (
+                                <option key={i} value={option.id || option.value || null} disabled='{option.disabled?"true":"false"}'>{option.value}</option>
+                            )
+                        })}
+                    </select>
                 </span>
             </Col>
         )
@@ -192,9 +194,9 @@ export class FormComponent extends Component {
         let ret = (
             <Col className='formCol formCheckContainer' md={{ offset: 1 }}>
                 <span style={{ visibility: params.visible !== false ? 'visible' : 'hidden' }}>
-                <label htmlFor={chkId}>{text}</label>
-                <input type='checkbox' id={chkId} className='formCheckbox'
-                    model={model} onClick={(e) => { this.handleCheck(e, params.clickParameters) }} />
+                    <label htmlFor={chkId}>{text}</label>
+                    <input type='checkbox' id={chkId} className='formCheckbox'
+                        model={model} onClick={(e) => { this.handleCheck(e, params.clickParameters) }} />
                 </span>
             </Col>
         )
@@ -216,9 +218,9 @@ export class FormComponent extends Component {
 
                 <Col className='formCol formCheckContainer' md={{ offset: 1 }}>
                     <span style={{ visibility: params.visible ? 'visible' : 'hidden' }}>
-                    <label htmlFor={chkId}>{text}</label>
-                    <input type='checkbox' id={chkId} className='formCheckbox'
-                        onClick={(e) => { this.handleCheck(e, params.id) }} />
+                        <label htmlFor={chkId}>{text}</label>
+                        <input type='checkbox' id={chkId} className='formCheckbox'
+                            onClick={(e) => { this.handleCheck(e, params.id) }} />
                     </span>
                 </Col>
 
@@ -239,7 +241,7 @@ export class FormComponent extends Component {
         return (
             <div className={col.params.divclassData} >
                 <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                {this.buildRows(col.params.divrows)}
+                    {this.buildRows(col.params.divrows)}
                 </span>
             </div>
         )
@@ -250,8 +252,8 @@ export class FormComponent extends Component {
             <Col className='formCol' key={index}>
                 <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
                     <button type="button" className="btn btn-outline-primary formLinkButton" onClick={() => this.handleClickEvent(col.params)} key={index}>
-                    {col.Text}
-                </button>
+                        {col.Text}
+                    </button>
                 </span>
             </Col>
         )
@@ -259,9 +261,9 @@ export class FormComponent extends Component {
     buildHeader = (col, index) => {
         return (<Col className='formCol formHeader' sm={col.length / 12} style={{ marginTop: '10px' }}>
             <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-            <span style={{ fontSize: `${col.params.size}px`, fontWeight: 600 }} clasName='form_head'>
-                {col.title}
-            </span>
+                <span style={{ fontSize: `${col.params.size}px`, fontWeight: 600 }} clasName='form_head'>
+                    {col.title}
+                </span>
             </span>
         </Col>)
         // switch (col.params.size) {

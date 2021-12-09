@@ -1013,7 +1013,7 @@ class OrderNewReport extends Component {
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Edit"
-                        if (editable) col.params.visible = false;
+                        if (!editable) col.params.visible = false;
                     }
 
                     //remove 'Cancel' button
@@ -1041,13 +1041,13 @@ class OrderNewReport extends Component {
                     //rename Submit to 'edit'
                     if (col.params.fName === 'SubmitButton') {
                         col.params.text = "Resubmit"
-                        if (editable) col.params.visible = false;
+                        if (!editable) col.params.visible = false;
                     }
 
                     //remove 'Cancel' button
                     if (col.params.fName === 'CancelButton') {
-                        if (editable) col.params.visible = false;
-                        col.params.visible = true;
+                        if (!editable) col.params.visible = false;
+                        else col.params.visible = true;
                     }
 
                     col.params.editable = true;
@@ -1438,7 +1438,7 @@ class OrderNewReport extends Component {
 
                 <div className="breadcrumb">
                     <ul className=" me-auto mb-2 mb-lg-0">
-                        <li><Link href="/credit-report"><a className="nav-link">Credit Reports</a></Link></li>
+                        <li><Link href="/credit-reports"><a className="nav-link">Credit Reports</a></Link></li>
                         <li>{this.state.origData ? 'Edit ' : 'Order New '}Report</li>
                     </ul>
                 </div>

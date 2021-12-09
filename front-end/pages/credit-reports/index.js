@@ -20,7 +20,7 @@ import {
     download_report_file,
     delete_comment,
     update_pricing,
-    upload_report
+    upload_report,
 } from "../api/credit_reports";
 import {
     getUserData
@@ -64,7 +64,8 @@ class CreditReports extends Component {
             token: Cookies.get('token'),
             displayLinks: null,
             reportPrice: null,
-            setPricing: false
+            setPricing: false,
+            reportUploadFileError: ""
         };
     }
 
@@ -214,26 +215,35 @@ class CreditReports extends Component {
 
     showUpload = (row, rptId, rptType) => {
         return (
-        <div className='upload_report' style={{ visibility: 'hidden' }}>
-            <input type='file' onChange={(e) => this.setState({ reportUploadFile: e.target.files[0] })} />
-                <button onClick={(e) => this.setUpload(row, rptType)}>Upload</button>
+            <div className='upload_report'>
+                <input type='file'
+                    onChange={(e) => this.setState({ reportUploadFile: e.target.files[0] })}
+                    accept=".pdf"
+                />
+                <span className='report_upload_button'><button onClick={(e) => this.uploadReport(e, row, rptType)}>Upload</button></span>
+                <span className='report_upload_error'>{this.state.reportUploadFileError}</span>
             </div>)
     }
 
-    showDownload = (row, rptId, rptType) => {
-        <div className='download_report'>
-            <a href={row}>Download</a>
-        </div>
-    }
 
-    uploadReport = (e, report, type){
+    uploadReport = async (e, report, type) => {
         e.preventDefault();
         let token = Cookies.get('token');
         let file = await download_report_file({
             api_token: token,
             report_order_id: report._id,
             type: type
-        });
+        })
+            .then(results => {
+                if (results.status == 200) {
+                    document.body.click();
+                    this.setState({ reportUploadFile: null })
+                } else {
+                    const res = results.json();
+                    this.setState({ reportUploadFileError: res.data });
+                }
+            })
+            ;
     }
 
     downloadReport = async (e, report, type) => {

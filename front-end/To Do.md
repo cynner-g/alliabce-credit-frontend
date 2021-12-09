@@ -1,8 +1,4 @@
 
-Only allow edit if needs action or error - Need status code in the API
-
-Breadcrumb on order report
-
 
 [Credit Report]
 We have to validate why “we have the wrong success report for bank/legal/supplier” and they are suppose to be pending and Incorporate suppose to be “DONE” **DONE**
