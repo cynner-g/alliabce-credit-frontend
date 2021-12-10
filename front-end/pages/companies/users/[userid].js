@@ -7,6 +7,8 @@ import { parseCookies } from "nookies"
 import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
 import TabButton from "../../../components/tabbutton"
+import { CheckboxGroup, Checkbox } from 'rsuite'
+import 'rsuite/dist/rsuite.min.css';
 import {
     list_user,
     create_user,
@@ -15,7 +17,7 @@ import {
     update_user
 } from '../../api/users';
 
-import { list_companies } from '../../api/users';
+import { get_company_details } from '../../api/companies';
 
 const Users = ({ data, page, totalPage, query, companiesData }) => {
 
@@ -41,7 +43,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     const [show, setShow] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
 
-    const [fullNname, setFullName] = useState("");
+    const [fullName, setFullName] = useState("");
     const [emailID, setEmailID] = useState("");
     const [country_code, setCountry_code] = useState("");
     const [phone_number, setPhone_number] = useState("");
@@ -77,7 +79,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         }
     };
 
-    const fetchData = async () => {
+    const fetchData = (type, data) => {
 
         const token = Cookies.get('token');
         if (!token) {
@@ -88,21 +90,37 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 },
             }
         }
+        let filter_user, filter_comp;
+        try {
+            filter_user = filter_user_role;
+            filter_comp = filter_company;
+        }
+        finally {
+            if (type !== null) {
+                switch (type) {
+                    case "user":
+                        filter_user = data;
+                        break;
+                    case "company":
+                        filter_comp = data;
+                        break;
+                    default: break;
+                }
+            }
+        }
 
         let body = {
-
             "language": 'en',
             "api_token": token,
             "company_id": qstr.userid,
-            "filter_user_role": filter_user_role,
-            "filter_company": filter_company,
             "sort_by": sort_by,
             "is_desc": is_desc
         }
+        if (filter_user[0] !== "") body.filter_user_role = filter_user;
+        if (filter_comp[0] !== "") body.filter_company = filter_comp;
 
-        const newDate = list_user(body)
-        console.log(newData);
-        return setUserList(newData);
+        list_user(body)
+            .then(newData => setUserList(newData))
     };
 
 
@@ -127,7 +145,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
         if (!ischecked.includes(qstr.userid)) ischecked.push(qstr.userid);
         let body = {
-            "full_name": fullNname,
+            "full_name": fullName,
             "email_id": emailID,
             "country_code": "+1",
             "phone_number": phone_number,
@@ -140,18 +158,18 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         console.log(body);
 
         const res2User = create_user(body)
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-            handleClose();
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-            setCompany_access("");
-            setUser_role("");
-            fetchData();
-        }
-
+            .then(res => {
+                if (res.status_code == 200) {
+                    handleClose();
+                    setFullName("");
+                    setEmailID("");
+                    setCountry_code("");
+                    setPhone_number("");
+                    setCompany_access("");
+                    setUser_role("");
+                    fetchData();
+                }
+            })
     }
 
     /**
@@ -176,7 +194,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      * @param {*} id 
      * @returns 
      */
-    const getUser = async (id) => {
+    const editUser = async (id) => {
         // e.preventDefault();
 
         const token = Cookies.get('token');
@@ -189,26 +207,27 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             }
         }
 
-        const userData2 = get_user_details({
+        get_user_details({
             "user_id": id,
             "language": "en",
             "api_token": token
-        });
+        }).then(userData => {
 
-        console.log(userData2);
-        if (userData2.status_code == 200) {
-            // handleClose();
-            setFullName(userData2?.data?.full_name);
-            setEmailID(userData2?.data?.email_id);
-            setCountry_code(userData2?.data?.phone_number?.country_code);
-            setPhone_number(userData2?.data?.phone_number?.phone_number);
-            setCompany_access(userData2?.data?.full_name);
-            setUser_role(userData2?.data?.user_role);
-            // setUser_role(userData2?.data?.display_user_role);
-            setIsEdit(true);
-            setShow(true);
-            setUserId(id)
-        }
+            console.log(userData);
+            if (userData) {
+                // handleClose();
+                setFullName(userData?.full_name);
+                setEmailID(userData?.email_id);
+                setCountry_code(userData?.phone_number.country_code);
+                setPhone_number(userData?.phone_number.phone_number);
+                setCompany_access(userData?.full_name);
+                setUser_role(userData?.user_role);
+                // setUser_role(userData?.display_user_role);
+                setIsEdit(true);
+                setShow(true);
+                setUserId(id)
+            }
+        })
     }
 
     /**
@@ -221,10 +240,10 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     }
 
     /**
-     * Stimulate user
+     * Simulate user
      * @param {*} id 
      */
-    const stimulateUser = async (id) => {
+    const simulateUser = async (id) => {
         return '';
     }
 
@@ -256,7 +275,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
         const body = {
             "user_id": userID,
-            "full_name": fullNname,
+            "full_name": fullName,
             "email_id": emailID,
             "country_code": "+1",
             "phone_number": phone_number,
@@ -303,7 +322,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                     <div className="col  text-end">
                         <select className="form-select role" onChange={(e) => {
                             setFilter_user_role([e.target.value]);
-                            fetchData();
+                            fetchData("user", [e.target.value]);
                         }}>
                             <option value="">All</option>
                             <option value="user">User</option>
@@ -311,9 +330,12 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                         </select>
                         <select className="form-select f1" onChange={(e) => {
                             setFilter_company([e.target.value]);
-                            fetchData();
+                            fetchData("company", [e.target.value]);
                         }}>
                             <option>Company Access</option>
+                            {companiesData?.map((item, idx) =>
+                                <option key={idx} value={item._id}>{item.company_name}</option>
+                            )}
                         </select>
                         <Link href="#"><a className="btn addbtn" onClick={handleShow} disabled={isUserManager()}>Add User</a></Link>
 
@@ -408,7 +430,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
                             <tr key={idx}>
                                 <td>{item.full_name}</td>
-                                <td>{item.date_added}</td>
+                                <td>{new Date(item.date_added).toLocaleString()}</td>
                                 <td>{item.email_id}</td>
                                 <td>{item.display_user_role}</td>
                                 <td>{item?.company_access?.join(", ")}</td>
@@ -416,7 +438,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                     <>{item.is_verified ? '' :
                                         <>
                                             <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
-                                            <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
+                                            <button className="btn viewmore" onClick={() => editUser(item._id)}>Edit User</button> &nbsp;
                                         </>
                                     }
                                         {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
@@ -427,9 +449,12 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                     }
                                 </button> */}
 
-                                        <a className="btn viewmore" onClick={() => stimulateUser(item._id)}>Stimulate User</a> &nbsp;
+                                        <a className="btn viewmore" onClick={() => simulateUser(item._id)}>Simulate User</a> &nbsp;
+                                        <a className="btn viewmore" >Reset Password</a> &nbsp;
+                                        {/* onClick={() => simulateUser(item._id)} */}
                                     </>
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>
@@ -449,8 +474,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
                             <div className="row">
                                 <div className="col">
-                                    <label htmlFor="fullname" className="form-label">Full Name</label>
-                                    <input className="form-control" name="fullname" type="text" id="fullname" value={fullNname} onChange={(e) => setFullName(e.target.value)} />
+                                    <label htmlFor="fullName" className="form-label">Full Name</label>
+                                    <input className="form-control" name="fullName" type="text" id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} />
                                 </div>
                             </div>
                             <div className="row">
@@ -481,12 +506,24 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
                                     <label htmlFor="groups" className="form-label">Company Access</label>
                                     <div className="chkox">
-                                        {companiesData?.map((item, idx) => (
+
+                                        <CheckboxGroup inline name="checkboxList" value={ischecked} onChange={(e) => handleOnChange(e)}>
+                                            {companiesData.map(item => (
+                                                <p>
+                                                    <Checkbox key={item} value={item._id} className="form-check-input" name="company_access" >
+                                                        <span className="form-check-label">{item.company_name}</span>
+                                                    </Checkbox>
+                                                </p>
+                                            ))}
+                                        </CheckboxGroup>
+
+
+                                        {/* {companiesData?.map((item, idx) => (
                                             <div className="form-check" key={idx}>
                                                 <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
-                                                <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => handleOnChange(e)} />
+                                                <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} />
                                             </div>
-                                        ))}
+                                        ))} */}
                                     </div>
 
                                     <input className="form-control" name="userID" type="hidden" id="company_logo_en" value={userID} />
@@ -541,24 +578,29 @@ export async function getServerSideProps(ctx) {
         }
     }
 
-    let data = Promise.all([
-
-
+    let data = await Promise.all([
         list_user({
             "language": 'en',
             "api_token": token,
             "company_id": query.userid
         }),
 
-        list_companies({
+        get_company_details({
             "language": 'en',
             "api_token": token,
-        })
+            "company_id": query.userid
+        }),
+
+
     ])
 
     const users = data[0]
-    const resCompaniesData = data[1];
+    const resCompaniesData = data[1]?.data;
 
+    let compData = [{ _id: resCompaniesData._id, company_name: resCompaniesData.company_name }];
+    for (let company of resCompaniesData.sub_companies) {
+        compData.push({ _id: company._id, company_name: company.company_name })
+    }
     // console.log(users)
     if (!users) {
         return {
@@ -575,7 +617,7 @@ export async function getServerSideProps(ctx) {
             page: 1,
             totalPage: 1,
             query,
-            companiesData: resCompaniesData?.data
+            companiesData: compData
         }
     }
 }

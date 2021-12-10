@@ -7,6 +7,7 @@ import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 import Header from "../../../components/header"
+import { update_company, get_company_details } from '../../api/companies';
 
 const editCompanies = ({ industry, group, pricing, data, companyID }) => {
     const [show, setShow] = useState(false);
@@ -121,22 +122,23 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
         data1.append('is_active', query.is_active);
         data1.append('company_id', companyID);
 
-        const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/company/update-company`, {
-            method: "POST",
-            body: data1
-        })
-
-        const res2 = await addCompanyDB.json();
-
-        if (res2.status_code == 403) {
-            setShow(false);
-            alert("Error ");
-        } else if (res2.status_code == 200) {
-            setShow(false);
-        } else {
-            setShow(false);
+        try {
+            update_company(data1)
+                .then(res2 => {
+                    if (res2.status_code == 403) {
+                        setShow(false);
+                        alert("Error: " + res2.data);
+                    } else if (res2.status_code == 200) {
+                        setShow(false);
+                    } else {
+                        setShow(false);
+                    }
+                })
         }
-
+        catch (ex) {
+            console.log(ex)
+            alert("Error: " + ex.message);
+        }
     }
 
 
@@ -239,7 +241,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                            <select className="form-select "  value={query.portal_language} name="portal_language" id="portal_language" aria-label="" onChange={handleChange()}>
+                            <select className="form-select " value={query.portal_language} name="portal_language" id="portal_language" aria-label="" onChange={handleChange()}>
                                 <option selected>Select Language</option>
                                 <option value="en">English</option>
                                 <option value="fr">French</option>
@@ -264,7 +266,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                                 {group?.data.map((item) => (
                                     <div className="form-check">
                                         <label className="form-check-label" htmlFor={item._id}>{item.name}</label>
-                                        <input className="form-check-input" name="groups" type="checkbox" value={item._id} id={item._id}  onChange={(e) => handleOnChange(e)} />
+                                        <input className="form-check-input" name="groups" type="checkbox" value={item._id} id={item._id} onChange={(e) => handleOnChange(e)} />
                                     </div>
                                 ))}
 
@@ -344,7 +346,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
                         <Modal.Header closeButton>
                             <Modal.Title>Add Company</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
+                        <Modal.Body>Please click on <strong>"confirm"</strong> to update this company</Modal.Body>
                         <Modal.Footer>
                             <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
                             <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
@@ -407,19 +409,11 @@ export async function getServerSideProps(ctx) {
 
     const companyID = ctx.query.title
 
-    const res = await fetch(`${process.env.API_URL}/company/company-detail`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-            "company_id": companyID
-        })
-
+    const data = await get_company_details({
+        "language": 'en',
+        "api_token": token,
+        "company_id": companyID
     })
-    const data = await res.json()
 
     /** 
      * limit, start, search item

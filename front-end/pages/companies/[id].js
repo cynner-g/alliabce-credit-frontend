@@ -8,7 +8,7 @@ import { useState } from "react";
 import Header from "../../components/header";
 import TabButton from "../../components/tabbutton";
 import Cookies from "js-cookie";
-
+import { get_company_details } from '../api/companies'
 
 const CompanyDetails = ({ data }) => {
     const [show, setShow] = useState(false);

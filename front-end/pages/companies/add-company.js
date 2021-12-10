@@ -20,7 +20,6 @@ const addCompany = ({ industry, group, pricing }) => {
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
-
     const [formStatus, setFormStatus] = useState(false);
     const [query, setQuery] = useState({
         // company_logo_en: "",
@@ -93,8 +92,8 @@ const addCompany = ({ industry, group, pricing }) => {
 
 
         let data = new FormData();
-        data.append('company_logo_en', company_logo_en);
-        data.append('company_logo_fr', query.company_logo_fr);
+        // data.append('company_logo_en', company_logo_en);
+        // data.append('company_logo_fr', query.company_logo_fr);
         data.append('company_name_en', query.company_name_en);
         data.append('company_name_fr', query.company_name_fr);
         data.append('website', query.website);
@@ -119,14 +118,14 @@ const addCompany = ({ industry, group, pricing }) => {
         data.append('company_logo_en', company_logo_en);
         data.append('company_logo_fr', company_logo_fr);
         data.append('country_code', query.country_code);
-        data.append('groups', ischecked);
+        // data.append('groups', ischecked);
 
         add_company(data)
             .then(addCompanyDB => addCompanyDB.json())
             .then(res2 => {
                 if (res2.status_code == 403) {
                     setShow(false);
-                    alert("Error ");
+                    alert("Error " + res2.data);
                 } else if (res2.status_code == 200) {
                     setShow(false);
                 } else {
@@ -184,7 +183,7 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" name="company_name_en" className="form-control" id="company_name_en" placeholder="" value={query.company_name_en} onChange={handleChange()} />
                         </div>
                         <div className="col">
-                            <label htmlFor="company_name_fr" className="form-label">Company Name (English)</label>
+                            <label htmlFor="company_name_fr" className="form-label">Company Name (French)</label>
                             <input type="text" name="company_name_fr" className="form-control" id="company_name_fr" placeholder="" value={query.company_name_fr} onChange={handleChange()} />
                         </div>
                     </div>
@@ -273,7 +272,11 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
-                            <select className="form-select" name="pricing_chart_id" id="pricing_chart_id" aria-label=".form-select-sm example" onChange={handleChange()}>
+                            <select className="form-select"
+                                name="pricing_chart_id" id="pricing_chart_id"
+                                aria-label=".form-select-sm example"
+                                onChange={handleChange()}
+                            >
                                 <option selected>Pricing Chart</option>
                                 {pricing?.data.map((item) => (
                                     <option value={item._id}>{item.name}</option>

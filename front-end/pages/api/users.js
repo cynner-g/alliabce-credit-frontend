@@ -1,11 +1,7 @@
 import Cookies from 'js-cookie'
 
-export const get_user_details = async () => {
-    const body = {
-        api_token: Cookies.get('token'),
-        user_id: Cookies.get('userid'),
-        language: 'en'
-    }
+export const get_user_details = async (body) => {
+
 
     return fetch(`${process.env.API_URL}/user/user-details`, {
         headers: {
@@ -17,10 +13,9 @@ export const get_user_details = async () => {
     })
         .then(ret => ret.json())
         .then(response => response.data)
-        .catch((err) => err.message)
 }
 
-export const reset_password = (body => {
+export const reset_password = ((body) => {
     return fetch(`${process.env.API_URL}/user/reset-password`, {
         method: "POST",
         headers: {
@@ -31,7 +26,7 @@ export const reset_password = (body => {
         .then(resUser => resUser.json())
 })
 
-export const delete_user = (body => {
+export const delete_user = ((body) => {
     return fetch(`${process.env.API_URL}/user/delete-user`, {
         method: "POST",
         headers: {
@@ -42,7 +37,7 @@ export const delete_user = (body => {
 
 })
 
-export const update_user = (body => {
+export const update_user = ((body) => {
     return fetch(`${process.env.API_URL}/user/update-user`, {
         method: "POST",
         headers: {
@@ -53,7 +48,7 @@ export const update_user = (body => {
         .then(resUser => resUser.json())
 })
 
-export const create_sub_admin = (body => {
+export const create_sub_admin = ((body) => {
     fetch(`${process.env.API_URL}/user/create-sub-admin`, {
         method: "POST",
         headers: {
@@ -63,7 +58,7 @@ export const create_sub_admin = (body => {
     }).then(data => data.json())
 })
 
-export const change_password = (body => {
+export const change_password = ((body) => {
     return fetch(`${process.env.API_URL}/user/change-password`, {
         method: "POST",
         headers: {
@@ -75,7 +70,7 @@ export const change_password = (body => {
         .then(res => res.json())
 })
 
-export const forgot_password = (body => {
+export const forgot_password = ((body) => {
     return fetch(`${process.env.API_URL}/user/forgot-password`, {
         method: "POST",
         headers: {
@@ -87,7 +82,7 @@ export const forgot_password = (body => {
         .then(res => res.json());
 })
 
-export const login_user = (body => {
+export const login_user = ((body) => {
     return fetch(`${process.env.API_URL}/user/login`, {
         method: "POST",
         headers: {
@@ -98,7 +93,7 @@ export const login_user = (body => {
         .then(res => res.json())
 })
 
-export const list_sub_admin = (body => {
+export const list_sub_admin = ((body) => {
     return fetch(`${process.env.API_URL}/user/list-sub-admin`, {
         method: "POST",
         headers: {
@@ -110,7 +105,7 @@ export const list_sub_admin = (body => {
         .then(res => res.json())
 })
 
-export const list_associate_user = (body => {
+export const list_associate_user = ((body) => {
     const req = fetch('${process.env.API_URL}/user/list-associate-user', {
         method: "POST",
         headers: {
@@ -122,7 +117,7 @@ export const list_associate_user = (body => {
         .then(req => req.json())
 })
 
-export const create_user = (body => {
+export const create_user = ((body) => {
     return fetch(`${process.env.API_URL}/user/create-user`, {
         method: "POST",
         headers: {
@@ -133,19 +128,20 @@ export const create_user = (body => {
         .then(res => res.json())
 })
 
-export const list_user = (body => {
+export const list_user = (body) => {
+    console.log(body)
     return fetch(`${process.env.API_URL}/user/list-user`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body)
-
     })
         .then(res => res.json())
-})
+}
 
-export const verify_user = (body => {
+
+export const verify_user = ((body) => {
     return fetch(`${process.env.API_URL}/user/verify-user`, {
         method: "POST",
         headers: {

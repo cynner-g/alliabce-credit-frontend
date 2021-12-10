@@ -31,7 +31,7 @@ const addCompany = ({ industry, group, pricing, msg }) => {
     const [postal_code, setpostal_code] = useState("");
     const [portal_language, setportal_language] = useState("");
     const [industry_id, setindustry_id] = useState("");
-    const [message, setMessage] = useStstae(msg);
+    const [message, setMessage] = useState(msg);
 
 
     const [formStatus, setFormStatus] = useState(false);
@@ -120,7 +120,7 @@ const addCompany = ({ industry, group, pricing, msg }) => {
                     router.push(`/companies/${companyID}`)
                 }
                 else {
-                    setMessage(addCompDB.statusText);
+                    setMessage(addCompanyDB.statusText);
                 }
             })
     }
@@ -135,7 +135,7 @@ const addCompany = ({ industry, group, pricing, msg }) => {
                 <ul className=" me-auto mb-2 mb-lg-0">
                     <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
-                    <li>Add Company</li>
+                    <li>Add Sub Company</li>
                 </ul>
             </div>
             <div className="col-lg-7 companyform">
@@ -251,7 +251,7 @@ const addCompany = ({ industry, group, pricing, msg }) => {
                         <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
                         <Modal.Footer>
                             <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
-                            <button type="button" className="btn btn-primary" onClick={() => addNewCompany()}>Confirm</button>
+                            <button type="button" className="btn btn-primary" onClick={(e) => addNewCompany(e)}>Confirm</button>
                         </Modal.Footer>
                     </Modal>
                 </form>

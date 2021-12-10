@@ -23,20 +23,14 @@ export const get_company_details = (body) => {
 export const update_company = (body) => {
     return fetch(`${process.env.API_URL}/company/update-company`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body)
+        body: body
     }).then(res => res.json())
 }
 
 export const add_company = (body) => {
     return fetch(`${process.env.API_URL}/company/add-company`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body)
+        body: body
     })
 }
 

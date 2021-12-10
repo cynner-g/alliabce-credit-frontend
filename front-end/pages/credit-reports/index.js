@@ -528,8 +528,8 @@ class CreditReports extends Component {
                                                             <Popover id={`popover-positioned-bottom`} classname='external_links_popup'>
                                                                 <Popover.Header as="div" className='external_links_popup title'>External Links</Popover.Header>
                                                                 <Popover.Body>
-                                                                    Banks Form: <a href={row.links.bank_form}>{row.links.bank_form}</a><button type="button">Copy</button><br />
-                                                                    Supplier Form: <a href={row.links.plaid_auth}>{row.links.plaid_auth}<button type="button">Copy</button></a>
+                                                                    Banks Form: <a href={row.links.bank_form}>{row.links.bank_form}</a><button type="button" onClick={() => navigator.clipboard.writeText(row.links.bank_form)}>Copy</button><br />
+                                                                    Supplier Form: <a href={row.links.plaid_auth}>{row.links.plaid_auth}</a><button type="button" onClick={() => navigator.clipboard.writeText(row.links.plaid_auth)}>Copy</button>
                                                                 </Popover.Body>
                                                             </Popover>
                                                         }
