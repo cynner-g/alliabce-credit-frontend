@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { parseCookies } from "nookies"
 import { useRouter } from 'next/router';
 import Select from 'react-select';
+import { SelectPicker } from 'rsuite'
+import 'rsuite/dist/rsuite.min.css';
 import {
     get_user_details,
     delete_user,
@@ -271,15 +273,20 @@ const UserList = (props) => {
                                             {/* <select className="form-control form-select" onChange={(e) => setActive(e.target.value)}>
                                                 <option value={true} selected={{ isActive }} >Active</option>
                                                 <option value={true} selected={!isActive}>Deactivate</option>
-                                            </select> */}
-                                            <Select onChange={setActiveStatus}
-                                                defaultValue={isActive ? { value: true, label: "Active" } : { value: false, label: "Inactive" }}
-                                                options={[
-                                                    { value: true, label: "Active" },
-                                                    { value: false, label: "Inactive" },
-                                                ]}
+                                            </select> 
+                                            
+                                             ? { value: true, label: "Active" } : { value: false, label: "Inactive" }
+                                            */}
+                                            {/* <Select onChange={setActiveStatus}
+                                                defaultValue={isActive}
+                                                options={}
 
-                                            />
+                                            /> */}
+                                            <SelectPicker data={[
+                                                { value: true, label: "Active" },
+                                                { value: false, label: "Inactive" },
+                                            ]} searchable={false} defaultValue={isActive}
+                                            />;
                                         </>
                                         : ''
                                     }

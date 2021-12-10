@@ -6,7 +6,7 @@ import {
 
 export const DateTime = (props) => {
     const buildTime = (props) => {
-        let dt = props.date || new Date();
+        let dt = parseISO(props.date) || parseISO(new Date());
         let txt = ''
         let cs = props?.className || null
 

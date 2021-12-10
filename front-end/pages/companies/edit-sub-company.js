@@ -119,36 +119,32 @@ const addCompany = ({ industry, group, pricing, company, }) => {
                 },
             }
         }
-        let body = {
-            "language": 'en',
-            "company_id": company._id,
-            "api_token": token,
-            "company_logo_en": company_logo_en,
-            "company_logo_fr": company_logo_fr,
-            "company_name_en": company_name_en,
-            "company_name_fr": company_name_fr,
-            "website": website,
-            "domain": domain,
-            "email_id": email_id,
-            "country_code": country_code,
-            "phone_number": phone_number,
-            "address_line": address_line,
-            "state": province,
-            "city": city,
-            "zip_code": postal_code,
-            "portal_language": portal_language,
-            "industry_id": industry_id,
-        }
-
-        console.log(body)
+        let body = new FormData()
+        body.append("language", 'en');
+        body.append("company_id", company._id);
+        body.append("api_token", token);
+        body.append("company_logo_en", company_logo_en);
+        body.append("company_logo_fr", company_logo_fr);
+        body.append("company_name_en", company_name_en);
+        body.append("company_name_fr", company_name_fr);
+        body.append("website", website);
+        body.append("domain", domain);
+        body.append("email_id", email_id);
+        body.append("country_code", country_code);
+        body.append("phone_number", phone_number);
+        body.append("address_line", address_line);
+        body.append("state", province);
+        body.append("city", city);
+        body.append("zip_code", postal_code);
+        body.append("portal_language", portal_language);
+        body.append("industry_id", industry_id);
 
 
         const addCompanyDB = update_company(body)
             .then(addCompanyDB => {
                 if (addCompanyDB.status == 200) router.push(`/companies/${company.parent_company._id}`)
                 else {
-                    let data = await addCompanyDB.json();
-                    setMessage(data.data);
+                    setMessage(addCompanyDB.data || addCompanyDB.message);
                 }
             })
 
@@ -163,6 +159,7 @@ const addCompany = ({ industry, group, pricing, company, }) => {
 
         router.push(`/companies/${company.parent_company._id}`)
     }
+
 
     return (
         <>
@@ -335,11 +332,12 @@ export async function getServerSideProps(ctx) {
     const group = await resGroup.json()
 
 
-    const subData = get_company_details({
+    const subData = await get_company_details({
         "language": 'en',
         "api_token": token,
         "company_id": subID
     })
+
 
     // const resPricing = await fetch(`${process.env.API_URL}/group/list`, {
     //     method: "POST",

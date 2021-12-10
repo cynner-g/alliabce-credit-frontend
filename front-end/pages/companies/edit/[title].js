@@ -8,8 +8,9 @@ import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 import Header from "../../../components/header"
 import { update_company, get_company_details } from '../../api/companies';
+import { get_pricing_list } from '../../api/pricing'
 
-const editCompanies = ({ industry, group, pricing, data, companyID }) => {
+const editCompanies = ({ industry, group, pricing, data, companyId }) => {
     const [show, setShow] = useState(false);
     const [ischecked, setIsChecked] = useState([]);
 
@@ -26,7 +27,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
     const [query, setQuery] = useState({
         // company_logo_en: "",
         // company_logo_fr: "",
-        company_id: companyID,
+        company_id: companyId,
         company_name_en: data.company_name,
         company_name_fr: data.company_name,
         website: data.website,
@@ -82,7 +83,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
         console.log(query);
         // e.preventDefault();
         const token = Cookies.get('token');
-        if (!token || (companyID === "")) {
+        if (!token || (companyId === "")) {
             return {
                 redirect: {
                     destination: '/',
@@ -120,7 +121,7 @@ const editCompanies = ({ industry, group, pricing, data, companyID }) => {
         data1.append('country_code', query.country_code);
         data1.append('groups', ischecked);
         data1.append('is_active', query.is_active);
-        data1.append('company_id', companyID);
+        data1.append('company_id', companyId);
 
         try {
             update_company(data1)
@@ -371,7 +372,11 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
-    const resIndustry = await fetch(`${process.env.API_URL}/industry/list`, {
+
+    const companyId = ctx.query.title
+
+    // const results = await Promise.all([
+    const industry = await fetch(`${process.env.API_URL}/industry/list`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -381,9 +386,10 @@ export async function getServerSideProps(ctx) {
             "api_token": token,
         })
     })
-    const industry = await resIndustry.json()
+        .then(res => res.json())
 
-    const resGroup = await fetch(`${process.env.API_URL}/group/list`, {
+
+    const group = await fetch(`${process.env.API_URL}/group/list`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -392,39 +398,38 @@ export async function getServerSideProps(ctx) {
             "language": 'en',
             "api_token": token,
         })
-    })
-    const group = await resGroup.json()
+    }).then(res => res.json())
 
-    const resPricing = await fetch(`${process.env.API_URL}/pricing/list`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-        })
-    })
-    const pricing = await resPricing.json()
 
-    const companyID = ctx.query.title
+    const pricing = await get_pricing_list({
+        "language": "en",
+        "api_token": token,
+    })
 
     const data = await get_company_details({
         "language": 'en',
         "api_token": token,
-        "company_id": companyID
+        "company_id": companyId
     })
+//])
+
+    // const industry = results[0].json();
+    // const group = results[1].json();
+    // const pricing = results[2];
+    // const data = results[3];
 
     /** 
      * limit, start, search item
      */
+
+    console.log(pricing)
     return {
         props: {
             industry,
             group,
             pricing: pricing || {},
             data: data?.data || [],
-            companyID
+            companyId
         }
     }
 

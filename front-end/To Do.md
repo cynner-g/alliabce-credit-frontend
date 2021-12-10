@@ -1,5 +1,6 @@
-Add user - Copmany option is this company and sub companies
-use company/company-detail
+
+Filter credit-reports by user access
+
 
 Companies:
 [Add company]
@@ -10,19 +11,12 @@ Companies:
     not working
 
 
-[Companies / USER]
-    Accept user (dont work) + If user created directly from admin should be accepted automatically
-    WORD “stimulate” should be changed for “simulate” and this function doesn’t work yet
-    Big problem on refresh user list?
+
 [company : user add]
     Company access we dont see entire access, only main company (where the sub-company)
 [company : user edit]
-    once you edit an user it disappear
-    Why i can’t edit the user listed right now “usermanager_test” ?
-    when you try to edit a new user the “company access is not checked”
     where is the active / inactive an user ??
-    Remove user (dont work) or archive it..
-    If you try to change role it disappear the user
+
 [company - watchlist]
     can’t create a second watchlist?
     remove doesn’t work

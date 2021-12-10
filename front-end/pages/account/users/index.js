@@ -15,7 +15,7 @@ import {
     update_user
 } from '../../api/users'
 
-const Users = ({ data, listUsers }) => {
+const Users = ({ data, listUsers, companiesData }) => {
 
     const router = useRouter()
     // const limit = 3
@@ -27,7 +27,7 @@ const Users = ({ data, listUsers }) => {
      * Manage states
      */
 
-    const [userList, setUserList] = useState(data);
+    const [userList, setUserList] = useState(listUsers);
 
     const [search, setSearch] = useState('');
     const [filter_user_role, setFilter_user_role] = useState([]);
@@ -65,7 +65,7 @@ const Users = ({ data, listUsers }) => {
 
 
 
-    const fetchData = async () => {
+    const fetchData = async (filterType, filterData, dir) => {
 
         const token = Cookies.get('token');
         if (!token) {
@@ -77,18 +77,59 @@ const Users = ({ data, listUsers }) => {
             }
         }
 
+        /**************************************/
+        /* This is because the function fires */
+        /* before state is updated correctly  */
+        /**************************************/
+        let userRole = filter_user_role;
+        let userComp = setFilter_company;
+        let srch = search;
+        let sort = sort_by;
+        let desc = is_desc;
+
+        switch (filterType) {
+            case "search":
+                setSearch(filterData);
+                srch = filterData;
+                break;
+            case "role":
+                setFilter_user_role(filterData);
+                userRole = filterData;
+                break;
+            case "company":
+                setFilter_company(filterData);
+                userComp = filterData;
+                break;
+            case "sort":
+                if (sort_by != filterData) {
+                    setDesc(true);
+                    desc = true;
+                    setSortby(filterData);
+                    sort = filterData;
+                } else {
+                    desc = !is_desc
+                    setDesc(!is_desc);
+                }
+
+        }
+        /**************************************/
+
         const body = {
             "language": 'en',
             "api_token": token,
-            "company_id": qstr.userid,
-            "filter_user_role": filter_user_role,
-            "filter_company": filter_company,
-            "sort_by": sort_by,
-            "is_desc": is_desc
+            "sort_by": sort,
+            "is_desc": desc,
+            "search": srch
         }
-        const newData = list_associate_user(body);
-        console.log(newData);
-        return setUserList(newData);
+        if (userRole.length > 0 && userRole[0] !== "") body.filter_user_role = userRole;
+        if (userComp.length > 0 && userComp[0] !== "") body.filter_company = userComp;
+
+        list_associate_user(body)
+            .then(newData => {
+                console.log(newData);
+                setUserList(newData);
+            })
+
     };
 
 
@@ -235,22 +276,27 @@ const Users = ({ data, listUsers }) => {
                             <div className="search inner_search">
                                 <div className="row">
                                     <div className="col-4">
-                                        <input type="text" className="form-control" id="companysearch" placeholder="Search" />
+                                        <input type="text" className="form-control" id="companysearch" placeholder="Search"
+                                            onChange={(e) => fetchData("search", e.target.value)} />
                                         <label htmlFor="companysearch" className="form-label">Search</label>
                                     </div>
                                     <div className="col  text-end">
                                         <select className="form-select role" onChange={(e) => {
                                             setFilter_user_role([e.target.value]);
-                                            fetchData();
+                                            fetchData("role", [e.target.value]);
                                         }}>
+                                            <option value="">All Roles</option>
                                             <option value="user">User</option>
                                             <option value="user-manager">User Manager</option>
                                         </select>
                                         <select className="form-select f1" onChange={(e) => {
                                             setFilter_company([e.target.value]);
-                                            fetchData();
+                                            fetchData("company", [e.target.value]);
                                         }}>
-                                            <option>Company Access</option>
+                                            <option value="">All Companies</option>
+                                            {companiesData?.map((item, idx) =>
+                                                <option key={idx} value={item._id}>{item.company_name}</option>
+                                            )}
                                         </select>
                                         {/* <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link> */}
 
@@ -263,85 +309,63 @@ const Users = ({ data, listUsers }) => {
                                     <thead>
                                         <tr>
                                             <th><div onClick={(e) => {
-                                                const srchval1 = 'user_name'
-                                                if (sort_by != srchval1) {
-                                                    setDesc(true);
-                                                    setSortby('user_name');
-                                                } else {
-                                                    if (is_desc == true) {
-                                                        setDesc(false);
-                                                    } else {
-                                                        setDesc(true);
-                                                    }
-                                                }
-                                                fetchData();
+                                                fetchData("sort", "user_name");
+                                                // const srchval1 = 'user_name'
+                                                // if (sort_by != srchval1) {
+                                                //     setDesc(true);
+                                                //     setSortby('user_name');
+                                                // } else {
+                                                //     setDesc(!is_desc);
+                                                // }
+                                                // fetchData();
                                             }
                                             }>User Name</div></th>
                                             <th><div onClick={(e) => {
-                                                const srchval2 = 'date_added'
-                                                if (sort_by != srchval2) {
-                                                    setDesc(true);
-                                                    setSortby('date_added');
-                                                } else {
-                                                    if (is_desc == true) {
-                                                        setDesc(false);
-                                                    } else {
-                                                        setDesc(true);
-                                                    }
-                                                }
-                                                fetchData();
+                                                fetchData("sort", "date_added");
                                             }
                                             }>Date Added</div></th>
                                             <th><div onClick={(e) => {
-                                                const srchval3 = 'email_id'
-                                                if (sort_by != srchval3) {
-                                                    setDesc(true);
-                                                    setSortby('email_id');
-                                                } else {
-                                                    if (is_desc == true) {
-                                                        setDesc(false);
-                                                    } else {
-                                                        setDesc(true);
-                                                    }
-                                                }
-                                                fetchData();
+                                                fetchData("sort", "email_id");
+                                                // const srchval3 = 'email_id'
+                                                // if (sort_by != srchval3) {
+                                                //     setDesc(true);
+                                                //     setSortby('email_id');
+                                                // } else {
+                                                //     setDesc(!is_desc);
+                                                // }
+                                                // fetchData();
                                             }
                                             }>Email</div></th>
                                             <th><div onClick={(e) => {
-                                                const srchval4 = 'display_user_role'
-                                                if (sort_by != srchval4) {
-                                                    setDesc(true);
-                                                    setSortby('display_user_role');
-                                                } else {
-                                                    if (is_desc == true) {
-                                                        setDesc(false);
-                                                    } else {
-                                                        setDesc(true);
-                                                    }
-                                                }
-                                                fetchData();
+                                                fetchData("sort", "display_user_role");
+                                                // const srchval4 = 'display_user_role'
+                                                // if (sort_by != srchval4) {
+                                                //     setDesc(true);
+                                                //     setSortby('display_user_role');
+                                                // } else {
+                                                //     setDesc(!is_desc);
+
+                                                // }
+                                                // fetchData();
                                             }
                                             }>Role</div></th>
                                             <th><div onClick={(e) => {
-                                                const srchval5 = 'company_access'
-                                                if (sort_by != srchval5) {
-                                                    setDesc(true);
-                                                    setSortby('company_access');
-                                                } else {
-                                                    if (is_desc == true) {
-                                                        setDesc(false);
-                                                    } else {
-                                                        setDesc(true);
-                                                    }
-                                                }
-                                                fetchData();
+                                                fetchData("sort", "company_access");
+                                                // const srchval5 = 'company_access'
+                                                // if (sort_by != srchval5) {
+                                                //     setDesc(true);
+                                                //     setSortby('company_access');
+                                                // } else {
+                                                //     setDesc(!is_desc);
+                                                // }
+                                                // fetchData();
                                             }
                                             }>Company Access</div></th>
                                             {/* <th><div>Actions</div></th> */}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {listUsers?.map((item) => (
+                                        {userList?.map((item) => (
 
 
                                             <tr>
@@ -349,7 +373,7 @@ const Users = ({ data, listUsers }) => {
                                                 <td>{item.date_added}</td>
                                                 <td>{item.email_id}</td>
                                                 <td>{item.display_user_role}</td>
-                                                <td>{item.full_name}</td>
+                                                <td>{item.company_access.join(', ')}</td>
                                                 {/* <td>
                                                     <> */}
                                                 {/* <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp; */}
@@ -467,26 +491,34 @@ export async function getServerSideProps(ctx) {
         }
     }
 
-    const ret = Promise.all([
-        get_user_details({
+
+    //Can use promise.all now
+    const ret = await get_user_details({
             "language": 'en',
             "api_token": token,
             "user_id": userid
-        }),
+    })
 
-        list_associate_user({
+    const body = {
             "language": 'en',
             "api_token": token,
-        })
-    ])
+    }
 
-    const data = ret[0]
-    const users1 = ret[1]
+    console.log("BODY:", body)
+    const users = await list_associate_user(body)
 
-    if (!users1) {
+
+
+    if (!users) {
         return {
             notFound: true,
         }
+    }
+
+
+    let compData = [{ _id: ret.parent_companies._id, company_name: ret.parent_companies.company_name }];
+    for (let company of ret.child_companies) {
+        compData.push({ _id: company._id, company_name: company.company_name })
     }
 
     /** 
@@ -494,8 +526,9 @@ export async function getServerSideProps(ctx) {
      */
     return {
         props: {
-            data: data?.data || [],
-            listUsers: users1?.data,
+            data: ret || [],
+            listUsers: users,
+            companiesData: compData
         }
     }
 

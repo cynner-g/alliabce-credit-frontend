@@ -14,7 +14,8 @@ import {
     create_user,
     verify_user,
     get_user_details,
-    update_user
+    update_user,
+    delete_user
 } from '../../api/users';
 
 import { get_company_details } from '../../api/companies';
@@ -66,7 +67,11 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         setCompany_access("");
         setUser_role("");
     };
-    const handleShow = () => setShowEditUser(true);
+    const handleShow = () => {
+        setCompany_access([])
+        setShowEditUser(true);
+    }
+
 
     const handleOnChange = (items) => {
         // var isChecked1 = e.target.checked;
@@ -115,7 +120,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             "api_token": token,
             "company_id": qstr.userid,
             "sort_by": sort_by,
-            "is_desc": is_desc
+            "is_desc": is_desc,
+            "search": search
         }
         if (filter_user[0] !== "") body.filter_user_role = filter_user;
         if (filter_comp[0] !== "") body.filter_company = filter_comp;
@@ -146,7 +152,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             }
         }
 
-        if (!ischecked.includes(qstr.userid)) ischecked.push(qstr.userid);
+
+        //  if (ischecked.includes(qstr.userid)) ischecked.push(qstr.userid);
         let body = {
             "full_name": fullName,
             "email_id": emailID,
@@ -155,7 +162,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             "company_access": ischecked,
             "user_role": user_role,
             "is_verified": (role?.toLowerCase().indexOf('admin') >= 0),
-            "api_token": token
+            "api_token": token,
+
         }
 
         console.log(body);
@@ -163,9 +171,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         const res2User = create_user(body)
             .then(res => {
                 if (res.status_code == 200) {
-                    if (res.data._id) AcceptUser(res.data._id)
+                    if (res.data._id)
 
-                    handleClose();
+                        handleClose();
                     // setFullName("");
                     // setEmailID("");
                     // setCountry_code("");
@@ -244,8 +252,16 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      * Api is pending
      * @param {*} id 
      */
-    const removeUser = async (id) => {
-
+    const removeUser = () => {
+        const token = Cookies.get('token')
+        delete_user({
+            api_token: token,
+            user_id: userID
+        })
+            .then(res => {
+                handleClose();
+                fetchData();
+            })
     }
 
     /**
@@ -253,6 +269,19 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      * @param {*} id 
      */
     const simulateUser = async (id) => {
+        //get all user data
+        //save admin id in cookie
+        //replace all cookie data with user data
+        Cookies.set('token', res2?.data?.auth_token)
+        Cookies.set('role', res2?.data?.user_role)
+        Cookies.set('userid', res2?.data?.id)
+        Cookies.set('name', res2?.data?.full_name)
+        router.push('/credit-reports')
+
+        Cookies.set('admin_token', Cookies.get('token'));
+        Cookies.set('admin_userid', Cookies.get('userid'))
+
+
         return '';
     }
 
@@ -293,11 +322,21 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             "api_token": token
         }
 
-        const res2User = update_user(body)
+        let checked = [...ischecked]
+        for (let i = checked.length - 1; i >= 0; i--) {
+            if (!checked[i]) {
+                checked.splice(i, 1)
+            }
+        }
+        setIsChecked(checked);
+        body.company_access = checked;
+
+        update_user(body)
             .then(res => {
                 console.log(res);
                 if (res.status_code == 200) {
                     handleClose();
+                    fetchData();
                     // setFullName("");
                     // setEmailID("");
                     // setCountry_code("");
@@ -335,7 +374,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             setFilter_user_role([e.target.value]);
                             fetchData("user", [e.target.value]);
                         }}>
-                            <option value="">All</option>
+                            <option value="">All Roles</option>
                             <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
                         </select>
@@ -343,7 +382,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                             setFilter_company([e.target.value]);
                             fetchData("company", [e.target.value]);
                         }}>
-                            <option>Company Access</option>
+                            <option value="">All Companies</option>
                             {companiesData?.map((item, idx) =>
                                 <option key={idx} value={item._id}>{item.company_name}</option>
                             )}
@@ -447,11 +486,11 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                 <td>{item?.company_access?.join(", ")}</td>
                                 <td>
                                     <>{item.is_verified ? '' :
-                                        <>
-                                            <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp;
-                                            <button className="btn viewmore" onClick={() => editUser(item._id)}>Edit User</button> &nbsp;
-                                        </>
+                                        <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a>
                                     }
+                                        &nbsp;<button className="btn viewmore" onClick={() => editUser(item._id)}>Edit User</button> &nbsp;
+
+
                                         {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
                                     {user.isDeleting 
                                         ? <span className="spinner-border spinner-border-sm"></span>

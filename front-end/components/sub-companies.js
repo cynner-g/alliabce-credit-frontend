@@ -5,8 +5,8 @@ const SubCompanies = function ({ id, subCompanies }) {
     return (
         <>
             <Link href={`/companies/add-sub-company/?id=${id}`}><a className="btn btnedit add_company">Add Sub Company</a></Link>
-            {subCompanies?.map((item) => (
-                <>
+            {subCompanies?.map((item, idx) => (
+                <span key={idx}>
                     <div className="company_wrap">
                         <Link href={`/companies/edit-sub-company?sid=${item._id}&cid=${id}`}><a className="btn btnedit edit_company">Edit Sub Company</a></Link>
                         <div className="imagewrap">
@@ -35,7 +35,7 @@ const SubCompanies = function ({ id, subCompanies }) {
                     <div>{item._id}</div>
                     <div>{item._id}</div> */}
                     </div>
-                </>
+                </span>
             ))}
 
         </>

@@ -70,19 +70,6 @@ const Header = (props) => {
                                         </li>
 
 
-                                        {/* <li className={router.pathname == "/legal-watchlist" ? "active" : ""}>
-                                            <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
-                                                <a className="nav-link">WL (D)</a>
-                                            </Link>
-                                        </li>
-
-
-                                        <li className={router.pathname == "/aging" ? "active" : ""}>
-                                            <Link activeClassName={router.pathname === "/aging"} href="/aging">
-                                                <a className="nav-link">Age (Dv)</a>
-                                            </Link>
-                                        </li> */}
-
                                     </>
                                     :
                                     <>
@@ -98,7 +85,7 @@ const Header = (props) => {
                                             </Link>
                                         </li>
 
-                                        <li className={`legal-watchlist ${router.pathname == "/legal-watchlist" ? "active" : ""}`}>
+                                            <li className={`legal-watchlist TEST ${router.pathname == "/legal-watchlist" ? "active" : ""}`}>
                                             <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
                                                 <a className="nav-link">Legal Watchlist</a>
                                             </Link>

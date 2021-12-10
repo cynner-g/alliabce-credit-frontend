@@ -81,7 +81,7 @@ const addCompany = ({ industry, group, pricing, msg }) => {
 
         e.preventDefault();
         const token = Cookies.get('token');
-        const companyID = Cookies.get('company_id');
+        const companyID = Cookies.get('viewed_company_id');
         if (!token) {
             return {
                 redirect: {

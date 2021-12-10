@@ -19,7 +19,7 @@ const CompanyDetails = ({ data }) => {
     console.log(data);
     const router = useRouter()
     const { id } = router.query
-    Cookies.set('company_id', data?._id)
+    Cookies.set('viewed_company_id', data?._id)
     return (
 
         <>
@@ -43,7 +43,7 @@ const CompanyDetails = ({ data }) => {
                         },
                     }}
                         as={`/companies/edit/${data?._id}`}
-                    ><a className="btn btnedit edit_company">Edit Company</a></Link>
+                    ><a href={`/companies/edit/${data?._id}`} className="btn btnedit edit_company">Edit Company</a></Link>
                     <div className="imagewrap">
 
                     </div>
@@ -74,7 +74,7 @@ const CompanyDetails = ({ data }) => {
                     </div> */}
                     {/* is_active: {data?.is_active==true?'Active':'Not Active'}<br /> */}
                 </div>
-                <h2 className="sub-company">Sub Companies</h2>
+                <h2 className="sub-company">SubCompanies</h2>
                 <div className="subcompany_wrap">
                     <SubCompanies id={data?._id} subCompanies={data?.sub_companies} />
                 </div>

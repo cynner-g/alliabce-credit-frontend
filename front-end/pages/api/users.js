@@ -29,7 +29,7 @@ export const reset_password = ((body) => {
         .then(resUser => resUser.json())
 })
 
-export const delete_user = ((body) => {
+export const delete_user = (body => {
     return fetch(`${process.env.API_URL}/user/delete-user`, {
         method: "POST",
         headers: {
@@ -109,7 +109,7 @@ export const list_sub_admin = ((body) => {
 })
 
 export const list_associate_user = ((body) => {
-    const req = fetch('${process.env.API_URL}/user/list-associate-user', {
+    return fetch(`${process.env.API_URL}/user/list-associate-user`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -117,7 +117,14 @@ export const list_associate_user = ((body) => {
         body: JSON.stringify(body)
 
     })
-        .then(req => req.json())
+        .then(req => {
+            return req.json()
+        })
+        .then(data => {
+            console.log(data)
+            return data?.data
+        }
+        );
 })
 
 export const create_user = ((body) => {
