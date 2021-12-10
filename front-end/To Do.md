@@ -5,13 +5,10 @@ Companies:
 [Add company]
     refine the form (naming)
     industry where we add those?
-[Add Sub-company]
-    Doesn’t work
-[Edit Sub-company]
-    Doesn’t work + bring 404 error pages
-    *We need to show error when nothing happens for click (confirm)*
+
 [company transactions details]
     not working
+    
 [Companies / USER]
     Filter doesn’t work
     Filter Company access nothing there

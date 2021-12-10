@@ -38,37 +38,42 @@ const UserList = (props) => {
      * @param {*} id 
      * @returns 
      */
-    const getUser = async (e, id) => {
+    const getUser = (e, id) => {
         e.preventDefault();
         setIsEdit(true);
         setShow(true);
         setSelectedUserId(id)
-        // const token = Cookies.get('token');
-        if (!token) {
-            return {
-                redirect: {
-                    destination: '/',
-                    permanent: false,
-                },
+        try {
+            // const token = Cookies.get('token');
+            if (!token) {
+                return {
+                    redirect: {
+                        destination: '/',
+                        permanent: false,
+                    },
+                }
             }
-        }
 
-        const body = {
-            "user_id": id,
-            "language": "en",
-            "api_token": token
+            const body = {
+                "user_id": id,
+                "language": "en",
+                "api_token": token
+            }
+            get_user_details(body)
+                .then((userData) => {
+                    console.log("USERDATA: ", userData);
+                    setFullName(userData?.full_name);
+                    setEmailID(userData?.email_id);
+                    setCountry_code(userData?.phone_number?.country_code);
+                    setPhone_number(userData?.phone_number?.phone_number);
+                    setActive(userData?.is_active)
+                    setSelectedUserId(id)
+                    console.log("ID: ", id)
+                })
         }
-        const userData = await get_user_details(body);
-        console.log(userData);
-        if (userData.status_code == 200) {
-            setFullName(userData?.data?.full_name);
-            setEmailID(userData?.data?.email_id);
-            setCountry_code(userData?.data?.phone_number?.country_code);
-            setPhone_number(userData?.data?.phone_number?.phone_number);
-            setActive(userData?.data?.is_active)
-            setSelectedUserId(id)
+        catch (ex) {
+            console.log(ex.message)
         }
-        console.log(id)
     }
 
 

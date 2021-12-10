@@ -10,7 +10,7 @@ import { Modal, Button } from "react-bootstrap";
 import UserSidebar from "../../../components/user_sidebar"
 import TabButtonUser from "../../../components/tabbuttonuser"
 import Address from "../../../components/address"
-
+import { get_user_details, list_sub_admin, create_sub_admin } from '../../api/users';
 
 const AdminUsers = ({ data }) => {
 
@@ -41,13 +41,16 @@ const AdminUsers = ({ data }) => {
     useEffect(() => {
         const token = Cookies.get('token');
         const uid = Cookies.get('userid');
-        const thisUserData = await get_user_details({
+        const userData = get_user_details({
                 user_id: uid,
             api_token: token,
         })
+            .then(data =>
+                setThisUser(data)
+            );
 
 
-        setThisUser(thisUserData?.data);
+        // setThisUser(thisUserData?.data);
     }, []);
 
     /**

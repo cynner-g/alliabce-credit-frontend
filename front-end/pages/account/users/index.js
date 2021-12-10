@@ -138,7 +138,7 @@ const Users = ({ data, listUsers }) => {
      * @param {*} id 
      * @returns 
      */
-    const getUser = async (id) => {
+    const getUser = (id) => {
         // e.preventDefault();
         setIsEdit(true);
         setShow(true);
@@ -153,22 +153,21 @@ const Users = ({ data, listUsers }) => {
             }
         }
 
-        const userData2 = await get_user_details({
+        get_user_details({
             "user_id": id,
             "language": "en",
             "api_token": token
-        });
+       }).then(userData2 => {
 
-        console.log(userData2);
-        if (userData2.status_code == 200) {
+            console.log(userData2);
             // handleClose();
-            setFullName(userData2?.data?.full_name);
-            setEmailID(userData2?.data?.email_id);
-            setCountry_code(userData2?.data?.phone_number?.country_code);
-            setPhone_number(userData2?.data?.phone_number?.phone_number);
-            setCompany_access(userData2?.data?.full_name);
-            setUser_role(userData2?.data?.display_user_role);
-        }
+            setFullName(userData2?.full_name);
+            setEmailID(userData2?.email_id);
+            setCountry_code(userData2?.phone_number?.country_code);
+            setPhone_number(userData2?.phone_number?.phone_number);
+            setCompany_access(userData2?.full_name);
+            setUser_role(userData2?.display_user_role);
+        })
     }
 
     /**

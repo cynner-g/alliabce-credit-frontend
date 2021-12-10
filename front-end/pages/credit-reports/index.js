@@ -2,8 +2,8 @@
 
 import {
     differenceInDays, format, formatRelative,
-    subDays, parseISO, add, getMonth, getYear,
-    lastDayOfMonth, lastDayOfYear, startOfDay, endOfDay
+    parseISO, add, getMonth, getYear,
+    lastDayOfMonth, lastDayOfYear
 } from 'date-fns'
 
 import Header from "../../components/header"
@@ -11,6 +11,8 @@ import Router from "next/router"
 import Cookies from "js-cookie"
 
 import { Loading } from "../../components/LoadingComponent"
+import { DateTime } from '../../components/dateTimeComponent'
+
 import {
     Table, Container, Row, Col,
     Badge, Modal, Popover, OverlayTrigger, Button,
@@ -207,6 +209,7 @@ class CreditReports extends Component {
     }
 
     buildDateTime = (dt) => {
+        // return <DateTime date={dt} />
         dt = new Date(dt);
         let day = 'MM-dd-uuuu'
         let time = 'h:mmaa'
@@ -778,12 +781,20 @@ class CreditReports extends Component {
     }
 
     getDate = (dt) => {
-        dt = parseISO(dt); //date-fns parse the ISO string to a correct date object
-        let numDays = differenceInDays(new Date(), dt); //get number of days between now and then
-        let txt = formatRelative(subDays(dt, numDays), new Date()) //display in easy to read format
+        return
+        <DateTime date={dt} relative={true} showBlank={true} className='date' />
+        // try {
 
-        return (<span className='date'>{txt}</span>)
-        return txt;
+        // dt = parseISO(dt); //date-fns parse the ISO string to a correct date object
+        // let numDays = differenceInDays(new Date(), dt); //get number of days between now and then
+        // let txt = formatRelative(subDays(dt, numDays), new Date()) //display in easy to read format
+
+        // return (<span className='date'>{txt}</span>)
+        // return txt;
+        // }
+        // catch (ex) {
+        //     return ""
+        // }
     }
 
     requestCancel = (rptId) => {

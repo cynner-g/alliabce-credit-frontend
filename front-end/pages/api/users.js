@@ -13,6 +13,9 @@ export const get_user_details = async (body) => {
     })
         .then(ret => ret.json())
         .then(response => response.data)
+        .catch((ex) =>
+            console.log(ex.message)
+        )
 }
 
 export const reset_password = ((body) => {

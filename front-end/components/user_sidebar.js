@@ -5,7 +5,8 @@ import { useState } from "react"
 import { Modal, Button } from "react-bootstrap";
 
 
-const UserSidebar = ({ data }) => {
+const UserSidebar = (props) => {
+    const data = props?.data;
     const [showReset, setShowReset] = useState(false);
     const handleCloseReset = () => setShowReset(false);
     const handleShowReset = () => setShow(true);
@@ -39,8 +40,6 @@ const UserSidebar = ({ data }) => {
     }
 
     const router = useRouter();
-
-
 
     return (
         <div className="sidebarwrap">

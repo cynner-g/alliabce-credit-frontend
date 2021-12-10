@@ -6,7 +6,7 @@ const TabButtonUser = ({ id }) => {
         <ul class="nav company_nav_inner">
             {/* <li className="nav-item"><Link href="/account"><a className="nav-link">General</a></Link></li> */}
             <li className="nav-item" className={router.pathname == "/account" ? "active" : ""}><Link href="/account"><a className="nav-link">General</a></Link></li>
-            <li className="nav-item" className={router.pathname == "/account/users" ? "active" : ""}><Link href={`/account/users/`}><a className="nav-link">user</a></Link></li>
+            <li className="nav-item" className={router.pathname == "/account/users" ? "active" : ""}><Link href={`/account/users/`}><a className="nav-link">User</a></Link></li>
         </ul>
     )
 }

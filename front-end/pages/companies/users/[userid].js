@@ -164,12 +164,12 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             .then(res => {
                 if (res.status_code == 200) {
                     handleClose();
-                    setFullName("");
-                    setEmailID("");
-                    setCountry_code("");
-                    setPhone_number("");
-                    setCompany_access("");
-                    setUser_role("");
+                    // setFullName("");
+                    // setEmailID("");
+                    // setCountry_code("");
+                    // setPhone_number("");
+                    // setCompany_access("");
+                    // setUser_role("");
                     fetchData();
                 }
             })
@@ -311,7 +311,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
     const isUserManager = () => {
         let role = Cookies.get('role');
-        return (role?.toLowerCase() === "user")
+        return (role?.toLowerCase() !== "user")
 
     }
     return (
