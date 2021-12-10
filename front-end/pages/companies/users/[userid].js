@@ -40,7 +40,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     const [is_desc, setDesc] = useState(false);
 
 
-    const [show, setShow] = useState(false);
+    const [showEditUser, setShowEditUser] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
 
     const [fullName, setFullName] = useState("");
@@ -56,7 +56,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
      * Clear values
      */
     const handleClose = () => {
-        setShow(false)
+        setShowEditUser(false)
         setIsEdit(false);
         setUserId("")
         setFullName("");
@@ -66,17 +66,18 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         setCompany_access("");
         setUser_role("");
     };
-    const handleShow = () => setShow(true);
+    const handleShow = () => setShowEditUser(true);
 
-    const handleOnChange = (e) => {
-        var isChecked1 = e.target.checked;
-        var item = e.target.value;
-        if (isChecked1) {
-            setIsChecked(oldArray => [...oldArray, item]);
-        } else {
-            let arr = ischecked.filter(val => val !== item);
-            setIsChecked(arr);
-        }
+    const handleOnChange = (items) => {
+        // var isChecked1 = e.target.checked;
+        // var item = e.target.value;
+        // if (isChecked1) {
+        //     setIsChecked(oldArray => [...oldArray, item]);
+        // } else {
+        //     let arr = ischecked.filter(val => val !== item);
+        //     setIsChecked(arr);
+        // }
+        setIsChecked(items)
     };
 
     const fetchData = (type, data) => {
@@ -120,7 +121,9 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         if (filter_comp[0] !== "") body.filter_company = filter_comp;
 
         list_user(body)
-            .then(newData => setUserList(newData))
+            .then(newData => {
+                setUserList(newData)
+            })
     };
 
 
@@ -215,7 +218,11 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
             console.log(userData);
             if (userData) {
+                let checkedList = [userData.parent_companies?._id];
+                for (let comp of userData?.child_companies) checkedList.push(comp._id)
+
                 // handleClose();
+                setIsChecked(checkedList)
                 setFullName(userData?.full_name);
                 setEmailID(userData?.email_id);
                 setCountry_code(userData?.phone_number.country_code);
@@ -224,7 +231,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 setUser_role(userData?.user_role);
                 // setUser_role(userData?.display_user_role);
                 setIsEdit(true);
-                setShow(true);
+                setShowEditUser(true);
                 setUserId(id)
             }
         })
@@ -284,20 +291,22 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             "api_token": token
         }
 
-        const res2User = update_user(body);
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-            setCompany_access("");
-            setUser_role("");
-            setIsEdit(false);
-            setShow(false);
-            setUserId("")
-        }
+        const res2User = update_user(body)
+            .then(res => {
+                console.log(res);
+                if (res.status_code == 200) {
+                    handleClose();
+                    // setFullName("");
+                    // setEmailID("");
+                    // setCountry_code("");
+                    // setPhone_number("");
+                    // setCompany_access("");
+                    // setUser_role("");
+                    // setIsEdit(false);
+                    // setShowEditUser(false);
+                    // setUserId("")
+                }
+            })
     }
 
     const isUserManager = () => {
@@ -461,7 +470,7 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                 </table>
                 {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
             </div>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={showEditUser} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEdit == false
                         ? "Add User"
@@ -507,13 +516,13 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
                                     <label htmlFor="groups" className="form-label">Company Access</label>
                                     <div className="chkox">
 
-                                        <CheckboxGroup inline name="checkboxList" value={ischecked} onChange={(e) => handleOnChange(e)}>
+                                        <CheckboxGroup name="checkboxList" value={ischecked} onChange={(e) => handleOnChange(e)}>
                                             {companiesData.map(item => (
-                                                <p>
-                                                    <Checkbox key={item} value={item._id} className="form-check-input" name="company_access" >
-                                                        <span className="form-check-label">{item.company_name}</span>
-                                                    </Checkbox>
-                                                </p>
+                                                <Checkbox key={item._id} value={item._id} className="test" name="company_access" >
+                                                    {/* className='form-check-input' - Causes display issues */}
+                                                    <span className="form-check-label">{item.company_name}</span>
+                                                </Checkbox>
+
                                             ))}
                                         </CheckboxGroup>
 
