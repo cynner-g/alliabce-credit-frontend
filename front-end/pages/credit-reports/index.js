@@ -975,7 +975,7 @@ class CreditReports extends Component {
                     </Modal >
 
                     <Header />
-                    <Container fluid>
+                    {/* <Container fluid> */}
                         <div className="search">
                             <Row>
 
@@ -984,8 +984,10 @@ class CreditReports extends Component {
                                     <input type='text' className="form-control" id="companysearch" placeholder="Search" onChange={(e) => this.filterText(e)} />
                                 </Col>
 
-                                <Col sm={3} className='filterCol text-start'>
-                                    <div className="status" style={{ width: '75%' }}>
+                                <Col sm={9} className='text-end'>
+                                    <div className="srch_status"
+                                    //  style={{ width: '75%' }}
+                                     >
                                         {/* <label htmlFor="Status" className="form-label">Status</label> */}
 
                                         <TagPicker data={options} placeholder='Filter Status'
@@ -996,8 +998,6 @@ class CreditReports extends Component {
                                         />
 
                                         {/* <Select className="form-select role"
-
-
                                             options={options}
                                             isMulti
                                             className="multiSelect"
@@ -1005,9 +1005,9 @@ class CreditReports extends Component {
                                         /> */}
 
                                     </div>
-                                </Col>
+                                {/* </Col>
 
-                                <Col sm={4}>
+                                <Col sm={4}> */}
                                     <div className="select_date">
                                         <label htmlFor="Status" className="form-label">Filter By Date</label>
                                         {/* format='EEE MMM ee yyyy' value={[new Date(), new Date()]}
@@ -1037,13 +1037,15 @@ class CreditReports extends Component {
 
                                         </div>
                                     </div>
-                                </Col>
-                                <Col sm={2}>
-                                    <button className="btn addbtn" onClick={this.orderReport}>Order New Report</button>
+                                {/* </Col>
+                                <Col sm={2}> */}
+                                    <button className="btn addbtn order_new_report" onClick={this.orderReport}>Order New Report</button>
                                 </Col>
 
                             </Row>
                         </div>
+
+
                         <div className="listing" style={{ width: '100%' }}>
                             <table width="100%" style={{ width: '100%' }}>
                                 <thead>
@@ -1063,7 +1065,7 @@ class CreditReports extends Component {
                                 </tbody>
                             </table>
                         </div>
-                    </Container>
+                    {/* </Container> */}
 
                     {/* <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
 

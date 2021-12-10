@@ -27,12 +27,13 @@ const Header = (props) => {
     const myRole = Cookies.get('role');
     let name = Cookies.get('name')
     return (
+        <div className='header'>
         <div className="header_wrap">
             <header>
                 <div className="row">
                     <div className="col-10">
                         <Nav className="navbar">
-                            <Logo />
+                            <div className='logo_wrap'><Logo /></div>
                             <ul className=" me-auto mb-2 mb-lg-0">
                                 {/*  */}
                                 {myRole == 'admin' ?
@@ -196,6 +197,7 @@ const Header = (props) => {
                 </div> */}
 
             </header>
+        </div>
         </div>
     )
 }

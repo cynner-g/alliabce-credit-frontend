@@ -1,25 +1,14 @@
-import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie'
-
 import langTrans from './../components/i18n';
-import Lang from '../components/lang';
-import { Input, InputGroup } from 'rsuite';
-// import gql from 'graphql-tag';
-// import client from './apollo-client';
 import Logo from '../components/logo';
 import Image from 'next/image'
 import { login_user } from './api/users'
 import 'rsuite/dist/rsuite.min.css';
 
-// export const GET_USERS = gql`
-//   query getUsers {
-//     users @rest(type: "Users", path: "users/login") {
-//       data
-//     }
-// }`;
+
 
 export default function Login(props) {
   const [userName, setName] = useState("");
@@ -30,10 +19,16 @@ export default function Login(props) {
   const router = useRouter()
   const [visible, setVisible] = useState(false);
 
+
   const handleChange = () => {
     setVisible(!visible);
   };
 
+  /**
+   * Login action perform 
+   *
+   * @param {*} e
+   */
   const userLogin = async (e) => {
 
     e.preventDefault();
@@ -44,7 +39,7 @@ export default function Login(props) {
     }
 
     const res2 = await login_user(body)
-    console.log(res2);
+
     if (res2.status_code == 403) {
       setloginMessage("Either User name or password does not exist");
     } else if (res2.status_code == 200) {
@@ -60,49 +55,36 @@ export default function Login(props) {
   }
 
   try {
-  return (
-    <div >
-      <div className="container">
+    return (
+
+      <div className='lofin_form'>
         {/* <Lang /> */}
         <form onSubmit={(e) => userLogin(e)}>
-          <div className="row">
-            <div className="col-7">
-              <Image src="/img/Login.svg" alt="Logo" width="510" height="505" />
+          <div className="login_wrap align-self-center">
+            <div className="logowrap">
+              <Logo />
             </div>
-            <div className="col-5 align-self-center">
-              <div className="logowrap">
-                <Logo />
+            <h1 className="mb-2">{login.title}</h1>
+            <div className="welcome">Welcome</div>
+            <div className="gmsg">Enter your credentials to access your account.</div>
+            <div className="form_wrap">
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">{login.email}</label>
+                <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
               </div>
-              <h1 className="mb-2">{login.title}</h1>
-              <div className="welcome">Welcome</div>
-              <div className="gmsg">Enter your credentials to access your account.</div>
-              <div className="form_wrap">
-                <div className="mb-3">
-                  <label htmlFor="username" className="form-label">{login.email}</label>
-                  <input className="form-control" type="text" id="username" placeholder="Email Id" value={userName} onChange={(e) => setName(e.target.value.toLowerCase())} />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="password">{login.password}</label>
-                  <input className="form-control" type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                  {/* <InputGroup inside style={styles}>
-                    <Input type={visible ? 'text' : 'password'} />
-                    <InputGroup.Button onClick={handleChange}>
-                      {visible ? <EyeIcon /> : <EyeSlashIcon />}
-                    </InputGroup.Button>
-                  </InputGroup> */}
-                </div>
-                <div className="mb-3">
-                  <button type="submit" className="btn btn-primary mb-3">{btn_login}</button>
-                </div>
+              <div className="mb-3">
+                <label htmlFor="password">{login.password}</label>
+                <input className="form-control" type="password" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
-              <div className="center_nav"><Link href="/forgot-password"><a>{a_forgot_pass}</a></Link></div>
-              <div>{loginMessage}</div>
+              <div className="mb-3">
+                <button type="submit" className="btn btn-primary btnlogin mb-3">{btn_login}</button>
+              </div>
             </div>
-
+            <div className="center_nav fpass"><Link href="/forgot-password"><a>{a_forgot_pass}</a></Link></div>
+            <div>{loginMessage}</div>
           </div>
         </form>
       </div>
-    </div >
     )
   }
   catch (ex) {
