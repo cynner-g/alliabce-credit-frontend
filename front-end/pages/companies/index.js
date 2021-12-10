@@ -7,6 +7,7 @@ import { parseCookies } from "nookies"
 import { useState } from "react"
 import { Table, Container, Row, Col, Badge, Modal } from 'react-bootstrap';
 import { list_companies } from '../api/companies'
+import { DateTime } from '../../components/dateTimeComponent';
 
 const Companies = ({ data, page, totalPage }) => {
 
@@ -129,7 +130,7 @@ const Companies = ({ data, page, totalPage }) => {
                                     {/* {post.title} */}
                                     <td>{item?._id}</td>
                                     <td>{item?.company_name}</td>
-                                    <td>{item?.date_added}</td>
+                                    <td><DateTime date={item.date_added} /></td>
                                     <td>{item?.group_data.join(", ")}</td>
                                     <td>{item?.sub_companies_count}</td>
                                     <td>

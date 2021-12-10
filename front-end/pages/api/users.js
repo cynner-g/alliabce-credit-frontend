@@ -52,7 +52,7 @@ export const update_user = ((body) => {
 })
 
 export const create_sub_admin = ((body) => {
-    fetch(`${process.env.API_URL}/user/create-sub-admin`, {
+    return fetch(`${process.env.API_URL}/user/create-sub-admin`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

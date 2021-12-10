@@ -3,7 +3,7 @@
 import {
     differenceInDays, format, formatRelative,
     parseISO, add, getMonth, getYear,
-    lastDayOfMonth, lastDayOfYear
+    lastDayOfMonth, lastDayOfYear, subDays
 } from 'date-fns'
 
 import Header from "../../components/header"
@@ -781,20 +781,19 @@ class CreditReports extends Component {
     }
 
     getDate = (dt) => {
-        return
-        <DateTime date={dt} relative={true} showBlank={true} className='date' />
-        // try {
+        // return <DateTime date={dt} relative={true} showBlank={true} className='date' />
+        try {
 
-        // dt = parseISO(dt); //date-fns parse the ISO string to a correct date object
-        // let numDays = differenceInDays(new Date(), dt); //get number of days between now and then
-        // let txt = formatRelative(subDays(dt, numDays), new Date()) //display in easy to read format
+            let newDt = parseISO(dt); //date-fns parse the ISO string to a correct date object
+            let numDays = differenceInDays(new Date(), newDt); //get number of days between now and then
+            let txt = formatRelative(subDays(newDt, numDays), new Date()) //display in easy to read format
 
-        // return (<span className='date'>{txt}</span>)
-        // return txt;
-        // }
-        // catch (ex) {
-        //     return ""
-        // }
+            return (<span className='date'>{txt}</span>)
+            return txt;
+        }
+        catch (ex) {
+            return ""
+        }
     }
 
     requestCancel = (rptId) => {

@@ -163,6 +163,8 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         const res2User = create_user(body)
             .then(res => {
                 if (res.status_code == 200) {
+                    if (res.data._id) AcceptUser(res.data._id)
+
                     handleClose();
                     // setFullName("");
                     // setEmailID("");
@@ -183,13 +185,13 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
     const AcceptUser = (id) => {
 
         const token = Cookies.get('token');
-        const userId = Cookies.get('userid')
 
         verify_user({
-            "user_id": userId,
-            "request_by_user_id": "en",
+            "user_id": id,
             "api_token": token
-        })
+        }).then(data => {
+            fetchData()
+        });
     }
 
     /**

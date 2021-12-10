@@ -7,11 +7,12 @@ import Select from 'react-select';
 import {
     get_user_details,
     delete_user,
-    create_sub_admin
+    create_sub_admin,
+    update_user
 } from '../pages/api/users';
 
 const UserList = (props) => {
-    const [show, setShow] = useState(false);
+    const [show, setShowAddUser] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [fullNname, setFullName] = useState("");
     const [emailID, setEmailID] = useState("");
@@ -41,7 +42,7 @@ const UserList = (props) => {
     const getUser = (e, id) => {
         e.preventDefault();
         setIsEdit(true);
-        setShow(true);
+        setShowAddUser(true);
         setSelectedUserId(id)
         try {
             // const token = Cookies.get('token');
@@ -85,14 +86,14 @@ const UserList = (props) => {
      * Clear values
      */
     const handleClose = () => {
-        setShow(false)
+        setShowAddUser(false)
         setIsEdit(false);
         setFullName("");
         setEmailID("");
         setCountry_code("");
         setPhone_number("");
     };
-    const handleShow = () => setShow(true);
+    const handleShowAdd = () => setShowAddUser(true);
 
     const closeDeleteUser = () => {
         showDeleteUser(false);
@@ -108,7 +109,7 @@ const UserList = (props) => {
      * Api is pending
      * @param {*} id 
      */
-    const deleteUser = async () => {
+    const deleteUser = () => {
 
         // const token = Cookies.get('token');
 
@@ -128,23 +129,26 @@ const UserList = (props) => {
 
         console.log(body)
         delete_user(body)
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-            closeDeleteUser()
-            setIsEdit(false);
-            setShow(false);
+            .then(res2User => {
+                if (res2User.status_code == 200) {
+                    closeDeleteUser()
+                    setIsEdit(false);
+                    setShowAddUser(false);
 
-            router.reload();
-        }
+                    router.reload();
+                }
+            })
     }
     /**
      *Update User
      *
      * @return {*} 
      */
-    const updateUser = async () => {
+    const updateUser = (newUserId, isUserActive) => {
         // e.preventDefault();
         // const token = Cookies.get('token');
+        if (newUserId == null) newUserId = userID;
+        if (isUserActive == null) isUserActive = isActive;
         if (!token) {
             return {
                 redirect: {
@@ -155,25 +159,28 @@ const UserList = (props) => {
         }
 
         const body = {
-            "user_id": userID,
+            "user_id": newUserId,
             "full_name": fullNname,
             "email_id": emailID,
             "country_code": "+1",
             "phone_number": phone_number,
             "api_token": token,
-            "is_active": isActive
+            "is_active": isUserActive
         }
-        const res2User = await update_user(body);
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-            setIsEdit(false);
-            setShow(false);
-            router.reload();
-        }
+        update_user(body)
+            .then(res2User => {
+                console.log(res2User);
+                if (res2User.status_code == 200) {
+                    handleClose();
+                    // setFullName("");
+                    // setEmailID("");
+                    // setCountry_code("");
+                    // setPhone_number("");
+                    // setIsEdit(false);
+                    // setShowAddUser(false);
+                    router.reload();
+                }
+            })
     }
 
     /**
@@ -201,11 +208,16 @@ const UserList = (props) => {
             "api_token": token
         }
 
-        const resUser = await create_sub_admin(body)
+        create_sub_admin(body)
+            .then(data => {
+                console.log(data);
+                updateUser(data.data._id, true)
+                handleClose();
+                deleteUserId();
+                router.reload();
+            })
 
-        handleClose();
-        deleteUserId();
-        router.reload();
+
     }
 
 
@@ -302,7 +314,7 @@ const UserList = (props) => {
 
             <div className="ac_right">
                 {props.allowAddTitle ?
-                    <button className="btn btnedit" onClick={handleShow}>Add {props.allowAddTitle}</button>
+                    <button className="btn btnedit" onClick={handleShowAdd}>Add {props.allowAddTitle}</button>
                     : ''}
             </div>
             <table id="example" className="table table-striped">

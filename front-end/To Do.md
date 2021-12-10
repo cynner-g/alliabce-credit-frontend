@@ -8,10 +8,9 @@ Companies:
 
 [company transactions details]
     not working
-    
+
+
 [Companies / USER]
-    Filter doesn’t work
-    Filter Company access nothing there
     Accept user (dont work) + If user created directly from admin should be accepted automatically
     WORD “stimulate” should be changed for “simulate” and this function doesn’t work yet
     Big problem on refresh user list?
