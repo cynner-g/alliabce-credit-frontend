@@ -71,14 +71,3 @@ Forgot password doesn’t work
 
 
 
-<!-- Components to use from React Suite:
-[Credit Reports]
-1. "TagPicker" - For selecting status for filtering - https://rsuitejs.com/components/tag-picker/
-2. "DateRangePicker" - Calendee with predefined days - https://rsuitejs.com/components/date-range-picker/#show-one-calendar
-rsuitejs.comrsuitejs.com
-TagPicker
-Multi-select by tag and support new options
-rsuitejs.com
-rsuitejs.com
-DateRangePicker
-Used to quickly select a date range -->
