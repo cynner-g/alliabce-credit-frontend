@@ -12,7 +12,8 @@ import {
     get_user_details,
     list_associate_user,
     create_user,
-    update_user
+    update_user,
+    delete_user
 } from '../../api/users'
 
 const Users = ({ data, listUsers, companiesData }) => {
@@ -34,7 +35,7 @@ const Users = ({ data, listUsers, companiesData }) => {
     const [filter_company, setFilter_company] = useState([]);
     const [sort_by, setSortby] = useState('user_name');
     const [is_desc, setDesc] = useState(false);
-
+    const [errorMsg, setErrorMsg] = useState('');
 
     const [show, setShow] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -140,7 +141,6 @@ const Users = ({ data, listUsers, companiesData }) => {
      * @returns 
      */
     const addUser = async (e) => {
-
         e.preventDefault();
         const token = Cookies.get('token');
         if (!token) {
@@ -161,17 +161,16 @@ const Users = ({ data, listUsers, companiesData }) => {
             "api_token": token
         }
 
-        const res2User = await create_user(body);
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-            handleClose();
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-            setCompany_access("");
-            setUser_role("");
-        }
+        create_user(body)
+            .then(res => {
+                console.log(res);
+                if (res.status_code == 200) {
+                    handleClose();
+                }
+                else {
+                    setErrorMsg('Warning: ' + res.message)
+                }
+            })
     }
 
     /**
@@ -198,7 +197,7 @@ const Users = ({ data, listUsers, companiesData }) => {
             "user_id": id,
             "language": "en",
             "api_token": token
-       }).then(userData2 => {
+        }).then(userData2 => {
 
             console.log(userData2);
             // handleClose();
@@ -208,6 +207,7 @@ const Users = ({ data, listUsers, companiesData }) => {
             setPhone_number(userData2?.phone_number?.phone_number);
             setCompany_access(userData2?.full_name);
             setUser_role(userData2?.display_user_role);
+            setErrorMsg('')
         })
     }
 
@@ -298,7 +298,7 @@ const Users = ({ data, listUsers, companiesData }) => {
                                                 <option key={idx} value={item._id}>{item.company_name}</option>
                                             )}
                                         </select>
-                                        {/* <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link> */}
+                                        <Link href="#"><a className="btn addbtn" onClick={handleShow}>Add User</a></Link>
 
                                     </div>
                                 </div>
@@ -310,14 +310,7 @@ const Users = ({ data, listUsers, companiesData }) => {
                                         <tr>
                                             <th><div onClick={(e) => {
                                                 fetchData("sort", "user_name");
-                                                // const srchval1 = 'user_name'
-                                                // if (sort_by != srchval1) {
-                                                //     setDesc(true);
-                                                //     setSortby('user_name');
-                                                // } else {
-                                                //     setDesc(!is_desc);
-                                                // }
-                                                // fetchData();
+
                                             }
                                             }>User Name</div></th>
                                             <th><div onClick={(e) => {
@@ -326,49 +319,27 @@ const Users = ({ data, listUsers, companiesData }) => {
                                             }>Date Added</div></th>
                                             <th><div onClick={(e) => {
                                                 fetchData("sort", "email_id");
-                                                // const srchval3 = 'email_id'
-                                                // if (sort_by != srchval3) {
-                                                //     setDesc(true);
-                                                //     setSortby('email_id');
-                                                // } else {
-                                                //     setDesc(!is_desc);
-                                                // }
-                                                // fetchData();
+
                                             }
                                             }>Email</div></th>
                                             <th><div onClick={(e) => {
                                                 fetchData("sort", "display_user_role");
-                                                // const srchval4 = 'display_user_role'
-                                                // if (sort_by != srchval4) {
-                                                //     setDesc(true);
-                                                //     setSortby('display_user_role');
-                                                // } else {
-                                                //     setDesc(!is_desc);
 
-                                                // }
-                                                // fetchData();
                                             }
                                             }>Role</div></th>
                                             <th><div onClick={(e) => {
                                                 fetchData("sort", "company_access");
-                                                // const srchval5 = 'company_access'
-                                                // if (sort_by != srchval5) {
-                                                //     setDesc(true);
-                                                //     setSortby('company_access');
-                                                // } else {
-                                                //     setDesc(!is_desc);
-                                                // }
-                                                // fetchData();
+
                                             }
                                             }>Company Access</div></th>
                                             {/* <th><div>Actions</div></th> */}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {userList?.map((item) => (
+                                        {userList?.map((item, idx) => (
 
 
-                                            <tr>
+                                            <tr key={idx}>
                                                 <td>{item.full_name}</td>
                                                 <td>{item.date_added}</td>
                                                 <td>{item.email_id}</td>
@@ -421,25 +392,26 @@ const Users = ({ data, listUsers, companiesData }) => {
 
                         <label htmlFor="phone_number" className="form-label">Phone Number</label>
                         <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
-                        {Cookies.get('role') == 'admin' ?
-                            <>
-                        <label htmlFor="portal_language" className="form-label">Role</label>
-                        <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
-                            <option selected>Select Role</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            <option value="user-manager">User Manager</option>
-                        </select>
-                            </>
-                            : ''
-                        }
+
+                        <>
+                            <label htmlFor="portal_language" className="form-label">Role</label>
+                            <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
+                                <option selected>Select Role</option>
+                                {Cookies.get('role') == 'admin' ? <option value="admin">Admin</option> : ''}
+                                <option value="user">User</option>
+                                {Cookies.get('role') == 'admin' ? <option value="user-manager">User Manager</option> : ''}
+                            </select>
+                        </>
                         <div>
                             <label htmlFor="groups" className="form-label">Add to group</label>
                             <>
+                                <div className="form-check" >
+                                    <label className="form-check-label" htmlFor={data.parent_companies._id}>{data.parent_companies.company_name}</label>
+                                    <input className="form-check-input" name="company_access" type="checkbox" value={data.parent_companies._id} id={data.parent_companies._id} onChange={(e) => setCompany_access(e.target.value)} />
+                                </div>
 
-
-                                {data?.child_companies?.map((item) => (
-                                    <div className="form-check">
+                                {data?.child_companies?.map((item, idx) => (
+                                    <div className="form-check" key={idx}>
                                         <label className="form-check-label" htmlFor={item._id}>{item.company_name}</label>
                                         <input className="form-check-input" name="company_access" type="checkbox" value={item._id} id={item._id} onChange={(e) => setCompany_access(e.target.value)} />
                                     </div>
@@ -463,6 +435,13 @@ const Users = ({ data, listUsers, companiesData }) => {
                             <Button variant="primary" onClick={removeUser}>Remove User</Button>
                             <Button variant="primary" onClick={updateUser}>Update User</Button>
                         </>
+                    }
+                    {errorMsg && errorMsg != '' ?
+                        <>
+                            <br />
+                            <div className='error_message'>{errorMsg}</div>
+                        </>
+                        : ''
                     }
                 </Modal.Footer>
             </Modal>
@@ -497,14 +476,14 @@ export async function getServerSideProps(ctx) {
 
     //Can use promise.all now
     const ret = await get_user_details({
-            "language": 'en',
-            "api_token": token,
-            "user_id": userid
+        "language": 'en',
+        "api_token": token,
+        "user_id": userid
     })
 
     const body = {
-            "language": 'en',
-            "api_token": token,
+        "language": 'en',
+        "api_token": token,
     }
 
     console.log("BODY:", body)
