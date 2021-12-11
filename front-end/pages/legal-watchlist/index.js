@@ -19,7 +19,7 @@ import {
 import { get_provinces } from '../api/provinces'
 
 
-const LegalWatchlist = ({ data, provinces, companyID }) => {
+const LegalWatchlist = ({ data, provinces, company }) => {
 
     let [watchlists, setWatchlists] = useState(data.watchlist);
     let [companyList, setCompanyList] = useState([]);
@@ -46,7 +46,7 @@ const LegalWatchlist = ({ data, provinces, companyID }) => {
     const [currentWatchlistPage, setCurrentWatchlistpage] = useState(0);
     const [sortWatchlist, setSortWatchlist] = useState('');
     const [is_watchlistSort_desc, setOrderDescending] = useState(false);
-    const [companyID, setCompanyID] = useState(companyID);
+    const [companyID, setCompanyID] = useState(company);
 
     const router = useRouter();
 
@@ -527,18 +527,17 @@ export async function getServerSideProps(ctx) {
     if (cid) body.company_id = cid;
     try {
 
-
-        const resCompaniesData =
         /**
      * limit, start, search item
      */
 
-
+        const data = await get_watchList(body)
+        const provinces = await get_provinces({ api_token: token, language: 'en' })
 
             ret.props = {
-                data: await get_watchList(body),
-                provinces: await get_provinces({ api_token: token, language: 'en' }),
-                companyID = cid
+                data: data,
+                provinces: provinces,
+                company: cid
             }
 
         return ret;

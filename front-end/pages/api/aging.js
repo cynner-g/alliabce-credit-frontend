@@ -21,3 +21,15 @@ export const upload_aging_user_file = (form) => {
         .then(res => res.json());
 
 }
+
+export const upload_aging_DB_file = (form) => {
+    return fetch(`${process.env.API_URL}/aging/upload-aging-db-file`, {
+        method: "POST",
+        headers: {
+            contentType: false,
+        },
+        body: formData
+    })
+        .then(res => res.json());
+
+}

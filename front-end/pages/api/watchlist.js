@@ -39,7 +39,7 @@ export const get_watchlist_companies = ((body) => {
         body: JSON.stringify(body)
     })
         .then(resCompanies => resCompanies.json())
-        .then(companiesList => setCompanyList(companiesList.data))
+        .then(companiesList => companiesList.data)
 })
 
 export const get_watchlist_emails = ((body) => {
@@ -50,18 +50,18 @@ export const get_watchlist_emails = ((body) => {
         },
         body: JSON.stringify(body)
     }).then(resEmails => resEmails.json())
-        .then(emails => setEmailsList(emails.data))
+        .then(emails => emails.data)
 })
 
 export const get_watchList = ((body) => {
-    fetch(`${process.env.API_URL}/watchlist/list-watchlist`, {
+    return fetch(`${process.env.API_URL}/watchlist/list-watchlist`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(body)
-    }).then(resEmails => resEmails.json())
-        .then(emails => setEmailsList(emails.data))
+    }).then(resWL => resWL.json())
+        .then(WL => WL.data)
 })
 
 export const add_company_to_watchlist = (body) => {

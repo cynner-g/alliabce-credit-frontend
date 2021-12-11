@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 const TabButton = ({ id, url }) => {
     const router = useRouter();
+    id = Cookies.get('viewed_company_id');
     return (
         <ul className="nav company_nav">
             <li className="nav-item" className={router.pathname == "/companies/[id]" ? "active" : ""}><Link href={url}><a className="nav-link">General</a></Link></li>

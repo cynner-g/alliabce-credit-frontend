@@ -281,21 +281,12 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
             Cookies.set('admin_role', Cookies.get('role'))
             Cookies.set('admin_userid', Cookies.get('userid'))
             Cookies.set('admin_name', Cookies.get('name'))
-            Cookies.set('token', userData.)
+            Cookies.set('token', Cookies.get('token'))//userData.token)
             Cookies.set('role', userData.user_role)
             Cookies.set('userid', userData._id)
             Cookies.set('name', userData.full_name)
-
-        }
-
-        router.push('/credit-reports')
-
-        Cookies.set('admin_token', Cookies.get('token'))
-        Cookies.set('admin_role', Cookies.get('role'))
-        Cookies.set('admin_userid', Cookies.get('userid'))
-        Cookies.set('admin_name', Cookies.get('name'))
-
-        return '';
+            router.push('/credit-reports')
+        })
     }
 
     /**
