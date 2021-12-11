@@ -541,13 +541,13 @@ class CreditReports extends Component {
                                                         >Show External Links</Button>
                                                     </OverlayTrigger>
 
-                                                    <button className="btn btnedit"
+                                                    <button className="btn btnedit1"
                                                         onClick={() => this.viewApplication(row)}>View Credit Application</button>
                                                 </>
                                                 :
                                                 ''
                                             }
-                                            <button className="btn btnedit"
+                                            <button className="btn btnedit1"
                                                 onClick={() => this.orderReport(row._id)}>View Report Form</button>
                                         </div>
                                     </td>

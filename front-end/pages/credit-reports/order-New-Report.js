@@ -1194,7 +1194,7 @@ class OrderNewReport extends Component {
         }
 
         return (
-            <div className='order_report_right'>
+            <div className={`order_report_right ${this.state.origData ? "edit_form" : "order_New "}`}>
                 <FormComponent rows={rows}
                     submit={submit}
                     cancel={cancel}
@@ -1350,44 +1350,58 @@ class OrderNewReport extends Component {
 
                             </div>
 
-                            <div className=''>
+                            {/* <div className=''>
                                 <Row className='quick_order_wrap'>
                                     <Col className="text-start">
                                         <div className={styles.stepContainer}>
                                             <button className="btn quick_order" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
 
-                                            <OverlayTrigger
-                                                trigger="hover focus"
-                                                placement='right'
-                                                rootClose={true}
-                                                overlay={
-                                                    <Popover id={`popover-positioned-top`} classname='external_links_popup'>
-                                                        <Popover.Header as="div" className='external_links_popup title'></Popover.Header>
-                                                        <Popover.Body>
-                                                            You can "Quick Order" a report and <br />
-                                                            Alliance Credit will fill out the form for<br />
-                                                            you, it may charge extra.
-                                                        </Popover.Body>
-                                                    </Popover>
-                                                }
-                                            >
-                                                <i className='or_help'></i>
-                                            </OverlayTrigger>
-
-
                                         </div>
                                     </Col>
-                                    <Col className="text-end">
-                                        <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
-                                    </Col>
+
 
                                 </Row>
                             </div>
-                            <div className="pb-5">&nbsp;</div>
+                            <div className="pb-5">&nbsp;</div> */}
 
 
                         </Col>
                     </Row>
+
+                    <div className='order_fixed_nav'>
+                        <Row>
+                            <Col sm={3} className="order_report_left" ></Col>
+                            <Col className="order_report_bottom">
+                                <Row>
+                                    <Col>
+                                        <button className="btn quick_order" onClick={() => this.quickOrder(undefined)}>Quick Order</button>
+                                        <OverlayTrigger
+                                            trigger="hover focus"
+                                            placement='right'
+                                            rootClose={true}
+                                            overlay={
+                                                <Popover id={`popover-positioned-top`} classname='external_links_popup'>
+                                                    <Popover.Header as="div" className='external_links_popup title'></Popover.Header>
+                                                    <Popover.Body>
+                                                        You can "Quick Order" a report and <br />
+                                                        Alliance Credit will fill out the form for<br />
+                                                        you, it may charge extra.
+                                                    </Popover.Body>
+                                                </Popover>
+                                            }
+                                        >
+
+                                            <i className='or_help'></i>
+                                        </OverlayTrigger>
+                                    </Col>
+                                    <Col className="text-end">
+                                        <button className="btn btn-primary" onClick={this.nextStep}>Next</button>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </div>
+
                 </div>
             </>
             )
@@ -1506,27 +1520,27 @@ class OrderNewReport extends Component {
                     <Row>
                         {this.state.origData ? '' :
                             <Col sm={3}>
-                                <Container>
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>1</div>
-                                            Select Reports
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className={styles.stepUndone}>
-                                            <div className={styles.stepUnselected}>2</div>
-                                            Fill in Details<br />
-                                        </Col>
-                                    </Row>
+                                {/* <Container> */}
+                                <Row>
+                                    <Col className={styles.stepContainer}>
+                                        <div className={styles.stepBullet}>1</div>
+                                        Select Reports
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className={styles.stepUndone}>
+                                        <div className={styles.stepUnselected}>2</div>
+                                        Fill in Details<br />
+                                    </Col>
+                                </Row>
 
-                                    <Row>
-                                        <Col className={styles.stepContainer}>
-                                            <div className={styles.stepBullet}>3</div>
-                                            Done
-                                        </Col>
-                                    </Row>
-                                </Container>
+                                <Row>
+                                    <Col className={styles.stepContainer}>
+                                        <div className={styles.stepBullet}>3</div>
+                                        Done
+                                    </Col>
+                                </Row>
+                                {/* </Container> */}
 
                             </Col>
                         }
@@ -1542,16 +1556,16 @@ class OrderNewReport extends Component {
                                         <div className={styles.doneMessage}>
                                             You have successfully ordered a Quick Report, Report form will be filled soon by us till then it will be in <strong>pending</strong> state, you can now see this report on your “Credit Reports Panel.
                                             <br /><br />
-                                            <Container>
-                                                <Row >
-                                                    <Col className={styles.doneButtonL}>
-                                                        <button className="btn btn-outline-primary" onClick={this.newReport}>Order New Report</button>
-                                                    </Col>
-                                                    <Col className={styles.doneButtonR}>
-                                                        <button className="btn btn-outline-primary" onClick={this.reportsPanel}>Go to Credit Reports Panel</button>
-                                                    </Col>
-                                                </Row>
-                                            </Container>
+                                            {/* <Container> */}
+                                            <Row >
+                                                <Col className={styles.doneButtonL}>
+                                                    <button className="btn btn-outline-primary" onClick={this.newReport}>Order New Report</button>
+                                                </Col>
+                                                <Col className={styles.doneButtonR}>
+                                                    <button className="btn btn-outline-primary" onClick={this.reportsPanel}>Go to Credit Reports Panel</button>
+                                                </Col>
+                                            </Row>
+                                            {/* </Container> */}
                                         </div>
                                     </div>
                                 </Col>
@@ -1607,9 +1621,9 @@ class OrderNewReport extends Component {
                         <li>{this.state.origData ? 'Edit ' : 'Order New '}Report</li>
                     </ul>
                 </div>
-                <Container>
-                    {this.buildPage()}
-                </Container>
+                {/* <Container> */}
+                {this.buildPage()}
+                {/* </Container> */}
             </>)
     }
 }
