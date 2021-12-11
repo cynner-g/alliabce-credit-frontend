@@ -2,20 +2,26 @@ import React, { userState, useEffect, useState } from 'react'
 import Header from "../../components/header"
 import { useRouter } from "next/router"
 import { parseCookies } from "nookies";
+import Cookies from 'js-cookie'
 // import Pagination from "../../components/datatable/pagination"
 import { Col, Modal, Row } from 'react-bootstrap';
 import DynamicTable from '../../components/DynamicTable';
+import {
+    get_legal_list,
+    upload_legal_list,
+    delete_legal_list
+} from '../api/legal'
 
 const UPLOADING = 1;
 const UPLOADED = 2;
 const ERROR = 3;
 
-const LegalUploads = (props) => {
+const LegalUploads = ({ data }) => {
     const router = useRouter()
     // const limit = 3
     // const lastPage = Math.ceil(totalPage / limit)
 
-    const [pageData, setPageData] = useState(props?.data?.data);
+    const [pageData, setPageData] = useState(data);
     const [legalFile, setLegalFile] = useState(null);
     const [type, setType] = useState(null);
     const [region, setRegion] = useState(null);
@@ -26,17 +32,7 @@ const LegalUploads = (props) => {
 
     const fetchData = async () => {
         //code to load data fresh from API
-        const res = await fetch(`${process.env.API_URL}/report/list-legal-upload`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "api_token": token
-            })
-
-        })
-        const resData = await res.json()
+        get_legal_list({ api_token: Cookies.get('token') })
     }
 
     const deleteClick = async (event, columnName, row) => {
@@ -49,15 +45,8 @@ const LegalUploads = (props) => {
             legal_upload_id: uploadID
         }
 
-        const res = await fetch(`${process.env.API_URL}/report/list-legal-upload`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        })
-
-        fetch_data();
+        delete_legal_list(body)
+            .then(res => fetch_data())
     }
 
     const getBadgeCss = (type) => {
@@ -192,72 +181,11 @@ const LegalUploads = (props) => {
         let body = formData
 
 
-        const addCompanyDB = await fetch(`https://dev.alliancecredit.ca/report/upload-legal-report`, {
-            method: "POST",
-            headers: {
-                contentType: false,
-            },
-            body: formData
-        })
+        upload_legal_list(body)
 
         fetchData();
 
     }
-
-
-    useEffect(() => {
-        // let data = [
-        //     {
-        //         refId: 'L123',
-        //         fileType: 'Commercial Law Record',
-        //         language: 'French',
-        //         status: 'Uploaded',
-        //         uploadTime: '09/23/2021 11:35 AM',
-        //         comparedToWatchlist: '09/23/2021 11:35 AM',
-        //         sisCount: "0",
-        //         clrCount: 56,
-        //         bankruptcyCount: "0",
-        //         hypotechCount: "0"
-        //     },
-        //     {
-        //         refId: 'L122',
-        //         fileType: 'Bankruptcy',
-        //         language: 'English',
-        //         status: 'Uploaded',
-        //         uploadTime: '07/09/2021 11:35 AM',
-        //         comparedToWatchlist: '08/09/2021 11:35 AM',
-        //         sisCount: "0",
-        //         clrCount: "0",
-        //         bankruptcyCount: 21,
-        //         hypotechCount: "0"
-        //     },
-        //     {
-        //         refId: 'L121',
-        //         fileType: 'Hyptotech',
-        //         language: 'English',
-        //         status: 'Uploaded',
-        //         uploadTime: '07/09/2021 11:35 AM',
-        //         comparedToWatchlist: '07/09/2021 11:35 AM',
-        //         sisCount: "0",
-        //         clrCount: "0",
-        //         bankruptcyCount: "0",
-        //         hypotechCount: 10
-        //     },
-        //     {
-        //         refId: 'L121',
-        //         fileType: 'Special Information Sheet',
-        //         language: 'Both',
-        //         status: 'Uploaded',
-        //         uploadTime: '07/09/2021 11:35 AM',
-        //         comparedToWatchlist: '08/09/2021 11:35 AM',
-        //         sisCount: 10,
-        //         clrCount: "0",
-        //         bankruptcyCount: "0",
-        //         hypotechCount: "0"
-        //     },
-        // ]
-        // setPageData(data);
-    }, [])
 
     return (
         <>
@@ -322,31 +250,9 @@ const LegalUploads = (props) => {
                 <button className="btn legal_upload">Legal Uploads</button>
             </div>
 
-            {/* <table id="example" className="table table-striped">
-                <thead>
-                    <tr>
-                        <th>File Ref. Id</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Age</th>
-                        <th>Start date</th>
-                        <th>Salary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011/04/25</td>
-                        <td>$320,800</td>
-                    </tr>
-                </tbody>
-            </table>
-            <Pagination page={page} totalPage={totalPage} lastPage={lastPage} /> */}
+
             <div className="listing">
-                <DynamicTable data={pageData} columns={columns} />
+                <DynamicTable data={data} columns={columns} />
             </div>
         </>
     )
@@ -361,28 +267,13 @@ const LegalUploads = (props) => {
  */
 export async function getServerSideProps(ctx) {
     const { token } = parseCookies(ctx)
-    const res = await fetch(`${process.env.API_URL}/report/list-legal-upload`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "api_token": token,
-        })
 
-    })
-    const resData = await res.json()
-
-
-    /** 
-     * limit, start, search item
-     */
+    let res = await get_legal_list({ api_token: token })
     return {
         props: {
-            data: resData
+            data: res
         }
     }
-
 }
 
 export default LegalUploads

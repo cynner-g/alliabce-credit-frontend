@@ -278,7 +278,6 @@ export const delete_comment = (body) => {
 export const update_pricing = (body) => {
     init.body = JSON.stringify(body)
     return fetch(`${process.env.API_URL}/report/custom-price`, init)
-    this.getData();
 }
 
 export const upload_report = (body) => {
@@ -302,3 +301,5 @@ export const upload_report = (body) => {
             throw err;
         })
 }
+
+
