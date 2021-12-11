@@ -421,7 +421,8 @@ const Users = ({ data, listUsers, companiesData }) => {
 
                         <label htmlFor="phone_number" className="form-label">Phone Number</label>
                         <input className="form-control" name="phone_number" type="text" id="phone_number" value={phone_number} onChange={(e) => setPhone_number(e.target.value)} />
-
+                        {Cookies.get('role') == 'admin' ?
+                            <>
                         <label htmlFor="portal_language" className="form-label">Role</label>
                         <select className="form-select form-select-sm" id="portal_language" aria-label=".form-select-sm example" onChange={(e) => setUser_role(e.target.value)}>
                             <option selected>Select Role</option>
@@ -429,7 +430,9 @@ const Users = ({ data, listUsers, companiesData }) => {
                             <option value="user">User</option>
                             <option value="user-manager">User Manager</option>
                         </select>
-
+                            </>
+                            : ''
+                        }
                         <div>
                             <label htmlFor="groups" className="form-label">Add to group</label>
                             <>

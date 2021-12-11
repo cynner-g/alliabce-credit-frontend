@@ -6,7 +6,11 @@ import DatePicker from 'react-datepicker'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies";
 import {
-    get_company_details
+    get_company_details,
+    upload_aging_DB_file,
+    download_user_aging_file,
+    download_DB_aging_file,
+    delete_aging_file
 } from '../api/companies';
 
 import {
@@ -17,7 +21,7 @@ import {
 const Aging = function ({ agingData }) {
     let [data, setData] = useState(agingData);
     let [showUpload, setShowUpload] = useState(false);
-    set[showDBUploadID, setShowDBUploadID] = useState(null);
+    let [showDBUploadID, setShowDBUploadID] = useState(null);
     let [uploaded, setUploaded] = useState();
     let [errorMsg, setErrorMsg] = useState();
     let [displayError, setDisplayError] = useState('none');
@@ -37,8 +41,6 @@ const Aging = function ({ agingData }) {
                 },
             }
         }
-
-
 
         let sort = sort_by;
         let desc = is_desc;
@@ -74,11 +76,36 @@ const Aging = function ({ agingData }) {
 
     };
 
-    const downloadDB = (item) => {
+    const downloadDB = (id) => {
 
         e.preventDefault();
         let token = Cookies.get('token');
-        download_report_file({
+        download_DB_aging_file({
+            api_token: token,
+            aging_id: id
+        })
+            .then(file => file.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                const company = report.company_name.replace(' ', '_').replace('.', '')
+                const fileName = `${type}_report_${company}.pdf`;
+                a.download = fileName
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+            });
+    }
+
+    const downloadUserAging = (id) => {
+        e.preventDefault();
+        let token = Cookies.get('token');
+        download_user_aging_file({
             api_token: token,
             aging_id: id
         })
@@ -101,21 +128,27 @@ const Aging = function ({ agingData }) {
     }
 
     const uploadDBFile = () => {
-        const file =
+        const file = uploaded;
+        const token = Cookies.get('token');
+        const companyID = router.query.cid;
+
+        let formData = new FormData();
+        formData.append("api_token", token);
+        formData.append("aging_id", showDBUploadID);
+        formData.append("aging_file", uploaded);
+
+        upload_aging_DB_file(formData)
+            .then(res => {
+                if (res.status_code !== 200) {
+                    setErrorMsg(res.data || res.message); //response.message....
+                    setDisplayError('inline-block');
+                }
+                else {
+                    setShowDBUploadID(null)
+                    fetch_data();
+                }
+            })
     }
-
-    const deleteAging = (id) => { }
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Uploaded": return 'warning'; break;
-            case "Accepted": return 'success'; break;
-            case "Deleted": return 'dark'; break;
-            default: return 'info';
-        }
-    }
-
-
 
     const uploadFile = async () => {
         const date = upToDateDate;
@@ -138,10 +171,36 @@ const Aging = function ({ agingData }) {
                     setDisplayError('inline-block');
                 }
                 else {
-                    setShowUpload(false)
+                    setShowUpload(false);
+                    fetch_data();
                 }
             })
     }
+
+    const deleteAging = (id) => {
+        const token = Cookies.get('token');
+
+        let body = {
+            api_token: token,
+            aging_id: id
+        }
+
+        delete_aging_file(body)
+            .then(res => {
+                fetchData()
+            })
+    }
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "Uploaded": return 'warning'; break;
+            case "Accepted": return 'success'; break;
+            case "Deleted": return 'dark'; break;
+            default: return 'info';
+        }
+    }
+
+
 
 
 
@@ -224,7 +283,6 @@ const Aging = function ({ agingData }) {
                 </Modal.Footer>
             </Modal>
 
-
             <Modal
                 show={showDBUploadID !== null}
                 onHide={() => setShowDBUploadID(null)}
@@ -275,7 +333,6 @@ const Aging = function ({ agingData }) {
                 </Modal.Footer>
             </Modal>
 
-
             <Header />
             <Container>
                 <Row>
@@ -318,11 +375,8 @@ const Aging = function ({ agingData }) {
 
                                         }
                                         }>Status</div></th>
-                                        {Cookies.get('role') == 'admin' ?
-                                            <>
-                                                <th><div>Actions</div></th>
-                                            </>
-                                            : ''}
+
+                                        <th colSpan={3}><div>Actions</div></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -333,24 +387,32 @@ const Aging = function ({ agingData }) {
                                             <td>{/*item.email_id*/}</td>
                                             <td>{item.up_to_date_by}</td>
                                             <td>{item.status}</td>
-                                            <td><div>
-                                                <Col>
-                                                    <button onClick={() => downloadAging(item._id)}>Download</button></Col>
-                                                {item.status = "File Received"} ?
-                                                <Col>
-                                                    <button onClick={() => downloadDB(item._id)}>Upload DB</button></Col>
-                                                :<Col></Col>
-                                             }
-
-                                                :
-                                                <button onClick={() => uploadDB(item._id)}>Upload DB</button>
-                                            </Col>
-                                                <Col><button onClick={() => deleteAging(item._id)}>Delete DB</button></Col>
-
-                                            </>
-                                            : ''
+                                            <td>
+                                                {item.status == "File Received" ?
+                                                    <>
+                                                        <span>
+                                                            <button onClick={() => downloadUserAging(item._id)}>Download</button>
+                                                        </span> &nbsp;
+                                                        <span>
+                                                            <button onClick={() => showDBUploadID(item._id)}>Upload DB</button>
+                                                        </span> &nbsp;
+                                                        <span></span>
+                                                    </>
+                                                    : item.status == "DB Updated" ?
+                                                        <>
+                                                            <span>
+                                                                <button onClick={() => downloadUserAging(item._id)}>Download</button>
+                                                            </span> &nbsp;
+                                                            <span>
+                                                                <button onClick={() => downloadDB(item._id)}>Download DB</button>
+                                                            </span> &nbsp;
+                                                            <span>
+                                                                <button onClick={() => deleteAging(item._id)}>Delete DB</button>
+                                                            </span>
+                                                        </>
+                                                        : ''
                                                 }
-                                        </div></td>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

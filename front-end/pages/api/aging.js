@@ -33,3 +33,37 @@ export const upload_aging_DB_file = (form) => {
         .then(res => res.json());
 
 }
+
+export const download_user_aging_file = (body) => {
+    return fetch(`${process.env.API_URL}/aging/download-gaing-by-client`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    })
+        .then(resUser => resUser.json())
+}
+
+
+export const download_DB_aging_file = (body) => {
+    return fetch(`${process.env.API_URL}/aging/download-gaing-by-client`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    })
+        .then(resUser => resUser.json())
+}
+
+export const delete_aging_file = (body) => {
+    return fetch(`${process.env.API_URL}/aging/delete-gaing-db`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    })
+        .then(resUser => resUser.json())
+}

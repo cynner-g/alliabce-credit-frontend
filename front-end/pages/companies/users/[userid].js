@@ -166,21 +166,13 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
 
         }
 
-        console.log(body);
-
         const res2User = create_user(body)
             .then(res => {
                 if (res.status_code == 200) {
-                    if (res.data._id)
-
+                    if (res.data._id) {
                         handleClose();
-                    // setFullName("");
-                    // setEmailID("");
-                    // setCountry_code("");
-                    // setPhone_number("");
-                    // setCompany_access("");
-                    // setUser_role("");
-                    fetchData();
+                        fetchData();
+                    }
                 }
             })
     }
