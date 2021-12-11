@@ -7,19 +7,29 @@ import styles from "./index.module.css";
 import { parseCookies } from "nookies"
 import Cookies from "js-cookie"
 import { useRouter } from 'next/router'
+import {
+    remove_email,
+    get_watchlist_companies,
+    get_watchlist_emails,
+    get_watchList,
+    add_company_to_watchlist,
+    add_email_to_watchlist,
+    create_watchlist
+} from '../api/watchlist'
+import { get_provinces } from '../api/provinces'
 
 
-const LegalWatchlist = (props) => {
+const LegalWatchlist = ({ data, provinces, companyID }) => {
 
-    let [watchlists, setWatchlists] = useState(props.data.watchlist);
+    let [watchlists, setWatchlists] = useState(data.watchlist);
     let [companyList, setCompanyList] = useState([]);
-    let [currentWatchlistID, setCurrentWatchlistID] = useState(props.data.watchlist?.length > 0 ? props.data.watchlist[0]._id : null);
+    let [currentWatchlistID, setCurrentWatchlistID] = useState(data.watchlist?.length > 0 ? data.watchlist[0]._id : null);
     let [emailsList, setEmailsList] = useState([]);
 
-    const [totalCompaniesAllowed, setTotalCompaniesAllowed] = useState(props.data.total_companies_allowed)
-    const [totalCompaniesCreated, setTotalCompaniesCreated] = useState(props.data.total_companies_created)
-    const [totalWatchlistsAllowed, setTotalWatchlistsAllowed] = useState(props.data.total_watchlist_allowed)
-    const [totalWatchlistsCreated, setTotalWatchlistsCreated] = useState(props.data.total_watchlist_created)
+    const [totalCompaniesAllowed, setTotalCompaniesAllowed] = useState(data.total_companies_allowed)
+    const [totalCompaniesCreated, setTotalCompaniesCreated] = useState(data.total_companies_created)
+    const [totalWatchlistsAllowed, setTotalWatchlistsAllowed] = useState(data.total_watchlist_allowed)
+    const [totalWatchlistsCreated, setTotalWatchlistsCreated] = useState(data.total_watchlist_created)
 
     const [showCreateWatchlist, setShowCreateWatchlist] = useState(false);
     const [showAddCompany, setShowAddCompany] = useState(false);
@@ -32,11 +42,11 @@ const LegalWatchlist = (props) => {
 
     const [newEmail, setNewEmail] = useState('');
 
-    const [provinceList, setProvinces] = useState(props.provinces);
+    const [provinceList, setProvinces] = useState(provinces);
     const [currentWatchlistPage, setCurrentWatchlistpage] = useState(0);
     const [sortWatchlist, setSortWatchlist] = useState('');
     const [is_watchlistSort_desc, setOrderDescending] = useState(false);
-    const [companyID, setCompanyID] = useState(props.companyID);
+    const [companyID, setCompanyID] = useState(companyID);
 
     const router = useRouter();
 
@@ -66,20 +76,12 @@ const LegalWatchlist = (props) => {
 
         if (cid) body.company_id = cid;
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/list-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
+        get_watchList(body)
+            .then(res => {
+                if (!currentWatchlistID) setCurrentWatchlistID(res[0]._id)
+                getWatchlistCompanies(resCompaniesData.data[0]._id);
         })
 
-        const resCompaniesData = await resCompanies.json()
-        if (resCompaniesData?.data) {
-            ss(resCompaniesData.data)
-        }
-        if (!currentWatchlistID) setCurrentWatchlistID(resCompaniesData.data[0]._id);
-        await getWatchlistCompanies(resCompaniesData.data[0]._id);
     }
 
 
@@ -89,7 +91,7 @@ const LegalWatchlist = (props) => {
     }
 
     //get all companies for the current watchlist
-    const getWatchlistCompanies = async (currentId) => {
+    const getWatchlistCompanies = (currentId) => {
         //get companies for this watchlist
         const token = Cookies.get('token');
         if (!currentId) currentId = currentWatchlistID;
@@ -113,25 +115,13 @@ const LegalWatchlist = (props) => {
         }
 
         Promise.all([
-            fetch(`${process.env.API_URL}/watchlist/companies-in-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-            }).then(resCompanies => resCompanies.json())
-                .then(companiesList => setCompanyList(companiesList.data))
-            ,
-
-            fetch(`${process.env.API_URL}/watchlist/emails-in-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-            }).then(resEmails => resEmails.json())
-                .then(emails => setEmailsList(emails.data))
-        ]);
+            get_watchlist_companies(body),
+            get_watchlist_emails(body)
+        ])
+            .then(results => {
+                setCompanyList(results[0])
+                setEmailsList(results[1])
+            });
     }
 
     const addNewCompany = async () => {
@@ -150,26 +140,21 @@ const LegalWatchlist = (props) => {
         }
 
         console.log(body);
+        add_company_to_watchlist(body)
+            .then(res => {
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/add-company-to-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        })
 
         getWatchlistCompanies();
         setNewCompanyProvinces([]);
         setNewCompanyName('')
         setNewCompanyRefNum('')
         setShowAddCompany(false);
-
+            })
     }
 
     const removeCompany = async (id) => {
         let token = Cookies.get('token')
-        //TODO:  Set api
+
         let body = {
             "api_token": token,
             watchlist_id: currentWatchlistID,
@@ -177,16 +162,8 @@ const LegalWatchlist = (props) => {
         }
 
         console.log(body);
-
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/remove-company-from-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": false,
-            },
-            body: JSON.stringify(body)
-        })
-
-        getWatchlistCompanies();
+        remove_company_from_watchlist(body)
+            .then(res => getWatchlistCompanies())
     }
 
     const addNewEmail = async () => {
@@ -197,20 +174,13 @@ const LegalWatchlist = (props) => {
             email_id: newEmail
         }
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/add-email-to-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        })
-        getWatchlistCompanies()// =>loads company data and emails data
+        add_email_to_watchlist(body)
+            .then(res => getWatchlistCompanies())// =>loads company data and emails data
     }
 
     const removeEmail = async (id) => {
 
         let token = Cookies.get('token')
-        //TODO:  Set api
         let body = {
             "api_token": token,
             watchlist_id: currentWatchlistID,
@@ -219,15 +189,11 @@ const LegalWatchlist = (props) => {
 
         console.log(body);
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/remove-email-from-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        })
+        remove_email(body)
+            .then(res => {
 
         getWatchlistCompanies();
+            })
     }
 
     const addNewWatchlist = async () => {
@@ -241,17 +207,11 @@ const LegalWatchlist = (props) => {
 
         console.log(body);
 
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/create-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        })
-
+        create_watchlist(body).then(res => {
         fetch_watchlists();
         setNewWatchlistName('');
         setShowCreateWatchlist(false)
+        })
     }
 
 
@@ -547,7 +507,7 @@ const LegalWatchlist = (props) => {
 export async function getServerSideProps(ctx) {
     const { token } = parseCookies(ctx)
     const query = ctx.query;
-
+    let ret = { props: {} }
     if (!token) {
         return {
             redirect: {
@@ -566,41 +526,21 @@ export async function getServerSideProps(ctx) {
 
     if (cid) body.company_id = cid;
     try {
-        const resCompanies = await fetch(`${process.env.API_URL}/watchlist/list-watchlist`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body)
-        })
-        const resCompaniesData = await resCompanies.json()
+
+
+        const resCompaniesData =
         /**
      * limit, start, search item
      */
-        let ret = {};
 
 
 
-        if (resCompaniesData?.data) {
             ret.props = {
-                data: resCompaniesData?.data
+                data: await get_watchList(body),
+                provinces: await get_provinces({ api_token: token, language: 'en' }),
+                companyID = cid
             }
-        }
 
-        const provincesList = await fetch(`${process.env.API_URL}/province/list-province`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                api_token: token,
-                language: 'en'
-            })
-        })
-
-        const provinceData = await provincesList.json();
-        ret.props.provinces = provinceData.data;
-        ret.props.companyID = cid;
         return ret;
     }
     catch (ex) {

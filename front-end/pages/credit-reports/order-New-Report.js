@@ -1143,8 +1143,6 @@ class OrderNewReport extends Component {
                 for (let i = rows.length - 1; i >= 0; i--) {
                     let col = rows[i]
                     submit = this.beginEdit;
-                    //TODO:  TEST TO SEE IF THIS REPORT IS EDITABLE
-                    //IF IT IS NOT REMOVE THE EDIT BUTTON ALSO
 
                     if (col.params.fName === 'LinkButton') {
                         col.params.visible = false;
@@ -1169,8 +1167,6 @@ class OrderNewReport extends Component {
                 for (let i = rows.length - 1; i >= 0; i--) {
                     let col = rows[i]
                     submit = this.beginEdit;
-                    //TODO:  TEST TO SEE IF THIS REPORT IS EDITABLE
-                    //IF IT IS NOT REMOVE THE EDIT BUTTON ALSO
 
                     //show add/remove buttons
                     if (col.params.fName === 'LinkButton') {

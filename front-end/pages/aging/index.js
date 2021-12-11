@@ -155,8 +155,6 @@ const Aging = function ({ agingData }) {
 
 
         if (res.status_code !== 200) {
-            //TODO:  Enable API Call HERE
-            //if(response.status!==200){
             setErrorMsg(res.data || res.message); //response.message....
             setDisplayError('inline-block');
         }
