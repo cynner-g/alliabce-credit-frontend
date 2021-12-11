@@ -33,8 +33,6 @@ Companies:
 	
 [company - watchlist - add email]
     doesn’t work
-[Company - Aging]
-    doesn’t work
 
 
 
@@ -61,6 +59,7 @@ All configuration of the platform?
 Where we add “industry” ?
 All other default value for companies
 ** We should add a loading gif to know something happening between pages ?
+
 
 [Header Menu]
 Missing icon + must look better

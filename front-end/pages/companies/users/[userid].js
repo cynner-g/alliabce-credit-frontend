@@ -272,15 +272,28 @@ const Users = ({ data, page, totalPage, query, companiesData }) => {
         //get all user data
         //save admin id in cookie
         //replace all cookie data with user data
-        Cookies.set('token', res2?.data?.auth_token)
-        Cookies.set('role', res2?.data?.user_role)
-        Cookies.set('userid', res2?.data?.id)
-        Cookies.set('name', res2?.data?.full_name)
+        get_user_details({
+            "user_id": id,
+            "language": "en",
+            "api_token": token
+        }).then(userData => {
+            Cookies.set('admin_token', Cookies.get('token'))
+            Cookies.set('admin_role', Cookies.get('role'))
+            Cookies.set('admin_userid', Cookies.get('userid'))
+            Cookies.set('admin_name', Cookies.get('name'))
+            Cookies.set('token', userData.)
+            Cookies.set('role', userData.user_role)
+            Cookies.set('userid', userData._id)
+            Cookies.set('name', userData.full_name)
+
+        }
+
         router.push('/credit-reports')
 
-        Cookies.set('admin_token', Cookies.get('token'));
+        Cookies.set('admin_token', Cookies.get('token'))
+        Cookies.set('admin_role', Cookies.get('role'))
         Cookies.set('admin_userid', Cookies.get('userid'))
-
+        Cookies.set('admin_name', Cookies.get('name'))
 
         return '';
     }

@@ -26,6 +26,19 @@ const Header = (props) => {
 
     const myRole = Cookies.get('role');
     let name = Cookies.get('name')
+
+    const restoreAdmin = () => {
+        Cookies.set('token', Cookies.get('admin_token'))
+        Cookies.set('role', Cookies.get('admin_role'))
+        Cookies.set('userid', Cookies.get('admin_userid'))
+        Cookies.set('name', Cookies.get('admin_name'))
+
+        Cookies.remove('admin_token');
+        Cookies.remove('admin_role');
+        Cookies.remove('admin_userid');
+        Cookies.remove('admin_name');
+    }
+
     return (
         <div className='header'>
         <div className="header_wrap">
@@ -127,6 +140,13 @@ const Header = (props) => {
                                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     {user ?
                                         <>
+                                                <li> {
+                                                    Cookies.get('admin_userid') ?
+                                                        <button onClick={restoreAdmin}>Exit Simulation</button>
+                                                        : null
+                                                }
+                                                </li>
+
                                             {role == 'admin' ? (
                                                 <li>
                                                     <Link activeClassName={router.pathname === "/account/admin"} href="/account/admin">
@@ -138,6 +158,7 @@ const Header = (props) => {
                                                     <li><a className="dropdown-item" href="/account">My Account</a></li>
                                                 </Link>
                                             )}
+
 
 
                                         </>
