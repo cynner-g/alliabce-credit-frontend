@@ -133,8 +133,11 @@ const addCompany = ({ industry, group, pricing, msg }) => {
             <Header statusMessage={message} />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
-                    <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
-                    <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
+                    <li><Link href={`/companies/${company.parent_company._id}`}>
+                        <a className="nav-link">&lt;&lt; {company.parent_company.company_name}</a>
+                    </Link>
+                    </li>
+                    {/* <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li> */}
                     <li>Add Sub Company</li>
                 </ul>
             </div>

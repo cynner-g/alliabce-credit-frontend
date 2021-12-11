@@ -64,7 +64,9 @@ const Header = (props) => {
                                                     <a className="nav-link">Database Reports</a>
                                                 </Link>
                                             </li>
-
+                                            {
+                                                myRole == 'admin' ? '' : ''
+                                            }
                                             <li className={`companies ${router.pathname == "/companies" ? "active" : ""}`}>
                                                 <Link activeClassName={router.pathname === "/companies"} href="/companies">
                                                     <a className="nav-link">Companies</a>
@@ -98,9 +100,11 @@ const Header = (props) => {
                                                     <a className="nav-link">Database Reports</a>
                                                 </Link>
                                             </li>
-
+                                            {myRole == 'user' || myRole == 'user-manager' ?
+                                                <>
                                             <li className={`legal-watchlist TEST ${router.pathname == "/legal-watchlist" ? "active" : ""}`}>
-                                                <Link activeClassName={router.pathname === "/legal-watchlist"} href="/legal-watchlist">
+                                                        <Link activeClassName={router.pathname === "/legal-watchlist"}
+                                                            href="/legal-watchlist">
                                                     <a className="nav-link">Legal Watchlist</a>
                                                 </Link>
                                             </li>
@@ -111,7 +115,9 @@ const Header = (props) => {
                                                     <a className="nav-link">Aging</a>
                                                 </Link>
                                             </li>
-
+                                                </>
+                                                : ''
+                                            }
                                         </>
 
 
@@ -143,7 +149,7 @@ const Header = (props) => {
                                             <>
                                                 <li> {
                                                     Cookies.get('admin_userid') ?
-                                                        <button onClick={restoreAdmin}>Exit Simulation</button>
+                                                        <button onClick={() => restoreAdmin()}>Exit Simulation</button>
                                                         : null
                                                 }
                                                 </li>

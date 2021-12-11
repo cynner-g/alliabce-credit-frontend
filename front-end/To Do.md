@@ -1,11 +1,4 @@
 
-1. "Add User" button is not showing on my account page of a user manager.
-2. Filter by company access is not working and is it showing list of companies and subcompany both in filter?
-3. Giving Error when we go to users tab inside company
-4. Update Company is not confirming the changes.
-5. For add sub company, form is coming but same its not confirming.
-
-
 
 Companies:
 [Add company]
@@ -17,8 +10,6 @@ Companies:
 
 
 
-[company : user add]
-    Company access we dont see entire access, only main company (where the sub-company)
 [company : user edit]
     where is the active / inactive an user ??
 
