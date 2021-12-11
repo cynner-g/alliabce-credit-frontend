@@ -18,6 +18,16 @@
     margin-right: 7px;
 }
 
+.stepBullet::before {
+    content: "";
+    position: absolute;
+    border-left: 1px solid blue;
+    height: 113px;
+    top: -110px;
+    left: 10px;
+    z-index: -1;
+}
+
 .stepUndone {
     text-align: left;
     font-weight: 600;
@@ -33,9 +43,9 @@
     width: 1.5em;
     border-radius: 5px;
     margin-right: 7px;
-    line-height: 24px;
+    /* line-height: 24px;
     padding-top: 6px;
-    padding-bottom: 6px;
+    padding-bottom: 6px; */
 
 }
 

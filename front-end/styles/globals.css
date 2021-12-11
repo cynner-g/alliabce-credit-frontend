@@ -1710,3 +1710,22 @@ p small {
   background: #FFF;
   padding-bottom: 20px;
 }
+
+.vlline {
+  position: relative;
+  background: #F1F1F1;
+}
+
+.vlline:before {
+  content: "";
+  position: absolute;
+  border-left: 1px solid #F1F1F1;
+  height: 113px;
+  top: -110px;
+  left: 10px;
+  z-index: -1;
+}
+
+.vlline.first:before {
+  display: none;
+}

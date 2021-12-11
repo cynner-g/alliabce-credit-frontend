@@ -128,17 +128,29 @@ export class FormComponent extends Component {
 
     buildSubmitButton = (col, index) => {
         return (
-            <div className='quick_order_wrap'>
-                <Col className='formCol text-end' md={{ size: 1, offset: 1 }} key={index}>
-                    <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
-                        <br />
-                        <button type="submit" className='btn btn-primary' color={col.params.color || "primary"}>
-                            {col.params.text}
-                        </button >
-                        <br />
-                    </span>
-                </Col>
+            // <div className='quick_order_wrap'>
+            <div className='order_fixed_nav'>
+                <Row>
+                    <Col sm={3} className="order_report_left" ></Col>
+                    <Col className="order_report_bottom">
+                        <Row>
+                            <Col>
+                            </Col>
+
+                            <Col className='formCol text-end' md={{ size: 1, offset: 1 }} key={index}>
+                                <span style={{ visibility: col.params.visible !== false ? 'visible' : 'hidden' }}>
+                                    <br />
+                                    <button type="submit" className='btn btn-primary' color={col.params.color || "primary"}>
+                                        {col.params.text}
+                                    </button >
+                                    <br />
+                                </span>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
             </div>
+            // </div>
         );
     }
 

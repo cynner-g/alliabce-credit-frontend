@@ -1208,7 +1208,7 @@ class OrderNewReport extends Component {
         if (stepNum == this.state.step) { style = styles.stepContainer } else { style = styles.stepUndone };
         return (
             <div className={stepNum <= this.state.step ? `${styles.stepContainer}` : `${styles.stepUndone}`}>
-                <div className={stepNum <= this.state.step ? styles.stepBullet : styles.stepUnselected}>{stepNum}</div>
+                <div className={`vlline ${stepNum <= this.state.step ? styles.stepBullet : styles.stepUnselected} ${stepNum == 1 ? ' first' : ''} `}>{stepNum}</div>
                 {stepNum <= this.state.step ? <button className={styles.stepLink + " btn btn-link"} onClick={() => this.setState({ step: stepNum })} >{stepText}</button>
                     : <div className={styles.stepUnselected}>{stepText}</div>
                 }
@@ -1218,7 +1218,7 @@ class OrderNewReport extends Component {
 
     buildSteps = () => {
         return (
-            <div className="report_steps">
+            <>
 
                 {this.buildStep("Select Reports", 1)}
 
@@ -1234,7 +1234,7 @@ class OrderNewReport extends Component {
                         Done
                     </Col> */}
 
-            </div>)
+            </>)
     }
 
     buildPage = () => {
@@ -1243,8 +1243,10 @@ class OrderNewReport extends Component {
                 <div className="order_reportwrap">
                     <Row>
                         {this.state.origData ? '' :
-                            <Col sm={3} className="order_report_left" >
-                                {this.buildSteps()}
+                            <Col sm={3} className="order_report_left">
+                                <div className='report_steps'>
+                                    {this.buildSteps()}
+                                </div>
                             </Col>
                         }
                         <Col sm={9}>
@@ -1449,8 +1451,10 @@ class OrderNewReport extends Component {
                     <div className='order_reportwrap'>
                         <Row>
                             {this.state.origData ? '' :
-                                <Col sm={3} className="order_report_left" >
-                                    {this.buildSteps()}
+                                <Col sm={3} className="order_report_left">
+                                    <div className='report_steps'>
+                                        {this.buildSteps()}
+                                    </div>
                                 </Col>
                             }
                             {/* <Col className='order_report_left' sm={3}>
