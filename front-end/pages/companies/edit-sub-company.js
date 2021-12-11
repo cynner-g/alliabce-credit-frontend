@@ -12,7 +12,7 @@ import {
     remove_sub_company
 } from '../api/companies';
 
-const addCompany = ({ industry, group, pricing, company, }) => {
+const editSubCompany = ({ industry, group, pricing, company, }) => {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -163,7 +163,7 @@ const addCompany = ({ industry, group, pricing, company, }) => {
 
     return (
         <>
-            <Header message={message} />
+            {/* <Header message={message} />
             <div className="breadcrumb">
 
                 <ul className=" me-auto mb-2 mb-lg-0">
@@ -172,7 +172,7 @@ const addCompany = ({ industry, group, pricing, company, }) => {
                     {/* <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li> */}
                     <li>Edit Company</li>
                 </ul>
-            </div>
+            </div> */}
             <div className="col-lg-7 companyform">
                 <form method="POST" encType="multipart/form-data" >
                     <div className="row">
@@ -367,4 +367,4 @@ export async function getServerSideProps(ctx) {
 
 }
 
-export default addCompany
+export default editSubCompany

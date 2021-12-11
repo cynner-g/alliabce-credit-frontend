@@ -1,16 +1,16 @@
-import Header from "../../components/header"
+
 import { useRouter } from "next/router"
-import Pagination from "../../components/datatable/pagination"
+import Pagination from "../../../components/datatable/pagination"
 import { useState } from 'react'
 import Cookies from "js-cookie"
 import { parseCookies } from "nookies"
 import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
-import {
-    add_company
-} from '../api/companies';
+import Header from "../../../components/header"
+import { update_company, get_company_details } from '../../api/companies';
+import { get_pricing_list } from '../../api/pricing'
 
-const addCompany = ({ industry, group, pricing }) => {
+const editCompanies = ({ industry, group, pricing, data, companyId, setData }) => {
     const [show, setShow] = useState(false);
     const [ischecked, setIsChecked] = useState([]);
 
@@ -20,49 +20,52 @@ const addCompany = ({ industry, group, pricing }) => {
     const [company_logo_en, setCompany_logo_en] = useState("");
     const [company_logo_fr, setcompany_logo_fr] = useState("");
 
+    console.log(data)
     const [formStatus, setFormStatus] = useState(false);
+
+
     const [query, setQuery] = useState({
         // company_logo_en: "",
         // company_logo_fr: "",
-        company_name_en: "",
-        company_name_fr: "",
-        website: "",
-        domain: "",
-        email_id: "",
-        country_code: "",
-        phone_number: "",
-        address_line: "",
-        state: "",
-        city: "",
-        zip_code: "",
-        portal_language: "",
-        industry_id: "",
+        company_id: companyId,
+        company_name_en: data.company_name,
+        company_name_fr: data.company_name,
+        website: data.website,
+        domain: data.domain,
+        email_id: data.email_id,
+        country_code: data.country_code || "",
+        phone_number: data.phone_number.phone_number,
+        address_line: data.address.address_line,
+        state: data.address.state_name,
+        city: data.address.city_name,
+        zip_code: data.address.zip_code,
+        portal_language: data.portal_language,
+        industry_id: data.industry_data._id,
         groups: [],
-        pricing_chart_id: "",
-        bank_report_count: "",
-        suppliers_report_count: "",
-        watchlist_count: "",
-        company_in_watchlist_count: "",
-        quick_report_price: "",
-        aging_discount: ""
+        is_active: data.is_active || [],
+        pricing_chart_id: data.configuration.pricing_chart_id,
+        bank_report_count: data.configuration.bank_report_count,
+        suppliers_report_count: data.configuration.suppliers_report_count,
+        company_in_watchlist_count: data.configuration.company_in_watchlist_count,
+        watchlist_count: data.configuration.watchlist_count,
+        company_in_watchlist_count: data.configuration.company_in_watchlist_count,
+        quick_report_price: data.configuration.quick_report_price,
+        aging_discount: data.configuration.aging_discount
     });
 
 
     const handleFileChangeen = () => (e) => {
-        console.warn(e.target.files[0])
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_en: e.target.files[0]
-        // }));
-        setCompany_logo_en(e.target.files[0]);
+        console.log(e.target.files[0])
+        if (e.target.files) {
+            setCompany_logo_en(JSON.stringify(e.target.files[0]));
+        }
+
     };
 
     const handleFileChangefr = () => (e) => {
-        // setQuery((prevState) => ({
-        //     ...prevState,
-        //     company_logo_fr: e.target.files[0]
-        // }));
-        setcompany_logo_fr(e.target.files[0])
+        if (e.target.files) {
+            setcompany_logo_fr(JSON.stringify(e.target.files[0]))
+        }
     };
 
     const handleChange = () => (e) => {
@@ -73,7 +76,6 @@ const addCompany = ({ industry, group, pricing }) => {
             ...prevState,
             [name]: value
         }));
-        // console.log(ischecked)
     };
 
     const addNewCompany = async (e) => {
@@ -81,7 +83,7 @@ const addCompany = ({ industry, group, pricing }) => {
         console.log(query);
         // e.preventDefault();
         const token = Cookies.get('token');
-        if (!token) {
+        if (!token || (companyId === "")) {
             return {
                 redirect: {
                     destination: '/',
@@ -90,48 +92,54 @@ const addCompany = ({ industry, group, pricing }) => {
             }
         }
 
+        let data1 = new FormData();
+        // data1.append('company_logo_en', company_logo_en);
+        // data1.append('company_logo_fr', company_logo_fr);
+        data1.append('company_name_en', query.company_name_en);
+        data1.append('company_name_fr', query.company_name_fr);
+        data1.append('website', query.website);
+        data1.append('domain', query.domain);
+        data1.append('email_id', query.email_id);
+        data1.append('phone_number', query.phone_number);
+        data1.append('address_line', query.address_line);
+        data1.append('state', query.state);
+        data1.append('city', query.city);
+        data1.append('zip_code', query.zip_code);
+        data1.append('portal_language', query.portal_language);
+        data1.append('industry_id', query.industry_id);
+        data1.append('pricing_chart_id', query.pricing_chart_id);
+        data1.append('bank_report_count', query.bank_report_count);
+        data1.append('suppliers_report_count', query.suppliers_report_count);
+        data1.append('watchlist_count', query.watchlist_count);
+        data1.append('company_in_watchlist_count', query.company_in_watchlist_count);
+        data1.append('quick_report_price', query.quick_report_price);
+        data1.append('aging_discount', query.aging_discount);
+        data1.append('language', 'en');
+        data1.append('api_token', token);
+        data1.append('company_logo_en', company_logo_en);
+        data1.append('company_logo_fr', company_logo_fr);
+        data1.append('country_code', query.country_code);
+        data1.append('groups', ischecked);
+        data1.append('is_active', query.is_active);
+        data1.append('company_id', companyId);
 
-        let data = new FormData();
-        // data.append('company_logo_en', company_logo_en);
-        // data.append('company_logo_fr', query.company_logo_fr);
-        data.append('company_name_en', query.company_name_en);
-        data.append('company_name_fr', query.company_name_fr);
-        data.append('website', query.website);
-        data.append('domain', query.domain);
-        data.append('email_id', query.email_id);
-        data.append('phone_number', query.phone_number);
-        data.append('address_line', query.address_line);
-        data.append('state', query.state);
-        data.append('city', query.city);
-        data.append('zip_code', query.zip_code);
-        data.append('portal_language', query.portal_language);
-        data.append('industry_id', query.industry_id);
-        data.append('pricing_chart_id', query.pricing_chart_id);
-        data.append('bank_report_count', query.bank_report_count);
-        data.append('suppliers_report_count', query.suppliers_report_count);
-        data.append('watchlist_count', query.watchlist_count);
-        data.append('company_in_watchlist_count', query.company_in_watchlist_count);
-        data.append('quick_report_price', query.quick_report_price);
-        data.append('aging_discount', query.aging_discount);
-        data.append('language', 'en');
-        data.append('api_token', token);
-        data.append('company_logo_en', company_logo_en);
-        data.append('company_logo_fr', company_logo_fr);
-        data.append('country_code', query.country_code);
-        // data.append('groups', ischecked);
-
-        add_company(data)
-            .then(addCompanyDB => addCompanyDB.json())
-            .then(res2 => {
-                if (res2.status_code == 403) {
-                    setShow(false);
-                    alert("Error " + res2.data);
-                } else if (res2.status_code == 200) {
-                    setShow(false);
-                } else {
-                    setShow(false);
-                }
-            })
+        try {
+            update_company(data1)
+                .then(res2 => {
+                    if (res2.status_code == 403) {
+                        setShow(false);
+                        alert("Error: " + res2.data);
+                    } else if (res2.status_code == 200) {
+                        setShow(false);
+                    } else {
+                        setShow(false);
+                    }
+                })
+        }
+        catch (ex) {
+            console.log(ex)
+            alert("Error: " + ex.message);
+        }
     }
 
 
@@ -153,17 +161,17 @@ const addCompany = ({ industry, group, pricing }) => {
         // console.log(ischecked)
     };
 
-
     return (
         <>
-            {/* <Header />
+            <Header />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
                     <li className="back"><Link href="/companies"><a className="nav-link">Back</a></Link></li>
                     <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li>
-                    <li>Add Company</li>
+                    <li><Link href={`/companies/${query.company_id}`}><a className="nav-link">{query.company_name_en}</a></Link></li>
+                    <li>Edit Company</li>
                 </ul>
-            </div> */}
+            </div>
             <div className="col-lg-7 companyform">
                 <form method="POST" encType="multipart/form-data" onSubmit={(e) => addNewCompany(e)}>
                     <div className="row">
@@ -183,7 +191,7 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" name="company_name_en" className="form-control" id="company_name_en" placeholder="" value={query.company_name_en} onChange={handleChange()} />
                         </div>
                         <div className="col">
-                            <label htmlFor="company_name_fr" className="form-label">Company Name (French)</label>
+                            <label htmlFor="company_name_fr" className="form-label">Company Name (English)</label>
                             <input type="text" name="company_name_fr" className="form-control" id="company_name_fr" placeholder="" value={query.company_name_fr} onChange={handleChange()} />
                         </div>
                     </div>
@@ -216,7 +224,6 @@ const addCompany = ({ industry, group, pricing }) => {
                             <input type="text" name="address_line" className="form-control" id="address_line" placeholder="" value={query.address_line} onChange={handleChange()} />
                         </div>
                     </div>
-
                     <div className="row">
                         <div className="col">
                             <label htmlFor="state" className="form-label">State</label>
@@ -235,7 +242,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="portal_language" className="form-label">Portal Language</label>
-                            <select className="form-select" name="portal_language" id="portal_language" aria-label=".form-select-sm example" onChange={handleChange()}>
+                            <select className="form-select " value={query.portal_language} name="portal_language" id="portal_language" aria-label="" onChange={handleChange()}>
                                 <option selected>Select Language</option>
                                 <option value="en">English</option>
                                 <option value="fr">French</option>
@@ -245,7 +252,7 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="industry_id" className="form-label">Industry</label>
-                            <select className="form-select" name="industry_id" id="industry_id" aria-label=".form-select-sm example" onChange={handleChange()}>
+                            <select className="form-select" value={query.industry_id} name="industry_id" id="industry_id" aria-label="" onChange={handleChange()}>
                                 <option selected>Open this select menu</option>
                                 {industry?.data.map((item) => (
                                     <option value={item._id}>{item.name}</option>
@@ -263,20 +270,27 @@ const addCompany = ({ industry, group, pricing }) => {
                                         <input className="form-check-input" name="groups" type="checkbox" value={item._id} id={item._id} onChange={(e) => handleOnChange(e)} />
                                     </div>
                                 ))}
+
+
+
                             </div>
                         </div>
                     </div>
-
+                    <div className="row">
+                        <div className="col-5">
+                            <label htmlFor="is_active" className="form-label">Active Status</label>
+                            <select className="form-select" value={query.is_active == true ? 0 : 1} name="is_active" id="pricing_chart_id" aria-label="" onChange={handleChange()}>
+                                <option value="0">Active</option>
+                                <option value="1">Deactivate</option>
+                            </select>
+                        </div>
+                    </div>
 
                     <h3 className="subtitle">Configurations</h3>
                     <div className="row">
                         <div className="col-5">
                             <label htmlFor="pricing_chart_id" className="form-label">Pricing Chart</label>
-                            <select className="form-select"
-                                name="pricing_chart_id" id="pricing_chart_id"
-                                aria-label=".form-select-sm example"
-                                onChange={handleChange()}
-                            >
+                            <select className="form-select" value={query.pricing_chart_id} name="pricing_chart_id" id="pricing_chart_id" aria-label="" onChange={handleChange()}>
                                 <option selected>Pricing Chart</option>
                                 {pricing?.data.map((item) => (
                                     <option value={item._id}>{item.name}</option>
@@ -321,23 +335,19 @@ const addCompany = ({ industry, group, pricing }) => {
                     <div className="row">
                         <div className="col">
                             <p>&nbsp;</p>
-                            <button type="button" className="btn btn-primary" onClick={handleShow}>Add Company</button>
+                            <button type="button" className="btn btn-primary" onClick={handleShow}>Update Company</button>
                         </div>
                     </div>
-
-
                     <div className="row">
                         <div className="col">
                             <p>&nbsp;</p>
                         </div>
                     </div>
-
-
                     <Modal show={show} onHide={handleClose}>
                         <Modal.Header closeButton>
                             <Modal.Title>Add Company</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>Please click on <strong>"confirm"</strong> to add this company</Modal.Body>
+                        <Modal.Body>Please click on <strong>"confirm"</strong> to update this company</Modal.Body>
                         <Modal.Footer>
                             <button type="button" className="btn btnedit" onClick={handleClose}>Cancel</button>
                             <button type="submit" className="btn btn-primary" onClick={addNewCompany}>Confirm</button>
@@ -362,7 +372,11 @@ export async function getServerSideProps(ctx) {
             },
         }
     }
-    const resIndustry = await fetch(`${process.env.API_URL}/industry/list`, {
+
+    const companyId = ctx.query.title
+
+    // const results = await Promise.all([
+    const industry = await fetch(`${process.env.API_URL}/industry/list`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -372,9 +386,10 @@ export async function getServerSideProps(ctx) {
             "api_token": token,
         })
     })
-    const industry = await resIndustry.json()
+        .then(res => res.json())
 
-    const resGroup = await fetch(`${process.env.API_URL}/group/list`, {
+
+    const group = await fetch(`${process.env.API_URL}/group/list`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -383,33 +398,41 @@ export async function getServerSideProps(ctx) {
             "language": 'en',
             "api_token": token,
         })
-    })
-    const group = await resGroup.json()
+    }).then(res => res.json())
 
-    const resPricing = await fetch(`${process.env.API_URL}/pricing/list`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "language": 'en',
-            "api_token": token,
-        })
-    })
-    const pricing = await resPricing.json()
 
+    const pricing = await get_pricing_list({
+        "language": "en",
+        "api_token": token,
+    })
+
+    const data = await get_company_details({
+        "language": 'en',
+        "api_token": token,
+        "company_id": companyId
+    })
+    //])
+
+    // const industry = results[0].json();
+    // const group = results[1].json();
+    // const pricing = results[2];
+    // const data = results[3];
 
     /** 
      * limit, start, search item
      */
+
+    console.log(pricing)
     return {
         props: {
             industry,
             group,
-            pricing
+            pricing: pricing || {},
+            data: data?.data || [],
+            companyId
         }
     }
 
 }
 
-export default addCompany
+export default editCompanies

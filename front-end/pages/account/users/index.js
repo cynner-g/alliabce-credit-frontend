@@ -207,6 +207,8 @@ const Users = ({ data, listUsers, companiesData }) => {
             setPhone_number(userData2?.phone_number?.phone_number);
             setCompany_access(userData2?.full_name);
             setUser_role(userData2?.display_user_role);
+            setIsEdit(true);
+            handleOpen();
             setErrorMsg('')
         })
     }
@@ -246,20 +248,24 @@ const Users = ({ data, listUsers, companiesData }) => {
             "user_role": user_role,
             "api_token": token
         }
-        const res2User = await update_user(body);
-
-        console.log(res2User);
-        if (res2User.status_code == 200) {
-            setFullName("");
-            setEmailID("");
-            setCountry_code("");
-            setPhone_number("");
-            setCompany_access("");
-            setUser_role("");
-            setIsEdit(false);
-            setShow(false);
-            setUserId("")
-        }
+        update_user(body)
+            .then(res => {
+                console.log(res2User);
+                if (res2User.status_code == 200) {
+                    setFullName("");
+                    setEmailID("");
+                    setCountry_code("");
+                    setPhone_number("");
+                    setCompany_access("");
+                    setUser_role("");
+                    setIsEdit(false);
+                    setShow(false);
+                    setUserId("")
+                }
+                else {
+                    setErrorMsg("Warning: " + res.message)
+                }
+            })
     }
 
     return (
@@ -348,7 +354,7 @@ const Users = ({ data, listUsers, companiesData }) => {
                                                 {/* <td>
                                                     <> */}
                                                 {/* <a className="btn accept" onClick={() => AcceptUser(item._id)}>Accept User</a> &nbsp; */}
-                                                {/* <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp; */}
+                                                <button className="btn viewmore" onClick={() => getUser(item._id)}>Edit User</button> &nbsp;
                                                 {/* <button onClick={() => deleteUser(user.id)} className="btn btn-sm btn-danger btn-delete-user" disabled={user.isDeleting}>
                                     {user.isDeleting 
                                         ? <span className="spinner-border spinner-border-sm"></span>

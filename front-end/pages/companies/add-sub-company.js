@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { Modal, Button } from "react-bootstrap";
 import { add_sub_company } from '../api/companies';
 
-const addCompany = ({ industry, group, pricing, msg }) => {
+const addSubCompany = ({ industry, group, pricing, msg }) => {
     const router = useRouter();
     const [show, setShow] = useState(false);
 
@@ -130,17 +130,16 @@ const addCompany = ({ industry, group, pricing, msg }) => {
 
     return (
         <>
-            <Header statusMessage={message} />
+            {/* <Header statusMessage={message} />
             <div className="breadcrumb">
                 <ul className=" me-auto mb-2 mb-lg-0">
                     <li><Link href={`/companies/${company.parent_company._id}`}>
                         <a className="nav-link">&lt;&lt; {company.parent_company.company_name}</a>
                     </Link>
                     </li>
-                    {/* <li><Link href="/companies"><a className="nav-link">Companies</a></Link></li> */}
                     <li>Add Sub Company</li>
                 </ul>
-            </div>
+            </div> */}
             <div className="col-lg-7 companyform">
                 <form method="POST" encType="multipart/form-data">
                     <div className="row">
@@ -327,4 +326,4 @@ export async function getServerSideProps(ctx) {
 
 }
 
-export default addCompany
+export default addSubCompany

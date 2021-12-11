@@ -1,14 +1,17 @@
 import Address from "./address";
 import Link from 'next/link'
 
-const SubCompanies = function ({ id, subCompanies }) {
+const SubCompanies = function ({ id, subCompanies, setActive, setData }) {
     return (
         <>
-            <Link href={`/companies/add-sub-company/?id=${id}`}><a className="btn btnedit add_company">Add Sub Company</a></Link>
+
+            {/* <Link href={`/companies/add-sub-company/?id=${id}`}><a className="btn btnedit add_company">Add Sub Company</a></Link> */}
+            <a onClick={() => { setData(id); setActive("addSub") }} className="btn btnedit add_company">Add Sub Company</a>
             {subCompanies?.map((item, idx) => (
                 <span key={idx}>
                     <div className="company_wrap">
-                        <Link href={`/companies/edit-sub-company?sid=${item._id}&cid=${id}`}><a className="btn btnedit edit_company">Edit Sub Company</a></Link>
+                        {/* <Link href={`/companies/edit-sub-company?sid=${item._id}&cid=${id}`}><a className="btn btnedit edit_company">Edit Sub Company</a></Link> */}
+                        <a className="btn btnedit edit_company" onClick={() => { setData(item._id); setActive("editSub") }}>Edit Sub Company</a>
                         <div className="imagewrap">
 
                         </div>

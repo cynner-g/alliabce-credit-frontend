@@ -102,7 +102,7 @@ const Header = (props) => {
                                             </li>
                                             {myRole == 'user' || myRole == 'user-manager' ?
                                                 <>
-                                            <li className={`legal-watchlist TEST ${router.pathname == "/legal-watchlist" ? "active" : ""}`}>
+                                                    <li className={`legal-watchlist ${router.pathname == "/legal-watchlist" ? "active" : ""}`}>
                                                         <Link activeClassName={router.pathname === "/legal-watchlist"}
                                                             href="/legal-watchlist">
                                                     <a className="nav-link">Legal Watchlist</a>
@@ -110,11 +110,11 @@ const Header = (props) => {
                                             </li>
 
 
-                                            <li className={`aging ${router.pathname == "/aging" ? "active" : ""}`}>
+                                                    {/* <li className={`aging ${router.pathname == "/aging" ? "active" : ""}`}>
                                                 <Link activeClassName={router.pathname === "/aging"} href="/aging">
                                                     <a className="nav-link">Aging</a>
                                                 </Link>
-                                            </li>
+                                            </li> */}
                                                 </>
                                                 : ''
                                             }
