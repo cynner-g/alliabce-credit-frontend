@@ -65,7 +65,7 @@ export class FormComponent extends Component {
         let ret = (
             <Col className='formCol formContent' key={index}>
                 <span style={{ visibility: column.params.visible !== false ? 'visible' : 'hidden' }}>
-                    {column.title}
+                    <label>{column.title}</label>
                     <input type='text' className='formText form-control'
                         name={column.params.model}
                         onChange={(e) => this.handleChange(e)}

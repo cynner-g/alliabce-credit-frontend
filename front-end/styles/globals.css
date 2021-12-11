@@ -144,10 +144,18 @@ header {
 
 .user_nav {
   text-align: right !important;
+  padding-top: 15px;
 }
 
 .user_nav .hello, .user_nav .dropdown {
   display: inline-block;
+}
+
+.user_nav .hello {
+  font-weight: 500;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif !important;
+  color: #555B6E;
 }
 
 .status_header {
@@ -317,8 +325,14 @@ input[type=text] {
 .order_new_report {
   background: #406DCD url(/icons/order_new_credit_report.svg) 11px 9px no-repeat;
   background-size: 19px;
-  padding: 9px 20px 9px 40px;
+  padding: 7px 20px 8px 40px;
   width: auto;
+}
+
+.order_report_right.edit_form {
+  max-width: 864px;
+  margin: auto;
+  padding: 30px 15px;
 }
 
 .resetPassBtn {
@@ -338,6 +352,12 @@ input[type=text] {
 .btnedit {
   background: #FFF;
   border: 1px solid #406DCD;
+  color: #406DCD;
+}
+
+.btnedit1 {
+  background: #FFF;
+  border: 2px solid #406DCD;
   color: #406DCD;
 }
 
@@ -1091,7 +1111,7 @@ p small {
   padding: 16px 16px 0;
   height: 200px;
   width: 100%;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .comments_items {
@@ -1104,19 +1124,32 @@ p small {
   border-bottom: 0;
 }
 
-/* .comments_wrapper {
-  padding: 16px;
-} */
+.comments_wrapper {
+  padding-top: 15px;
+}
 
 .comments_wrapper,
 .more_info_wrap {
   background: #FBFBFB;
   border: 1px solid #F2F2F2;
+  border-radius: 4px;
 }
 
-td.comments_indent {
-  padding: 15px 0;
+.comments_wrapper td {
+  background: #FBFBFB;
+}
+
+.comments_indent {
+  padding: 15px 0 !important;
   border-bottom: 0;
+}
+
+.comments_indent td {
+  border-bottom: 0;
+}
+
+.comments_indent h5 {
+  margin-bottom: 10px;
 }
 
 .post_status_wrap {
@@ -1125,6 +1158,36 @@ td.comments_indent {
 
 .post_add_wrap {
   width: 60px;
+}
+
+.delete_comment {
+  float: right;
+}
+
+.activities_indent {
+  padding: 0px !important;
+  padding-top: 20px !important;
+}
+
+.activities_wrapper .cr_activity_list {
+  list-style: none;
+  padding-left: 17px;
+  padding-right: 17px;
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.activities_wrapper .cr_activity_list .cr_activity_item {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dee2e6;
+  padding-top: 15px;
+}
+
+.activities_wrapper .cr_activity_list .cr_activity_item:last-child {
+  /* padding-bottom: 15px; */
+  border-bottom: 0px solid #dee2e6;
+
 }
 
 /*My account*/
@@ -1210,11 +1273,15 @@ td.comments_indent {
 
 .order_report_left {
   background: #FAFAFA;
+  position: relative;
+  z-index: 1;
 }
 
 .report_steps {
-
   padding: 100px 0 0px 80px;
+  position: fixed;
+  left: 0;
+  z-index: 9;
 }
 
 .report_steps>div {
@@ -1564,4 +1631,82 @@ td.comments_indent {
 .fpass a:hover {
   text-decoration: none;
   transition: .5s;
+}
+
+.formContainer label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 8px;
+}
+
+.form-control:disabled, .form-control[readonly] {
+  background-color: #F8F8F8;
+  opacity: 1;
+}
+
+#dropdownMenuButton1 {
+  padding-right: 0;
+  width: 12px;
+  padding-left: 0;
+  margin-left: 17px;
+}
+
+#dropdownMenuButton1::after {
+  display: none;
+}
+
+.user_nav .dropdown-menu.show {
+  display: block;
+  padding: 0;
+}
+
+.user_nav .dropdown-menu li {
+  padding: 7px 2px 11px 47px;
+  font-family: 'Roboto', sans-serif;
+  text-align: left;
+}
+
+.user_nav .dropdown-menu li a {
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  color: #555B6E;
+}
+
+.aging_upload {
+  background: url(/icons/aging.svg) 15px 10px no-repeat;
+  background-size: 16px;
+}
+
+.logout {
+  background: url(/icons/log_out.svg) 18px 13px no-repeat;
+  background-size: 16px;
+}
+
+.logout a {
+  color: #CF5A5A !important;
+  cursor: pointer;
+}
+
+.myaccount {
+  background: url(/icons/account.svg) 13px 10px no-repeat;
+  background-size: 17px;
+}
+
+.order_fixed_nav {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.order_report_bottom {
+  border-top: 1px solid #F2F2F2;
+  padding-top: 20px;
+  color: #517BCC;
+  z-index: 9;
+  padding-right: 25px;
+  background: #FFF;
+  padding-bottom: 20px;
 }
